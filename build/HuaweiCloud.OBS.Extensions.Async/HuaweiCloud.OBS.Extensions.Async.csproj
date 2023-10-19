@@ -2,25 +2,42 @@
 
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
-        <IsPackable>false</IsPackable>
+        <IsPackable>true</IsPackable>
         <Nullable>enable</Nullable>
         <LangVersion>latest</LangVersion>
 
         <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
         <IsRoslynComponent>true</IsRoslynComponent>
-
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <RootNamespace>HuaweiCloud.OBS.Extensions.Async</RootNamespace>
         <PackageId>HuaweiCloud.OBS.Extensions.Async</PackageId>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <Version>3.22.3</Version>
+        <Title>HuaweiCloud.OBS.Extensions.Async</Title>
+        <Authors>Feast</Authors>
+        <Description>Auto generate async/await code extension for ObsClient</Description>
+        <Copyright>(c) Feast. All rights reserved.</Copyright>
+        <PackageProjectUrl>https://github.com/feast107/huaweicloud-sdk-dotnet-obs-async</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/feast107/huaweicloud-sdk-dotnet-obs-async.git</RepositoryUrl>
+        <AssemblyVersion>3.22.3</AssemblyVersion>
+        <FileVersion>0.0.1</FileVersion>
+        <PackageReleaseNotes>Initial version of HuaweiCloud OBS Extension</PackageReleaseNotes>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <NeutralLanguage>zh</NeutralLanguage>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.6.0"/>
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.6.0"/>
+        <ProjectReference Include="..\HuaweiCloud.OBS.Extensions.Async.SourceGenerators\HuaweiCloud.OBS.Extensions.Async.SourceGenerators.csproj" ReferenceOutputAssembly="false" />
     </ItemGroup>
-
+    
+    <ItemGroup Label="Package">
+        <None Include="..\..\README.md">
+          <Pack>True</Pack>
+          <PackagePath>\</PackagePath>
+        </None>
+        <None Include="..\HuaweiCloud.OBS.Extensions.Async.SourceGenerators\bin\$(Configuration)\netstandard2.0\HuaweiCloud.OBS.Extensions.Async.SourceGenerators.dll" PackagePath="analyzers\dotnet\cs" Pack="true" Visible="false" />
+    </ItemGroup>
+    
+   
 
 </Project>

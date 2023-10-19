@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 
-namespace HuaweiCloud.OBS.Extensions.Async;
+namespace HuaweiCloud.OBS.Extensions.Async.SourceGenerators;
 
 [Generator]
 public class AsyncExtensionGenerator : IIncrementalGenerator

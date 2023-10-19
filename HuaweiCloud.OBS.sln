@@ -31,6 +31,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Extensions", "Extensions", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{7CDC11F2-C8FA-441E-A65E-ECD0C9545133}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HuaweiCloud.OBS.Extensions.Async.SourceGenerators", "build\HuaweiCloud.OBS.Extensions.Async.SourceGenerators\HuaweiCloud.OBS.Extensions.Async.SourceGenerators.csproj", "{9388C904-240B-4A88-9BB7-FC8CE87F4492}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,6 +55,10 @@ Global
 		{01879D56-227D-4E5F-AAA6-451B6B82D231}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{01879D56-227D-4E5F-AAA6-451B6B82D231}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{01879D56-227D-4E5F-AAA6-451B6B82D231}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9388C904-240B-4A88-9BB7-FC8CE87F4492}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9388C904-240B-4A88-9BB7-FC8CE87F4492}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9388C904-240B-4A88-9BB7-FC8CE87F4492}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9388C904-240B-4A88-9BB7-FC8CE87F4492}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -65,6 +71,7 @@ Global
 		{658B9C84-A958-4A94-8032-2DD10B82CB28} = {A826A595-B9C1-441D-BE01-1CDF21E0EA42}
 		{01879D56-227D-4E5F-AAA6-451B6B82D231} = {A9D7F38B-95A2-4586-AA66-84B514B81ADE}
 		{A826A595-B9C1-441D-BE01-1CDF21E0EA42} = {BBB9D721-B9BA-48B8-A3C8-FDFB9463543B}
+		{9388C904-240B-4A88-9BB7-FC8CE87F4492} = {A9D7F38B-95A2-4586-AA66-84B514B81ADE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5389C2A8-CD03-4B79-B4B3-23E7B3A6F1C1}

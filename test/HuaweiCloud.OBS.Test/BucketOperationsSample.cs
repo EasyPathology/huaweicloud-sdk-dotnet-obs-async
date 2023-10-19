@@ -13,8 +13,9 @@
 //----------------------------------------------------------------------------------*/
 using System;
 using System.Collections.Generic;
+using CommunityToolkit.Mvvm.ComponentModel;
 using OBS;
-using OBS.Extensions;
+
 using OBS.Model;
 
 namespace ObsDemo
