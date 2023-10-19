@@ -29,7 +29,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Internal\IConvertor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Internal\IHeaders.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Internal\IParser.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Internal\Log\LoggerMgr.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Internal\Logging\LoggerMgr.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Internal\Negotiation\AuthTypeCache.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Internal\Negotiation\GetApiVersionRequest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Internal\Negotiation\GetApiVersionResponse.cs" />
