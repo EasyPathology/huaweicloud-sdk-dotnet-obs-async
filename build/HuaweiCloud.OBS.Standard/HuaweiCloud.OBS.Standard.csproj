@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <ProjectGuid>{96DAED81-80C1-4DF1-8731-6A93CD01F93E}</ProjectGuid>
+        <RootNamespace>OBS</RootNamespace>
+        <LangVersion>preview</LangVersion>
+        <Title>orage_OBS_.NET.dll</Title>
+        <Description>OBS SDK for C#</Description>
+        <Product>OBS SDK for C#</Product>
+        <AssemblyName>HuaweiCloud.OBS</AssemblyName>
+        <FileAlignment>512</FileAlignment>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="log4net" Version="2.0.15" />
+    </ItemGroup>
+
+    <Import Project="..\..\src\Shared\HuaweiCloud.OBS.Shared.projitems" Label="Shared" />
+
+    <Import Project="..\..\src\Shared\Extensions\Async\HuaweiCloud.OBS.Shared.Extensions.Async.projitems" Label="Shared" />
+
+</Project>

@@ -1,0 +1,62 @@
+﻿<#@ template language="C#" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#
+#nullable enable
+    Tuple<string, string?> Gen(string item1, string? item2) => Tuple.Create(item1, item2);
+    const string Namespace = "OBS.Extensions";
+    var methods = new List<Tuple<string,string?>>
+    {
+        Gen("AppendObject",null),
+        Gen("AbortMultipartUpload",null),
+        Gen("CopyObject",null),
+        Gen("CopyPart",null),
+        Gen("CompleteMultipartUpload",null),
+        Gen("DeleteObject",null),
+        Gen("DeleteObjects",null),
+        Gen("GetObject",null),
+        Gen("GetObjectAcl",null),
+        Gen("GetObjectMetadata",null),
+        Gen("HeadObject","bool"),
+        Gen("InitiateMultipartUpload",null),
+        Gen("ListParts",null),
+        Gen("PutObject",null),
+        Gen("RestoreObject",null),
+        Gen("SetObjectAcl",null),
+        Gen("UploadPart",null),
+    };    
+#>
+using OBS;
+using OBS.Model;
+
+namespace <#=Namespace#>;
+
+public static partial class AsyncExtension
+{
+<# 
+foreach(var (name,response) in methods)
+{
+    var arg = $"{name}Request";
+    var ret = response ?? $"{name}Response";
+#>
+	public static Task<<#=ret#>> <#=name#>Async(this ObsClient client, 
+        <#=arg#> request, 
+        object state, 
+        CancellationToken? token = null)
+	{
+        var source = new TaskCompletionSource<<#=ret#>>();
+        var ar     = client.Begin<#=name#>(request, ar => { source.SetResult(client.End<#=name#>(ar)); }, state);
+        token?.Register(() =>
+        {
+            client.End<#=name#>(ar);
+            source.SetCanceled();
+        });
+
+        return source.Task;
+	}
+
+<#
+}
+#>
+}

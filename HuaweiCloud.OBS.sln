@@ -1,5 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34202.233
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_", "_", "{8D2EC253-18F1-444D-8284-A6B664D1EEC3}"
 	ProjectSection(SolutionItems) = preProject
 		LICENSE = LICENSE
@@ -8,13 +11,25 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_", "_", "{8D2EC253-18F1-44
 		README_CN.MD = README_CN.MD
 	EndProjectSection
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "HuaweiCloud.OBS.Shared", "HuaweiCloud.OBS.Shared\HuaweiCloud.OBS.Shared.shproj", "{2E44A80D-3FC8-4CF5-BEBE-44D48F2CA0C1}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "HuaweiCloud.OBS.Shared", "src\Shared\HuaweiCloud.OBS.Shared.shproj", "{2E44A80D-3FC8-4CF5-BEBE-44D48F2CA0C1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HuaweiCloud.OBS.Standard", "HuaweiCloud.OBS.Standard\HuaweiCloud.OBS.Standard.csproj", "{B8E25021-8895-40B4-8615-9406761B9BB2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HuaweiCloud.OBS.Standard", "build\HuaweiCloud.OBS.Standard\HuaweiCloud.OBS.Standard.csproj", "{96DAED81-80C1-4DF1-8731-6A93CD01F93E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HuaweiCloud.OBS.NETCore2_0", "HuaweiCloud.OBS.NETCore2_0\HuaweiCloud.OBS.NETCore2_0.csproj", "{43119376-F725-413A-ACDC-C219DA0D8108}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HuaweiCloud.OBS.NETCore2_0", "build\HuaweiCloud.OBS.NETCore2_0\HuaweiCloud.OBS.NETCore2_0.csproj", "{43119376-F725-413A-ACDC-C219DA0D8108}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HuaweiCloud.OBS.Test", "HuaweiCloud.OBS.Test\HuaweiCloud.OBS.Test.csproj", "{90322B06-141E-4363-9C5F-EEB0C9525EFD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HuaweiCloud.OBS.Test", "test\HuaweiCloud.OBS.Test\HuaweiCloud.OBS.Test.csproj", "{90322B06-141E-4363-9C5F-EEB0C9525EFD}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "HuaweiCloud.OBS.Shared.Extensions.Async", "src\Shared\Extensions\Async\HuaweiCloud.OBS.Shared.Extensions.Async.shproj", "{658B9C84-A958-4A94-8032-2DD10B82CB28}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HuaweiCloud.OBS.Extensions.Async", "build\HuaweiCloud.OBS.Extensions.Async\HuaweiCloud.OBS.Extensions.Async.csproj", "{01879D56-227D-4E5F-AAA6-451B6B82D231}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{BBB9D721-B9BA-48B8-A3C8-FDFB9463543B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{A9D7F38B-95A2-4586-AA66-84B514B81ADE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Extensions", "Extensions", "{A826A595-B9C1-441D-BE01-1CDF21E0EA42}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{7CDC11F2-C8FA-441E-A65E-ECD0C9545133}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -22,10 +37,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{B8E25021-8895-40B4-8615-9406761B9BB2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B8E25021-8895-40B4-8615-9406761B9BB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B8E25021-8895-40B4-8615-9406761B9BB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B8E25021-8895-40B4-8615-9406761B9BB2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{96DAED81-80C1-4DF1-8731-6A93CD01F93E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{96DAED81-80C1-4DF1-8731-6A93CD01F93E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{96DAED81-80C1-4DF1-8731-6A93CD01F93E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{96DAED81-80C1-4DF1-8731-6A93CD01F93E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{43119376-F725-413A-ACDC-C219DA0D8108}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{43119376-F725-413A-ACDC-C219DA0D8108}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{43119376-F725-413A-ACDC-C219DA0D8108}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -34,5 +49,31 @@ Global
 		{90322B06-141E-4363-9C5F-EEB0C9525EFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{90322B06-141E-4363-9C5F-EEB0C9525EFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{90322B06-141E-4363-9C5F-EEB0C9525EFD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{01879D56-227D-4E5F-AAA6-451B6B82D231}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{01879D56-227D-4E5F-AAA6-451B6B82D231}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{01879D56-227D-4E5F-AAA6-451B6B82D231}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{01879D56-227D-4E5F-AAA6-451B6B82D231}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{2E44A80D-3FC8-4CF5-BEBE-44D48F2CA0C1} = {BBB9D721-B9BA-48B8-A3C8-FDFB9463543B}
+		{96DAED81-80C1-4DF1-8731-6A93CD01F93E} = {A9D7F38B-95A2-4586-AA66-84B514B81ADE}
+		{43119376-F725-413A-ACDC-C219DA0D8108} = {A9D7F38B-95A2-4586-AA66-84B514B81ADE}
+		{90322B06-141E-4363-9C5F-EEB0C9525EFD} = {7CDC11F2-C8FA-441E-A65E-ECD0C9545133}
+		{658B9C84-A958-4A94-8032-2DD10B82CB28} = {A826A595-B9C1-441D-BE01-1CDF21E0EA42}
+		{01879D56-227D-4E5F-AAA6-451B6B82D231} = {A9D7F38B-95A2-4586-AA66-84B514B81ADE}
+		{A826A595-B9C1-441D-BE01-1CDF21E0EA42} = {BBB9D721-B9BA-48B8-A3C8-FDFB9463543B}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5389C2A8-CD03-4B79-B4B3-23E7B3A6F1C1}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		src\Shared\HuaweiCloud.OBS.Shared.projitems*{2e44a80d-3fc8-4cf5-bebe-44d48f2ca0c1}*SharedItemsImports = 13
+		src\Shared\HuaweiCloud.OBS.Shared.projitems*{43119376-f725-413a-acdc-c219da0d8108}*SharedItemsImports = 5
+		src\Shared\Extensions\Async\HuaweiCloud.OBS.Shared.Extensions.Async.projitems*{658b9c84-a958-4a94-8032-2dd10b82cb28}*SharedItemsImports = 13
+		src\Shared\Extensions\Async\HuaweiCloud.OBS.Shared.Extensions.Async.projitems*{96daed81-80c1-4df1-8731-6a93cd01f93e}*SharedItemsImports = 5
+		src\Shared\HuaweiCloud.OBS.Shared.projitems*{96daed81-80c1-4df1-8731-6a93cd01f93e}*SharedItemsImports = 5
 	EndGlobalSection
 EndGlobal
