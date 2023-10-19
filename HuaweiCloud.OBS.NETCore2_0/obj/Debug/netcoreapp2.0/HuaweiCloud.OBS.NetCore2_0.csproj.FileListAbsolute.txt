@@ -1,0 +1,11 @@
+D:\Shared\WorkSpace\Git\huaweicloud-sdk-dotnet-obs-async\HuaweiCloud.OBS.NetCore2_0\obj\Debug\netcoreapp2.0\HuaweiCloud.OBS.NetCore2_0.csproj.AssemblyReference.cache
+D:\Shared\WorkSpace\Git\huaweicloud-sdk-dotnet-obs-async\HuaweiCloud.OBS.NetCore2_0\obj\Debug\netcoreapp2.0\HuaweiCloud.OBS.NetCore2_0.GeneratedMSBuildEditorConfig.editorconfig
+D:\Shared\WorkSpace\Git\huaweicloud-sdk-dotnet-obs-async\HuaweiCloud.OBS.NetCore2_0\obj\Debug\netcoreapp2.0\HuaweiCloud.OBS.NetCore2_0.AssemblyInfoInputs.cache
+D:\Shared\WorkSpace\Git\huaweicloud-sdk-dotnet-obs-async\HuaweiCloud.OBS.NetCore2_0\obj\Debug\netcoreapp2.0\HuaweiCloud.OBS.NetCore2_0.AssemblyInfo.cs
+D:\Shared\WorkSpace\Git\huaweicloud-sdk-dotnet-obs-async\HuaweiCloud.OBS.NetCore2_0\obj\Debug\netcoreapp2.0\HuaweiCloud.OBS.NetCore2_0.csproj.CoreCompileInputs.cache
+D:\Shared\WorkSpace\Git\huaweicloud-sdk-dotnet-obs-async\HuaweiCloud.OBS.NetCore2_0\obj\Debug\netcoreapp2.0\HuaweiCloud.OBS.NetCore2_0.sourcelink.json
+D:\Shared\WorkSpace\Git\huaweicloud-sdk-dotnet-obs-async\HuaweiCloud.OBS.NetCore2_0\bin\Debug\netcoreapp2.0\HuaweiCloud.OBS.NetCore2_0.deps.json
+D:\Shared\WorkSpace\Git\huaweicloud-sdk-dotnet-obs-async\HuaweiCloud.OBS.NetCore2_0\bin\Debug\netcoreapp2.0\HuaweiCloud.OBS.NetCore2_0.dll
+D:\Shared\WorkSpace\Git\huaweicloud-sdk-dotnet-obs-async\HuaweiCloud.OBS.NetCore2_0\bin\Debug\netcoreapp2.0\HuaweiCloud.OBS.NetCore2_0.pdb
+D:\Shared\WorkSpace\Git\huaweicloud-sdk-dotnet-obs-async\HuaweiCloud.OBS.NetCore2_0\obj\Debug\netcoreapp2.0\HuaweiCloud.OBS.NetCore2_0.dll
+D:\Shared\WorkSpace\Git\huaweicloud-sdk-dotnet-obs-async\HuaweiCloud.OBS.NetCore2_0\obj\Debug\netcoreapp2.0\HuaweiCloud.OBS.NetCore2_0.pdb

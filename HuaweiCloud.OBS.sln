@@ -1,0 +1,38 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_", "_", "{8D2EC253-18F1-444D-8284-A6B664D1EEC3}"
+	ProjectSection(SolutionItems) = preProject
+		LICENSE = LICENSE
+		Notice.MD = Notice.MD
+		README.md = README.md
+		README_CN.MD = README_CN.MD
+	EndProjectSection
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "HuaweiCloud.OBS.Shared", "HuaweiCloud.OBS.Shared\HuaweiCloud.OBS.Shared.shproj", "{2E44A80D-3FC8-4CF5-BEBE-44D48F2CA0C1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HuaweiCloud.OBS.Standard", "HuaweiCloud.OBS.Standard\HuaweiCloud.OBS.Standard.csproj", "{B8E25021-8895-40B4-8615-9406761B9BB2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HuaweiCloud.OBS.NETCore2_0", "HuaweiCloud.OBS.NETCore2_0\HuaweiCloud.OBS.NETCore2_0.csproj", "{43119376-F725-413A-ACDC-C219DA0D8108}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HuaweiCloud.OBS.Test", "HuaweiCloud.OBS.Test\HuaweiCloud.OBS.Test.csproj", "{90322B06-141E-4363-9C5F-EEB0C9525EFD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B8E25021-8895-40B4-8615-9406761B9BB2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8E25021-8895-40B4-8615-9406761B9BB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B8E25021-8895-40B4-8615-9406761B9BB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8E25021-8895-40B4-8615-9406761B9BB2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{43119376-F725-413A-ACDC-C219DA0D8108}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{43119376-F725-413A-ACDC-C219DA0D8108}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{43119376-F725-413A-ACDC-C219DA0D8108}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{43119376-F725-413A-ACDC-C219DA0D8108}.Release|Any CPU.Build.0 = Release|Any CPU
+		{90322B06-141E-4363-9C5F-EEB0C9525EFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90322B06-141E-4363-9C5F-EEB0C9525EFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90322B06-141E-4363-9C5F-EEB0C9525EFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90322B06-141E-4363-9C5F-EEB0C9525EFD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

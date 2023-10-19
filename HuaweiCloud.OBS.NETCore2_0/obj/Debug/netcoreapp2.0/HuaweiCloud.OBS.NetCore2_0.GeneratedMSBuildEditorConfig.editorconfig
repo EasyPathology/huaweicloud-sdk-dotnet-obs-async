@@ -1,0 +1,5 @@
+is_global = true
+build_property.RootNamespace = HuaweiCloud.OBS.NETCore2_0
+build_property.ProjectDir = D:\Shared\WorkSpace\Git\huaweicloud-sdk-dotnet-obs-async\HuaweiCloud.OBS.NETCore2_0\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 

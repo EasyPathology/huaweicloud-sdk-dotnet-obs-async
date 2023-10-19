@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v2.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v2.0": {
+      "HuaweiCloud.OBS.NETCore2_0/3.0.3": {
+        "runtime": {
+          "HuaweiCloud.OBS.NETCore2_0.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "HuaweiCloud.OBS.NETCore2_0/3.0.3": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
