@@ -18,8 +18,8 @@
       <PackageReference Include="log4net" Version="2.0.15" />
     </ItemGroup>
 
-    <Import Project="..\..\src\Shared\HuaweiCloud.OBS.Shared.projitems" Label="Shared" />
+  
 
-    <Import Project="..\..\src\Shared\Extensions\Async\HuaweiCloud.OBS.Shared.Extensions.Async.projitems" Label="Shared" />
+    <Import Project="..\..\src\Shared\HuaweiCloud.OBS.Shared.projitems" Label="Shared" />
 
 </Project>

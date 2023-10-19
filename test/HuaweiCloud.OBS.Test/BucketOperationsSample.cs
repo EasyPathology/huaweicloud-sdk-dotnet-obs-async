@@ -14,6 +14,7 @@
 using System;
 using System.Collections.Generic;
 using OBS;
+using OBS.Extensions;
 using OBS.Model;
 
 namespace ObsDemo
@@ -40,7 +41,7 @@ namespace ObsDemo
         public static void Test()
         {
             client = new ObsClient(AK, SK, endpoint);
-
+            
             //create bucket
             CreateBucket();
 

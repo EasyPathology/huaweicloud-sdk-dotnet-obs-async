@@ -20,6 +20,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference OutputItemType="Analyzer" Include="..\..\build\HuaweiCloud.OBS.Extensions.Async\HuaweiCloud.OBS.Extensions.Async.csproj" />
       <ProjectReference Include="..\..\build\HuaweiCloud.OBS.Standard\HuaweiCloud.OBS.Standard.csproj" />
     </ItemGroup>
 

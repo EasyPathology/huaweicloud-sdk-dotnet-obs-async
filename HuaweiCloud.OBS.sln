@@ -73,7 +73,6 @@ Global
 		src\Shared\HuaweiCloud.OBS.Shared.projitems*{2e44a80d-3fc8-4cf5-bebe-44d48f2ca0c1}*SharedItemsImports = 13
 		src\Shared\HuaweiCloud.OBS.Shared.projitems*{43119376-f725-413a-acdc-c219da0d8108}*SharedItemsImports = 5
 		src\Shared\Extensions\Async\HuaweiCloud.OBS.Shared.Extensions.Async.projitems*{658b9c84-a958-4a94-8032-2dd10b82cb28}*SharedItemsImports = 13
-		src\Shared\Extensions\Async\HuaweiCloud.OBS.Shared.Extensions.Async.projitems*{96daed81-80c1-4df1-8731-6a93cd01f93e}*SharedItemsImports = 5
 		src\Shared\HuaweiCloud.OBS.Shared.projitems*{96daed81-80c1-4df1-8731-6a93cd01f93e}*SharedItemsImports = 5
 	EndGlobalSection
 EndGlobal
