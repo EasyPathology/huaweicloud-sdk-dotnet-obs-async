@@ -146,10 +146,10 @@ namespace OBS
         /// <returns>Response to a part upload request</returns>
         public UploadPartResponse EndUploadPart(IAsyncResult ar)
         {
-            UploadPartResponse response = this.EndDoRequest<UploadPartRequest, UploadPartResponse>(ar);
-            HttpObsAsyncResult result = ar as HttpObsAsyncResult;
+            var response = this.EndDoRequest<UploadPartRequest, UploadPartResponse>(ar);
+            var result = ar as HttpObsAsyncResult;
             object[] additionalState = result.AdditionalState as object[];
-            UploadPartRequest request = additionalState[0] as UploadPartRequest;
+            var request = additionalState[0] as UploadPartRequest;
             response.PartNumber = request.PartNumber;
             return response;
         }
@@ -198,10 +198,10 @@ namespace OBS
         /// <returns> Response to a part copy request</returns>
         public CopyPartResponse EndCopyPart(IAsyncResult ar)
         {
-            CopyPartResponse response = this.EndDoRequest<CopyPartRequest, CopyPartResponse>(ar);
-            HttpObsAsyncResult result = ar as HttpObsAsyncResult;
+            var response = this.EndDoRequest<CopyPartRequest, CopyPartResponse>(ar);
+            var result = ar as HttpObsAsyncResult;
             object[] additionalState = result.AdditionalState as object[];
-            CopyPartRequest request = additionalState[0] as CopyPartRequest;
+            var request = additionalState[0] as CopyPartRequest;
             response.PartNumber = request.PartNumber;
             return response;
         }
@@ -232,10 +232,10 @@ namespace OBS
         /// <returns>Response to an object download request</returns>
         public GetObjectResponse EndGetObject(IAsyncResult ar)
         {
-            GetObjectResponse response = this.EndDoRequest<GetObjectRequest, GetObjectResponse>(ar);
-            HttpObsAsyncResult result = ar as HttpObsAsyncResult;
+            var response = this.EndDoRequest<GetObjectRequest, GetObjectResponse>(ar);
+            var result = ar as HttpObsAsyncResult;
             object[] additionalState = result.AdditionalState as object[];
-            GetObjectRequest request = additionalState[0] as GetObjectRequest;
+            var request = additionalState[0] as GetObjectRequest;
             response.BucketName = request.BucketName;
             response.ObjectKey = request.ObjectKey;
             return response;
@@ -267,10 +267,10 @@ namespace OBS
         /// <returns>Response to a request for obtaining object properties</returns>
         public GetObjectMetadataResponse EndGetObjectMetadata(IAsyncResult ar)
         {
-            GetObjectMetadataResponse response = this.EndDoRequest<GetObjectMetadataRequest, GetObjectMetadataResponse>(ar);
-            HttpObsAsyncResult result = ar as HttpObsAsyncResult;
+            var response = this.EndDoRequest<GetObjectMetadataRequest, GetObjectMetadataResponse>(ar);
+            var result = ar as HttpObsAsyncResult;
             object[] additionalState = result.AdditionalState as object[];
-            GetObjectMetadataRequest request = additionalState[0] as GetObjectMetadataRequest;
+            var request = additionalState[0] as GetObjectMetadataRequest;
             response.BucketName = request.BucketName;
             response.ObjectKey = request.ObjectKey;
             return response;

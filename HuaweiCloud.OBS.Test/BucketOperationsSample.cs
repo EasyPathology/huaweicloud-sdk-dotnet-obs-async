@@ -174,11 +174,11 @@ namespace ObsDemo
         {
             try
             {
-                CreateBucketRequest request = new CreateBucketRequest()
+                var request = new CreateBucketRequest()
                 {
                     BucketName = bucketName
                 };
-                CreateBucketResponse response = client.CreateBucket(request);
+                var response = client.CreateBucket(request);
 
                 Console.WriteLine("Create bucket response: {0}", response.StatusCode);
             }
@@ -195,11 +195,11 @@ namespace ObsDemo
         {
             try
             {
-                HeadBucketRequest request = new HeadBucketRequest()
+                var request = new HeadBucketRequest()
                 {
                     BucketName = bucketName
                 };
-                bool response = client.HeadBucket(request);
+                var response = client.HeadBucket(request);
 
                 Console.WriteLine("Head bucket response: {0}", response);
             }
@@ -216,10 +216,10 @@ namespace ObsDemo
         {
             try
             {
-                ListBucketsRequest request = new ListBucketsRequest();
+                var request = new ListBucketsRequest();
 
-                ListBucketsResponse response = client.ListBuckets(request);
-                foreach (ObsBucket bucket in response.Buckets)
+                var response = client.ListBuckets(request);
+                foreach (var bucket in response.Buckets)
                 {
                     Console.WriteLine("Bucket name is : {0}", bucket.BucketName);
                     Console.WriteLine("Bucket creationDate is: {0}", bucket.CreationDate.ToString());
@@ -238,11 +238,11 @@ namespace ObsDemo
         {
             try
             {
-                DeleteBucketRequest request = new DeleteBucketRequest()
+                var request = new DeleteBucketRequest()
                 {
                     BucketName = bucketName
                 };
-                DeleteBucketResponse response = client.DeleteBucket(request);
+                var response = client.DeleteBucket(request);
                 Console.WriteLine("Delete bucket response: {0}" + response.StatusCode);
             }
             catch (ObsException ex)
@@ -258,13 +258,13 @@ namespace ObsDemo
         {
             try
             {
-                ListObjectsRequest request = new ListObjectsRequest()
+                var request = new ListObjectsRequest()
                 {
                     BucketName = bucketName
                 };
-                ListObjectsResponse response = client.ListObjects(request);
+                var response = client.ListObjects(request);
                 Console.WriteLine("Listing Objects response: {0}" + response.StatusCode);
-                foreach (ObsObject entry in response.ObsObjects)
+                foreach (var entry in response.ObsObjects)
                 {
                     Console.WriteLine("key = {0} size = {1}", entry.ObjectKey, entry.Size);
                 }
@@ -282,7 +282,7 @@ namespace ObsDemo
         {
             try
             {
-                ListVersionsRequest request = new ListVersionsRequest()
+                var request = new ListVersionsRequest()
                 {
                     BucketName = bucketName,
                     MaxKeys = 10,
@@ -290,10 +290,10 @@ namespace ObsDemo
                     Prefix = "prefix",
                     KeyMarker = "keyMarker"
                 };
-                ListVersionsResponse response = client.ListVersions(request);
+                var response = client.ListVersions(request);
                 Console.WriteLine("ListVersions response: {0}", response.StatusCode);
 
-                foreach (ObsObjectVersion objectVersion in response.Versions)
+                foreach (var objectVersion in response.Versions)
                 {
                     Console.WriteLine("ListVersions response Versions Key: {0}", objectVersion.ObjectKey);
                     Console.WriteLine("ListVersions response Versions VersionId: {0}", objectVersion.VersionId);
@@ -315,13 +315,13 @@ namespace ObsDemo
                 List<string> headers = new List<string>();
                 headers.Add("x-obs-header");
 
-                GetBucketMetadataRequest request = new GetBucketMetadataRequest()
+                var request = new GetBucketMetadataRequest()
                 {
                     BucketName = bucketName,
                     Origin = "http://www.a.com",
                     AccessControlRequestHeaders = headers,
                 };
-                GetBucketMetadataResponse response = client.GetBucketMetadata(request);
+                var response = client.GetBucketMetadata(request);
                 Console.WriteLine("GetBucketMetadata response: {0}", response.StatusCode);
                 foreach (var header in response.Headers)
                 {
@@ -341,11 +341,11 @@ namespace ObsDemo
         {
             try
             {
-                GetBucketLocationRequest request = new GetBucketLocationRequest()
+                var request = new GetBucketLocationRequest()
                 {
                     BucketName = bucketName
                 };
-                GetBucketLocationResponse response = client.GetBucketLocation(request);
+                var response = client.GetBucketLocation(request);
 
                 Console.WriteLine("Get bucket location response: {0}", response.StatusCode);
                 Console.WriteLine("Bucket Location: {0}", response.Location);
@@ -363,11 +363,11 @@ namespace ObsDemo
         {
             try
             {
-                GetBucketStorageInfoRequest request = new GetBucketStorageInfoRequest()
+                var request = new GetBucketStorageInfoRequest()
                 {
                     BucketName = bucketName
                 };
-                GetBucketStorageInfoResponse response = client.GetBucketStorageInfo(request);
+                var response = client.GetBucketStorageInfo(request);
                 Console.WriteLine("GetBucketStorageInfo response response: " + response.StatusCode);
                 Console.WriteLine("Object Number={0}", response.ObjectNumber);
                 Console.WriteLine("Size={0}", response.Size);
@@ -385,12 +385,12 @@ namespace ObsDemo
         {
             try
             {
-                SetBucketQuotaRequest request = new SetBucketQuotaRequest()
+                var request = new SetBucketQuotaRequest()
                 {
                     BucketName = bucketName,
                     StorageQuota = 0
                 };
-                SetBucketQuotaResponse response = client.SetBucketQuota(request);
+                var response = client.SetBucketQuota(request);
                 Console.WriteLine("Set bucket Quota response: {0}", response.StatusCode);
             }
             catch (ObsException ex)
@@ -406,11 +406,11 @@ namespace ObsDemo
         {
             try
             {
-                GetBucketQuotaRequest request = new GetBucketQuotaRequest()
+                var request = new GetBucketQuotaRequest()
                 {
                     BucketName = bucketName
                 };
-                GetBucketQuotaResponse response = client.GetBucketQuota(request);
+                var response = client.GetBucketQuota(request);
                 Console.WriteLine("Get bucket Quota response: {0}" + response.StatusCode);
                 Console.WriteLine("Bucket StorageQuota: {0}", response.StorageQuota);
             }
@@ -428,14 +428,14 @@ namespace ObsDemo
             try
             {
 
-                Owner owner = new Owner
+                var owner = new Owner
                 {
                     DisplayName = "ownername",
                     Id = "ownerid",
                 };
 
 
-                Grant grant = new Grant
+                var grant = new Grant
                 {
 
                     Grantee = new CanonicalGrantee()
@@ -449,19 +449,19 @@ namespace ObsDemo
 
                 List<Grant> Grants = new List<Grant>();
                 Grants.Add(grant);
-                AccessControlList accessControlList = new AccessControlList
+                var accessControlList = new AccessControlList
                 {
                     Owner = owner,
                     Grants = Grants,
                 };
 
-                SetBucketAclRequest request = new SetBucketAclRequest()
+                var request = new SetBucketAclRequest()
                 {
                     BucketName = bucketName,
                     AccessControlList = accessControlList
                 };
 
-                SetBucketAclResponse response = client.SetBucketAcl(request);
+                var response = client.SetBucketAcl(request);
 
                 Console.WriteLine("SetBucketACL response: {0}", response.StatusCode);
             }
@@ -478,13 +478,13 @@ namespace ObsDemo
         {
             try
             {
-                GetBucketAclRequest request = new GetBucketAclRequest()
+                var request = new GetBucketAclRequest()
                 {
                     BucketName = bucketName
                 };
-                GetBucketAclResponse response = client.GetBucketAcl(request);
+                var response = client.GetBucketAcl(request);
                 Console.WriteLine("Get bucket acl response: {0}", response.StatusCode);
-                foreach (Grant grant in response.AccessControlList.Grants)
+                foreach (var grant in response.AccessControlList.Grants)
                 {
                     Console.WriteLine("Grant permission: {0}", grant.Permission);
                 }
@@ -502,27 +502,31 @@ namespace ObsDemo
         {
             try
             {
-                SetBucketLifecycleRequest request = new SetBucketLifecycleRequest()
+                var request = new SetBucketLifecycleRequest()
                 {
                     BucketName = bucketName,
                     Configuration = new LifecycleConfiguration(),
                 };
 
-                LifecycleRule rule1 = new LifecycleRule();
-                rule1.Id = "rule1";
-                rule1.Prefix = "prefix";
-                rule1.Status = RuleStatusEnum.Enabled;
+                var rule1 = new LifecycleRule
+                {
+                    Id         = "rule1",
+                    Prefix     = "prefix",
+                    Status     = RuleStatusEnum.Enabled,
+                    Expiration =
+                    {
+                        Days = 30
+                    }
+                };
 
-                rule1.Expiration.Days = 30;
-
-                Transition transition = new Transition()
+                var transition = new Transition()
                 {
                     Date = new DateTime(2018, 12, 30, 0, 0, 0),
                     StorageClass = StorageClassEnum.Warm
                 };
                 rule1.Transitions.Add(transition);
 
-                NoncurrentVersionTransition noncurrentVersionTransition = new NoncurrentVersionTransition()
+                var noncurrentVersionTransition = new NoncurrentVersionTransition()
                 {
                     NoncurrentDays = 30,
                     StorageClass = StorageClassEnum.Cold,
@@ -533,7 +537,7 @@ namespace ObsDemo
 
                 request.Configuration.Rules.Add(rule1);
 
-                SetBucketLifecycleResponse response = client.SetBucketLifecycle(request);
+                var response = client.SetBucketLifecycle(request);
 
                 Console.WriteLine("Set bucket lifecycle response: {0}", response.StatusCode);
             }
@@ -550,14 +554,14 @@ namespace ObsDemo
         {
             try
             {
-                GetBucketLifecycleRequest request = new GetBucketLifecycleRequest()
+                var request = new GetBucketLifecycleRequest()
                 {
                     BucketName = bucketName,
                 };
-                GetBucketLifecycleResponse response = client.GetBucketLifecycle(request);
+                var response = client.GetBucketLifecycle(request);
                 Console.WriteLine("Get bucket lifecycle response: {0}", response.StatusCode);
 
-                foreach (LifecycleRule lifecycleRule in response.Configuration.Rules)
+                foreach (var lifecycleRule in response.Configuration.Rules)
                 {
                     Console.WriteLine("Lifecycle rule id: {0}", lifecycleRule.Id);
                     Console.WriteLine("Lifecycle rule prefix: {0}", lifecycleRule.Prefix);
@@ -572,7 +576,7 @@ namespace ObsDemo
                     }
                     if (null != lifecycleRule.Transitions)
                     {
-                        foreach (Transition transition in lifecycleRule.Transitions)
+                        foreach (var transition in lifecycleRule.Transitions)
                         {
                             Console.WriteLine("Transition Days: {0}", transition.Days.ToString());
                             Console.WriteLine("Transition StorageClass: {0}", transition.StorageClass);
@@ -580,7 +584,7 @@ namespace ObsDemo
                     }
                     if (null != lifecycleRule.NoncurrentVersionTransitions)
                     {
-                        foreach (NoncurrentVersionTransition nontransition in lifecycleRule.NoncurrentVersionTransitions)
+                        foreach (var nontransition in lifecycleRule.NoncurrentVersionTransitions)
                         {
                             Console.WriteLine("NoncurrentVersionTransition NoncurrentDays: {0}", nontransition.NoncurrentDays.ToString());
                             Console.WriteLine("NoncurrentVersionTransition StorageClass: {0}", nontransition.StorageClass);
@@ -601,11 +605,11 @@ namespace ObsDemo
         {
             try
             {
-                DeleteBucketLifecycleRequest request = new DeleteBucketLifecycleRequest()
+                var request = new DeleteBucketLifecycleRequest()
                 {
                     BucketName = bucketName,
                 };
-                DeleteBucketLifecycleResponse response = client.DeleteBucketLifecycle(request);
+                var response = client.DeleteBucketLifecycle(request);
                 Console.WriteLine("Delete bucket lifecycle response: {0}", response.StatusCode);
             }
             catch (ObsException ex)
@@ -621,27 +625,35 @@ namespace ObsDemo
         {
             try
             {
-                SetBucketWebsiteRequest request = new SetBucketWebsiteRequest();
-                request.BucketName = bucketName;
-                request.Configuration = new WebsiteConfiguration();
+                var request = new SetBucketWebsiteRequest
+                {
+                    BucketName    = bucketName,
+                    Configuration = new WebsiteConfiguration
+                    {
+                        IndexDocument = "index.html",
+                        ErrorDocument = "error.html"
+                    }
+                };
 
-                request.Configuration.IndexDocument = "index.html";
-
-                request.Configuration.ErrorDocument = "error.html";
-
-                RoutingRule routingRule = new RoutingRule();
-                routingRule.Redirect = new Redirect();
-                routingRule.Redirect.HostName = "www.example.com";
-                routingRule.Redirect.HttpRedirectCode = "305";
-                routingRule.Redirect.Protocol = ProtocolEnum.Http;
-                routingRule.Redirect.ReplaceKeyPrefixWith = "replacekeyprefix";
-                routingRule.Condition = new Condition();
-                routingRule.Condition.HttpErrorCodeReturnedEquals = "404";
-                routingRule.Condition.KeyPrefixEquals = "keyprefix";
+                var routingRule = new RoutingRule
+                {
+                    Redirect = new Redirect
+                    {
+                        HostName             = "www.example.com",
+                        HttpRedirectCode     = "305",
+                        Protocol             = ProtocolEnum.Http,
+                        ReplaceKeyPrefixWith = "replacekeyprefix"
+                    },
+                    Condition = new Condition
+                    {
+                        HttpErrorCodeReturnedEquals = "404",
+                        KeyPrefixEquals             = "keyprefix"
+                    }
+                };
                 request.Configuration.RoutingRules = new List<RoutingRule>();
                 request.Configuration.RoutingRules.Add(routingRule);
 
-                SetBucketWebsiteResponse response = client.SetBucketWebsiteConfiguration(request);
+                var response = client.SetBucketWebsiteConfiguration(request);
                 Console.WriteLine("Set bucket website response: {0}", response.StatusCode);
             }
             catch (ObsException ex)
@@ -657,11 +669,11 @@ namespace ObsDemo
         {
             try
             {
-                GetBucketWebsiteRequest request = new GetBucketWebsiteRequest()
+                var request = new GetBucketWebsiteRequest()
                 {
                     BucketName = bucketName
                 };
-                GetBucketWebsiteResponse response = client.GetBucketWebsite(request);
+                var response = client.GetBucketWebsite(request);
 
                 Console.WriteLine("GetBucketWebsite response: {0}", response.StatusCode);
                 Console.WriteLine("GetBucketWebsite website configuration error document: {0}", response.Configuration.ErrorDocument);
@@ -681,11 +693,11 @@ namespace ObsDemo
         {
             try
             {
-                DeleteBucketWebsiteRequest request = new DeleteBucketWebsiteRequest()
+                var request = new DeleteBucketWebsiteRequest()
                 {
                     BucketName = bucketName
                 };
-                DeleteBucketWebsiteResponse response = client.DeleteBucketWebsite(request);
+                var response = client.DeleteBucketWebsite(request);
                 Console.WriteLine("DeleteBucketWebsite response: {0}", response.StatusCode);
             }
             catch (ObsException ex)
@@ -701,16 +713,16 @@ namespace ObsDemo
         {
             try
             {
-                VersioningConfiguration versionConfig = new VersioningConfiguration()
+                var versionConfig = new VersioningConfiguration()
                 {
                     Status = VersionStatusEnum.Enabled
                 };
-                SetBucketVersioningRequest request = new SetBucketVersioningRequest()
+                var request = new SetBucketVersioningRequest()
                 {
                     BucketName = bucketName,
                     Configuration = versionConfig
                 };
-                SetBucketVersioningResponse response = client.SetBucketVersioning(request);
+                var response = client.SetBucketVersioning(request);
 
                 Console.WriteLine("PutBucketVersioning response: {0}", response.StatusCode);
             }
@@ -727,11 +739,11 @@ namespace ObsDemo
         {
             try
             {
-                GetBucketVersioningRequest request = new GetBucketVersioningRequest()
+                var request = new GetBucketVersioningRequest()
                 {
                     BucketName = bucketName
                 };
-                GetBucketVersioningResponse response = client.GetBucketVersioning(request);
+                var response = client.GetBucketVersioning(request);
 
                 Console.WriteLine("GetBucketVersioning response: {0}", response.StatusCode);
                 Console.WriteLine("GetBucketVersioning version status: {0}", response.Configuration.Status);
@@ -749,10 +761,12 @@ namespace ObsDemo
         {
             try
             {
-                CorsConfiguration corsConfig = new CorsConfiguration();
+                var corsConfig = new CorsConfiguration();
 
-                CorsRule rule = new CorsRule();
-                rule.Id = "20180520";
+                var rule = new CorsRule
+                {
+                    Id = "20180520"
+                };
                 rule.AllowedOrigins.Add("http://www.a.com");
                 rule.AllowedOrigins.Add("http://www.b.com");
                 rule.AllowedHeaders.Add("Authorization");
@@ -767,13 +781,13 @@ namespace ObsDemo
 
                 corsConfig.Rules.Add(rule);
 
-                SetBucketCorsRequest request = new SetBucketCorsRequest()
+                var request = new SetBucketCorsRequest()
                 {
                     BucketName = bucketName,
                     Configuration = corsConfig,
                 };
 
-                SetBucketCorsResponse response = client.SetBucketCors(request);
+                var response = client.SetBucketCors(request);
                 Console.WriteLine("SetBucketCors response: {0}", response.StatusCode);
             }
             catch (ObsException ex)
@@ -789,11 +803,11 @@ namespace ObsDemo
         {
             try
             {
-                GetBucketCorsRequest request = new GetBucketCorsRequest()
+                var request = new GetBucketCorsRequest()
                 {
                     BucketName = bucketName
                 };
-                GetBucketCorsResponse response = client.GetBucketCors(request);
+                var response = client.GetBucketCors(request);
 
                 Console.WriteLine("GetBucketCors response: {0}", response.StatusCode);
 
@@ -832,11 +846,11 @@ namespace ObsDemo
         {
             try
             {
-                DeleteBucketCorsRequest request = new DeleteBucketCorsRequest()
+                var request = new DeleteBucketCorsRequest()
                 {
                     BucketName = bucketName
                 };
-                DeleteBucketCorsResponse response = client.DeleteBucketCors(request);
+                var response = client.DeleteBucketCors(request);
                 Console.WriteLine("Delete bucket cors response: {0}", response.StatusCode);
             }
             catch (ObsException ex)
@@ -853,24 +867,28 @@ namespace ObsDemo
             try
             {
                 List<Tag> TagList = new List<Tag>();
-                Tag tag1 = new Tag();
-                tag1.Key = "tag1";
-                tag1.Value = "value1";
+                var       tag1    = new Tag
+                {
+                    Key   = "tag1",
+                    Value = "value1"
+                };
 
-                Tag tag2 = new Tag();
-                tag2.Key = "tag2";
-                tag2.Value = "value2";
+                var tag2 = new Tag
+                {
+                    Key   = "tag2",
+                    Value = "value2"
+                };
 
                 TagList.Add(tag1);
                 TagList.Add(tag2);
 
-                SetBucketTaggingRequest request = new SetBucketTaggingRequest()
+                var request = new SetBucketTaggingRequest()
                 {
                     BucketName = bucketName,
                     Tags = TagList
                 };
 
-                SetBucketTaggingResponse response = client.SetBucketTagging(request);
+                var response = client.SetBucketTagging(request);
 
                 Console.WriteLine("SetBucketTagging response: {0}", response.StatusCode);
             }
@@ -887,11 +905,11 @@ namespace ObsDemo
         {
             try
             {
-                GetBucketTaggingRequest request = new GetBucketTaggingRequest()
+                var request = new GetBucketTaggingRequest()
                 {
                     BucketName = bucketName
                 };
-                GetBucketTaggingResponse response = client.GetBucketTagging(request);
+                var response = client.GetBucketTagging(request);
 
                 Console.WriteLine("Get bucket Tagging response: {0}", response.StatusCode);
                 foreach (var tag in response.Tags)
@@ -913,11 +931,11 @@ namespace ObsDemo
         {
             try
             {
-                DeleteBucketTaggingRequest request = new DeleteBucketTaggingRequest()
+                var request = new DeleteBucketTaggingRequest()
                 {
                     BucketName = bucketName
                 };
-                DeleteBucketTaggingResponse response = client.DeleteBucketTagging(request);
+                var response = client.DeleteBucketTagging(request);
 
                 Console.WriteLine("DeleteBucketTagging response: {0}", response.StatusCode);
             }
@@ -935,37 +953,47 @@ namespace ObsDemo
             try
             {
 
-                AccessControlList acl = new AccessControlList();
-                acl.Owner = new Owner();
-                acl.Owner.Id = "domainId";
-                Grant item = new Grant();
-                item.Permission = PermissionEnum.FullControl;
-                GroupGrantee group = new GroupGrantee();
-                group.GroupGranteeType = GroupGranteeEnum.LogDelivery;
+                var acl = new AccessControlList
+                {
+                    Owner = new Owner
+                    {
+                        Id = "domainId"
+                    }
+                };
+                var item = new Grant
+                {
+                    Permission = PermissionEnum.FullControl
+                };
+                var group = new GroupGrantee
+                {
+                    GroupGranteeType = GroupGranteeEnum.LogDelivery
+                };
                 item.Grantee = group;
                 acl.Grants.Add(item);
 
-                SetBucketAclRequest setAclRequest = new SetBucketAclRequest
+                var setAclRequest = new SetBucketAclRequest
                 {
                     BucketName = "targetbucketname",
                     AccessControlList = acl,
                 };
 
 
-                SetBucketAclResponse setAclResponse = client.SetBucketAcl(setAclRequest);
+                var setAclResponse = client.SetBucketAcl(setAclRequest);
                 Console.WriteLine("Set bucket target acl response: {0}", setAclResponse.StatusCode);
 
-                LoggingConfiguration loggingConfig = new LoggingConfiguration();
-                loggingConfig.TargetBucketName = "targetbucketname";
-                loggingConfig.TargetPrefix = "targetPrefix";
+                var loggingConfig = new LoggingConfiguration
+                {
+                    TargetBucketName = "targetbucketname",
+                    TargetPrefix     = "targetPrefix"
+                };
 
-                SetBucketLoggingRequest request = new SetBucketLoggingRequest()
+                var request = new SetBucketLoggingRequest()
                 {
                     BucketName = bucketName,
                     Configuration = loggingConfig
                 };
 
-                SetBucketLoggingResponse response = client.SetBucketLogging(request);
+                var response = client.SetBucketLogging(request);
 
                 Console.WriteLine("Set bucket logging status: {0}", response.StatusCode);
             }
@@ -982,11 +1010,11 @@ namespace ObsDemo
         {
             try
             {
-                GetBucketLoggingRequest request = new GetBucketLoggingRequest
+                var request = new GetBucketLoggingRequest
                 {
                     BucketName = bucketName
                 };
-                GetBucketLoggingResponse response = client.GetBucketLogging(request);
+                var response = client.GetBucketLogging(request);
 
                 Console.WriteLine("TargetBucketName is : " + response.Configuration.TargetBucketName);
                 Console.WriteLine("TargetPrefix is : " + response.Configuration.TargetPrefix);
@@ -1005,10 +1033,12 @@ namespace ObsDemo
         {
             try
             {
-                SetBucketLoggingRequest request = new SetBucketLoggingRequest();
-                request.BucketName = bucketName;
-                request.Configuration = new LoggingConfiguration();
-                SetBucketLoggingResponse response = client.SetBucketLogging(request);
+                var request = new SetBucketLoggingRequest
+                {
+                    BucketName    = bucketName,
+                    Configuration = new LoggingConfiguration()
+                };
+                var response = client.SetBucketLogging(request);
                 Console.WriteLine("Delete bucket logging response: {0}", response.StatusCode);
             }
             catch (ObsException ex)
@@ -1024,37 +1054,47 @@ namespace ObsDemo
         {
             try
             {
-                FilterRule filterRule1 = new FilterRule();
-                filterRule1.Name = FilterNameEnum.Prefix;
-                filterRule1.Value = "smn";
-                TopicConfiguration topicConfiguration1 = new TopicConfiguration();
-                topicConfiguration1.Id = "Id001";
-                topicConfiguration1.Topic = "urn:smn:globrg:35667523534:topic1";
+                var filterRule1 = new FilterRule
+                {
+                    Name  = FilterNameEnum.Prefix,
+                    Value = "smn"
+                };
+                var topicConfiguration1 = new TopicConfiguration
+                {
+                    Id    = "Id001",
+                    Topic = "urn:smn:globrg:35667523534:topic1"
+                };
                 topicConfiguration1.Events.Add(EventTypeEnum.ObjectCreatedAll);
                 topicConfiguration1.FilterRules = new List<FilterRule>();
                 topicConfiguration1.FilterRules.Add(filterRule1);
 
-                FilterRule filterRule2 = new FilterRule();
-                filterRule2.Name = FilterNameEnum.Suffix;
-                filterRule2.Value = ".jpg";
-                TopicConfiguration topicConfiguration2 = new TopicConfiguration();
-                topicConfiguration2.Id = "Id002";
-                topicConfiguration2.Topic = "urn:smn:globrg:35667523535:topic2";
+                var filterRule2 = new FilterRule
+                {
+                    Name  = FilterNameEnum.Suffix,
+                    Value = ".jpg"
+                };
+                var topicConfiguration2 = new TopicConfiguration
+                {
+                    Id    = "Id002",
+                    Topic = "urn:smn:globrg:35667523535:topic2"
+                };
                 topicConfiguration2.Events.Add(EventTypeEnum.ObjectRemovedAll);
                 topicConfiguration2.FilterRules = new List<FilterRule>();
                 topicConfiguration2.FilterRules.Add(filterRule2);
 
-                NotificationConfiguration notificationConfiguration = new NotificationConfiguration();
-                notificationConfiguration.TopicConfigurations = new List<TopicConfiguration>();
+                var notificationConfiguration = new NotificationConfiguration
+                {
+                    TopicConfigurations = new List<TopicConfiguration>()
+                };
                 notificationConfiguration.TopicConfigurations.Add(topicConfiguration1);
                 notificationConfiguration.TopicConfigurations.Add(topicConfiguration2);
 
-                SetBucketNotificationRequest request = new SetBucketNotificationRequest
+                var request = new SetBucketNotificationRequest
                 {
                     BucketName = bucketName,
                     Configuration = notificationConfiguration,
                 };
-                SetBucketNotificationResponse response = client.SetBucketNotification(request);
+                var response = client.SetBucketNotification(request);
                 Console.WriteLine("Set bucket notification response: {0}", response.StatusCode);
             }
             catch (ObsException ex)
@@ -1070,11 +1110,11 @@ namespace ObsDemo
         {
             try
             {
-                GetBucketNotificationRequest request = new GetBucketNotificationRequest
+                var request = new GetBucketNotificationRequest
                 {
                     BucketName = bucketName
                 };
-                GetBucketNotificationReponse response = client.GetBucketNotification(request);
+                var response = client.GetBucketNotification(request);
                 if (response.Configuration.TopicConfigurations.Count > 0)
                 {
                     foreach (var topicConfig in response.Configuration.TopicConfigurations)
@@ -1107,13 +1147,13 @@ namespace ObsDemo
         {
             try
             {
-                NotificationConfiguration notificationConfig = new NotificationConfiguration();
-                SetBucketNotificationRequest request = new SetBucketNotificationRequest
+                var notificationConfig = new NotificationConfiguration();
+                var request = new SetBucketNotificationRequest
                 {
                     BucketName = bucketName,
                     Configuration = notificationConfig
                 };
-                SetBucketNotificationResponse response = client.SetBucketNotification(request);
+                var response = client.SetBucketNotification(request);
                 Console.WriteLine("Delete bucket notification  response: {0}", response.StatusCode);
             }
             catch (ObsException ex)
@@ -1129,7 +1169,7 @@ namespace ObsDemo
         {
             try
             {
-                ListMultipartUploadsRequest request = new ListMultipartUploadsRequest()
+                var request = new ListMultipartUploadsRequest()
                 {
                     BucketName = bucketName,
                     Delimiter = "delimiter",
@@ -1138,10 +1178,10 @@ namespace ObsDemo
                     MaxUploads = 10,
                     UploadIdMarker = "uploadidmarker"
                 };
-                ListMultipartUploadsResponse response = client.ListMultipartUploads(request);
+                var response = client.ListMultipartUploads(request);
                 Console.WriteLine("List multipart uploads response: {0}", response.StatusCode);
 
-                foreach (MultipartUpload multipart in response.MultipartUploads)
+                foreach (var multipart in response.MultipartUploads)
                 {
                     Console.WriteLine("MultipartUpload object key: {0}", multipart.ObjectKey);
                     Console.WriteLine("MultipartUpload upload id: {0}", multipart.UploadId);
@@ -1160,12 +1200,12 @@ namespace ObsDemo
         {
             try
             {
-                SetBucketStoragePolicyRequest request = new SetBucketStoragePolicyRequest()
+                var request = new SetBucketStoragePolicyRequest()
                 {
                     BucketName = bucketName,
                     StorageClass = StorageClassEnum.Standard
                 };
-                SetBucketStoragePolicyResponse response = client.SetBucketStoragePolicy(request);
+                var response = client.SetBucketStoragePolicy(request);
 
                 Console.WriteLine("Set bucket storage policy response: {0}", response.StatusCode);
             }
@@ -1182,11 +1222,11 @@ namespace ObsDemo
         {
             try
             {
-                GetBucketStoragePolicyRequest request = new GetBucketStoragePolicyRequest()
+                var request = new GetBucketStoragePolicyRequest()
                 {
                     BucketName = bucketName,
                 };
-                GetBucketStoragePolicyResponse response = client.GetBucketStoragePolicy(request);
+                var response = client.GetBucketStoragePolicy(request);
 
                 Console.WriteLine("Get bucket storage policy response: {0}", response.StatusCode);
                 Console.WriteLine("Bucket DefaultStorageClass: {0}", response.StorageClass.ToString());
@@ -1204,13 +1244,13 @@ namespace ObsDemo
         {
             try
             {
-                SetBucketPolicyRequest request = new SetBucketPolicyRequest()
+                var request = new SetBucketPolicyRequest()
                 {
                     BucketName = bucketName,
                     ContentMD5 = "md5",
                     Policy = "policy"
                 };
-                SetBucketPolicyResponse response = client.SetBucketPolicy(request);
+                var response = client.SetBucketPolicy(request);
 
                 Console.WriteLine("Set bucket policy response: {0}", response.StatusCode);
             }
@@ -1227,11 +1267,11 @@ namespace ObsDemo
         {
             try
             {
-                GetBucketPolicyRequest request = new GetBucketPolicyRequest()
+                var request = new GetBucketPolicyRequest()
                 {
                     BucketName = bucketName,
                 };
-                GetBucketPolicyResponse response = client.GetBucketPolicy(request);
+                var response = client.GetBucketPolicy(request);
 
                 Console.WriteLine("Get bucket policy response: {0}", response.StatusCode);
                 Console.WriteLine("Bucket policy: {0}", response.Policy);
@@ -1249,11 +1289,11 @@ namespace ObsDemo
         {
             try
             {
-                DeleteBucketPolicyRequest request = new DeleteBucketPolicyRequest()
+                var request = new DeleteBucketPolicyRequest()
                 {
                     BucketName = bucketName,
                 };
-                DeleteBucketPolicyResponse response = client.DeleteBucketPolicy(request);
+                var response = client.DeleteBucketPolicy(request);
 
                 Console.WriteLine("Delete bucket policy response: {0}", response.StatusCode);
             }

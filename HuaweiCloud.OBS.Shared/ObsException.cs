@@ -165,7 +165,7 @@ namespace OBS
 
         public override string ToString()
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             sb.Append(this.Message)
             .Append(", StatusCode:").Append(Convert.ToInt32(this.StatusCode))
                 .Append(", ErrorCode:").Append(this.ErrorCode)

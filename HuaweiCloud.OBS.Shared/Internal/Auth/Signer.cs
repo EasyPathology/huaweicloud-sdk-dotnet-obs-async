@@ -39,7 +39,7 @@ namespace OBS.Internal.Auth
             }
 
             //host
-            string endpoint = string.IsNullOrEmpty(context.RedirectLocation) ? request.Endpoint : context.RedirectLocation;
+            var endpoint = string.IsNullOrEmpty(context.RedirectLocation) ? request.Endpoint : context.RedirectLocation;
             request.Headers[Constants.CommonHeaders.Host] = request.GetHost(endpoint);
 
             // anonymous user

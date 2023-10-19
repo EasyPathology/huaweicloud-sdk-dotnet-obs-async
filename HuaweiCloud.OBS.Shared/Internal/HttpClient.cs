@@ -77,9 +77,9 @@ namespace OBS.Internal
                 httpRequest.Headers.Add(Constants.CommonHeaders.Connection, "Close");
             }
 
-            HttpWebRequest request = HttpWebRequestFactory.BuildWebRequest(httpRequest, context);
+            var request = HttpWebRequestFactory.BuildWebRequest(httpRequest, context);
 
-            DateTime reqTime = DateTime.Now;
+            var reqTime = DateTime.Now;
 
             if (httpRequest.Method == HttpVerb.PUT ||
                 httpRequest.Method == HttpVerb.POST || httpRequest.Method == HttpVerb.DELETE)
@@ -93,7 +93,7 @@ namespace OBS.Internal
             }
             catch (WebException ex)
             {
-                HttpWebResponse response = ex.Response as HttpWebResponse;
+                var response = ex.Response as HttpWebResponse;
                 if (response == null)
                 {
                     request.Abort();
@@ -120,7 +120,7 @@ namespace OBS.Internal
 
         internal void PrepareRequestAndContext(HttpRequest request, HttpContext context)
         {
-            IHeaders iheaders = this.GetIHeaders(context);
+            var iheaders = this.GetIHeaders(context);
             CommonUtil.RenameHeaders(request, iheaders.HeaderPrefix(), iheaders.HeaderMetaPrefix());
 
             if (LoggerMgr.IsDebugEnabled)
@@ -133,8 +133,8 @@ namespace OBS.Internal
         internal HttpResponse PerformRequest(HttpRequest request, HttpContext context)
         {
             this.PrepareRequestAndContext(request, context);
-            HttpResponse response = this.PerformRequest(request, context, 0);
-            foreach (HttpResponseHandler handler in context.Handlers)
+            var response = this.PerformRequest(request, context, 0);
+            foreach (var handler in context.Handlers)
             {
                 handler.Handle(response);
             }
@@ -155,20 +155,20 @@ namespace OBS.Internal
 
                 new MergeResponseHeaderHandler(this.GetIHeaders(context)).Handle(response);
 
-                int statusCode = Convert.ToInt32(response.StatusCode);
+                var statusCode = Convert.ToInt32(response.StatusCode);
 
                 if (LoggerMgr.IsDebugEnabled)
                 {
                     LoggerMgr.Debug(string.Format("Response with statusCode {0} and headers {1}", statusCode, CommonUtil.ConvertHeadersToString(response.Headers)));
                 }
 
-                int maxErrorRetry = context.ObsConfig.MaxErrorRetry;
+                var maxErrorRetry = context.ObsConfig.MaxErrorRetry;
 
                 if (statusCode >= 300 && statusCode < 400 && statusCode != 304)
                 {
                     if (response.Headers.ContainsKey(Constants.CommonHeaders.Location))
                     {
-                        string location = response.Headers[Constants.CommonHeaders.Location];
+                        var location = response.Headers[Constants.CommonHeaders.Location];
                         if (!string.IsNullOrEmpty(location))
                         {
                             if (location.IndexOf("?") < 0)
@@ -196,7 +196,7 @@ namespace OBS.Internal
                 }
                 else if ((statusCode >= 400 && statusCode < 500) || statusCode == 304)
                 {
-                    ObsException exception = ParseObsException(response, "Request error", context);
+                    var exception = ParseObsException(response, "Request error", context);
                     if (Constants.RequestTimeout.Equals(exception.ErrorCode))
                     {
                         if (ShouldRetry(request, null, retryCount, maxErrorRetry))
@@ -281,7 +281,7 @@ namespace OBS.Internal
             }
             if (sleep)
             {
-                int delay = (int)Math.Pow(2, retryCount) * 50;
+                var delay = (int)Math.Pow(2, retryCount) * 50;
                 if (LoggerMgr.IsWarnEnabled)
                 {
                     LoggerMgr.Warn(string.Format("Send http request error, will retry in {0} ms", delay));
@@ -296,7 +296,7 @@ namespace OBS.Internal
 
         private ObsException ParseObsException(HttpResponse response, string message, Exception ex, HttpContext context)
         {
-            ObsException exception = new ObsException(message, ex);
+            var exception = new ObsException(message, ex);
             if (response != null)
             {
                 exception.StatusCode = response.StatusCode;
@@ -361,7 +361,7 @@ namespace OBS.Internal
                                       HttpRequest httpRequest,
                                       ObsConfig obsConfig)
         {
-            Stream data = httpRequest.Content;
+            var data = httpRequest.Content;
 
             if (data == null)
             {
@@ -388,16 +388,14 @@ namespace OBS.Internal
                 webRequest.AllowWriteStreamBuffering = false;
             }
 
-            using (Stream requestStream = webRequest.GetRequestStream())
+            using var requestStream = webRequest.GetRequestStream();
+            if (!webRequest.SendChunked)
             {
-                if (!webRequest.SendChunked)
-                {
-                    CommonUtil.WriteTo(data, requestStream, webRequest.ContentLength, obsConfig.BufferSize);
-                }
-                else
-                {
-                    CommonUtil.WriteTo(data, requestStream, obsConfig.BufferSize);
-                }
+                CommonUtil.WriteTo(data, requestStream, webRequest.ContentLength, obsConfig.BufferSize);
+            }
+            else
+            {
+                CommonUtil.WriteTo(data, requestStream, obsConfig.BufferSize);
             }
         }
 
@@ -422,9 +420,9 @@ namespace OBS.Internal
                 LoggerMgr.Debug("Perform http request with url:" + request.GetUrl());
             }
 
-            string url = string.IsNullOrEmpty(context.RedirectLocation) ? request.GetUrl() : context.RedirectLocation;
-            ObsConfig obsConfig = context.ObsConfig;
-            HttpWebRequest webRequest = WebRequest.Create(url) as HttpWebRequest;
+            var url = string.IsNullOrEmpty(context.RedirectLocation) ? request.GetUrl() : context.RedirectLocation;
+            var obsConfig = context.ObsConfig;
+            var webRequest = WebRequest.Create(url) as HttpWebRequest;
 
             AddHeaders(webRequest, request, obsConfig);
             AddProxy(webRequest, obsConfig);

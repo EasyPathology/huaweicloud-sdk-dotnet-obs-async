@@ -104,7 +104,7 @@ namespace OBS.Internal
         private void TransGrants(XmlWriter xmlWriter, IList<Grant> grants, bool isBucket, string startElementName)
         {
             xmlWriter.WriteStartElement(startElementName);
-            foreach (Grant grant in grants)
+            foreach (var grant in grants)
             {
                 if (grant.Grantee != null && grant.Permission.HasValue)
                 {
@@ -112,7 +112,7 @@ namespace OBS.Internal
 
                     if (grant.Grantee is GroupGrantee)
                     {
-                        GroupGrantee groupGrantee = grant.Grantee as GroupGrantee;
+                        var groupGrantee = grant.Grantee as GroupGrantee;
                         if (groupGrantee.GroupGranteeType == GroupGranteeEnum.AllUsers)
                         {
                             xmlWriter.WriteStartElement("Grantee");
@@ -123,7 +123,7 @@ namespace OBS.Internal
                     else if (grant.Grantee is CanonicalGrantee)
                     {
                         xmlWriter.WriteStartElement("Grantee");
-                        CanonicalGrantee canonicalGrantee = grant.Grantee as CanonicalGrantee;
+                        var canonicalGrantee = grant.Grantee as CanonicalGrantee;
                         xmlWriter.WriteElementString("ID", canonicalGrantee.Id);
                         xmlWriter.WriteEndElement();
                     }

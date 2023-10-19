@@ -36,7 +36,7 @@ namespace OBS.Internal
 
         public HttpResponse(WebException failure, HttpWebRequest httpWebRequest)
         {
-            HttpWebResponse httpWebResponse = failure.Response as HttpWebResponse;
+            var httpWebResponse = failure.Response as HttpWebResponse;
             this.Failure = failure;
             this._response = httpWebResponse;
             this._request = httpWebRequest;

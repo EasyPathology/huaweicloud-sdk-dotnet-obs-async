@@ -44,8 +44,10 @@ namespace ObsDemo
         public static void Test()
         {
             // Constructs a obs client instance with your account for accessing OBS
-            ObsConfig config = new ObsConfig();
-            config.Endpoint = endpoint;
+            var config = new ObsConfig
+            {
+                Endpoint = endpoint
+            };
             client = new ObsClient(AK, SK, config);
 
             // Create bucket
@@ -83,11 +85,11 @@ namespace ObsDemo
         private static void GetResponse(HttpVerb method, CreateTemporarySignatureResponse response, String content)
         {
 
-            HttpWebRequest webRequest = WebRequest.Create(response.SignUrl) as HttpWebRequest;
+            var webRequest = WebRequest.Create(response.SignUrl) as HttpWebRequest;
             webRequest.Method = method.ToString().ToUpper();
 
 
-            foreach (KeyValuePair<string, string> header in response.ActualSignedRequestHeaders)
+            foreach (var header in response.ActualSignedRequestHeaders)
             {
                 GetAddHeaderInternal().Invoke(webRequest.Headers, new object[] { header.Key, header.Value });
                 //Console.WriteLine("{0}={1}", header.Key, header.Value);
@@ -97,11 +99,9 @@ namespace ObsDemo
             {
                 webRequest.SendChunked = true;
                 webRequest.AllowWriteStreamBuffering = false;
-                using (Stream requestStream = webRequest.GetRequestStream())
-                {
-                    byte[] buffer = Encoding.UTF8.GetBytes(content);
-                    requestStream.Write(buffer, 0, buffer.Length);
-                }
+                using var requestStream = webRequest.GetRequestStream();
+                var       buffer        = Encoding.UTF8.GetBytes(content);
+                requestStream.Write(buffer, 0, buffer.Length);
             }
 
 
@@ -126,21 +126,20 @@ namespace ObsDemo
                 {
                     Console.WriteLine("Do action successfully with Response Code:" + Convert.ToInt32(webResponse.StatusCode));
                 }
-                using (MemoryStream dest = new MemoryStream())
-                {
-                    using (Stream stream = webResponse.GetResponseStream())
-                    {
-                        byte[] buffer = new byte[8192];
-                        int bytesRead;
-                        while ((bytesRead = stream.Read(buffer, 0, buffer.Length)) > 0)
-                        {
-                            dest.Write(buffer, 0, bytesRead);
-                        }
 
+                using var dest = new MemoryStream();
+                using (var stream = webResponse.GetResponseStream())
+                {
+                    var buffer = new byte[8192];
+                    int bytesRead;
+                    while ((bytesRead = stream.Read(buffer, 0, buffer.Length)) > 0)
+                    {
+                        dest.Write(buffer, 0, bytesRead);
                     }
-                    Console.WriteLine("Response Content:");
-                    Console.WriteLine(Encoding.UTF8.GetString(dest.ToArray()));
+
                 }
+                Console.WriteLine("Response Content:");
+                Console.WriteLine(Encoding.UTF8.GetString(dest.ToArray()));
             }
 
         }
@@ -152,11 +151,13 @@ namespace ObsDemo
 
         private static void DoDeleteBucket()
         {
-            CreateTemporarySignatureRequest request = new CreateTemporarySignatureRequest();
-            request.BucketName = bucketName;
-            request.Method = HttpVerb.DELETE;
-            request.Expires = 3600;
-            CreateTemporarySignatureResponse response = client.CreateTemporarySignature(request);
+            var request = new CreateTemporarySignatureRequest
+            {
+                BucketName = bucketName,
+                Method     = HttpVerb.DELETE,
+                Expires    = 3600
+            };
+            var response = client.CreateTemporarySignature(request);
             Console.WriteLine("Deleting bucket using temporary signature url:");
             Console.WriteLine("\t" + response.SignUrl);
             GetResponse(request.Method, response);
@@ -164,12 +165,14 @@ namespace ObsDemo
 
         private static void DoDeleteObject()
         {
-            CreateTemporarySignatureRequest request = new CreateTemporarySignatureRequest();
-            request.BucketName = bucketName;
-            request.ObjectKey = objectKey;
-            request.Method = HttpVerb.DELETE;
-            request.Expires = 3600;
-            CreateTemporarySignatureResponse response = client.CreateTemporarySignature(request);
+            var request = new CreateTemporarySignatureRequest
+            {
+                BucketName = bucketName,
+                ObjectKey  = objectKey,
+                Method     = HttpVerb.DELETE,
+                Expires    = 3600
+            };
+            var response = client.CreateTemporarySignature(request);
             Console.WriteLine("Deleting object using temporary signature url:");
             Console.WriteLine("\t" + response.SignUrl);
             GetResponse(request.Method, response);
@@ -177,27 +180,31 @@ namespace ObsDemo
 
         private static void DoObjectAclOperations()
         {
-            CreateTemporarySignatureRequest request = new CreateTemporarySignatureRequest();
-            request.BucketName = bucketName;
-            request.ObjectKey = objectKey;
-            request.Method = HttpVerb.PUT;
-            request.Expires = 3600;
-            request.SubResource = SubResourceEnum.Acl;
+            var request = new CreateTemporarySignatureRequest
+            {
+                BucketName  = bucketName,
+                ObjectKey   = objectKey,
+                Method      = HttpVerb.PUT,
+                Expires     = 3600,
+                SubResource = SubResourceEnum.Acl
+            };
             request.Headers.Add("x-obs-acl", "public-read");
-            CreateTemporarySignatureResponse response = client.CreateTemporarySignature(request);
+            var response = client.CreateTemporarySignature(request);
             Console.WriteLine("Setting object ACL to public-read using temporary signature url:");
             Console.WriteLine("\t" + response.SignUrl);
             GetResponse(request.Method, response);
 
 
 
-            request = new CreateTemporarySignatureRequest();
-            request.BucketName = bucketName;
-            request.ObjectKey = objectKey;
-            request.Method = HttpVerb.GET;
-            request.Expires = 3600;
-            request.SubResource = SubResourceEnum.Acl;
-            response = client.CreateTemporarySignature(request);
+            request             = new CreateTemporarySignatureRequest
+            {
+                BucketName  = bucketName,
+                ObjectKey   = objectKey,
+                Method      = HttpVerb.GET,
+                Expires     = 3600,
+                SubResource = SubResourceEnum.Acl
+            };
+            response            = client.CreateTemporarySignature(request);
             Console.WriteLine("Getting object ACL using temporary signature url:");
             Console.WriteLine("\t" + response.SignUrl);
             GetResponse(request.Method, response);
@@ -207,12 +214,14 @@ namespace ObsDemo
 
         private static void DoGetObject()
         {
-            CreateTemporarySignatureRequest request = new CreateTemporarySignatureRequest();
-            request.BucketName = bucketName;
-            request.ObjectKey = objectKey;
-            request.Method = HttpVerb.GET;
-            request.Expires = 3600;
-            CreateTemporarySignatureResponse response = client.CreateTemporarySignature(request);
+            var request = new CreateTemporarySignatureRequest
+            {
+                BucketName = bucketName,
+                ObjectKey  = objectKey,
+                Method     = HttpVerb.GET,
+                Expires    = 3600
+            };
+            var response = client.CreateTemporarySignature(request);
             Console.WriteLine("Getting object using temporary signature url:");
             Console.WriteLine("\t" + response.SignUrl);
             GetResponse(request.Method, response);
@@ -220,13 +229,15 @@ namespace ObsDemo
 
         private static void DoCreateObject()
         {
-            CreateTemporarySignatureRequest request = new CreateTemporarySignatureRequest();
-            request.BucketName = bucketName;
-            request.ObjectKey = objectKey;
-            request.Method = HttpVerb.PUT;
-            request.Expires = 3600;
+            var request = new CreateTemporarySignatureRequest
+            {
+                BucketName = bucketName,
+                ObjectKey  = objectKey,
+                Method     = HttpVerb.PUT,
+                Expires    = 3600
+            };
             request.Headers.Add("Content-Type", "text/plain");
-            CreateTemporarySignatureResponse response = client.CreateTemporarySignature(request);
+            var response = client.CreateTemporarySignature(request);
             Console.WriteLine("Createing object using temporary signature url:");
             Console.WriteLine("\t" + response.SignUrl);
             GetResponse(request.Method, response, "Hello OBS");
@@ -234,27 +245,31 @@ namespace ObsDemo
 
         private static void DoBucketCorsOperations()
         {
-            CreateTemporarySignatureRequest request = new CreateTemporarySignatureRequest();
-            request.BucketName = bucketName;
-            request.Method = HttpVerb.PUT;
-            request.Expires = 3600;
-            request.SubResource = SubResourceEnum.Cors;
+            var request = new CreateTemporarySignatureRequest
+            {
+                BucketName  = bucketName,
+                Method      = HttpVerb.PUT,
+                Expires     = 3600,
+                SubResource = SubResourceEnum.Cors
+            };
             request.Headers.Add("Content-Type", "application/xml");
-            String requestXml = "<CORSConfiguration><CORSRule><AllowedMethod>GET</AllowedMethod><AllowedOrigin>*</AllowedOrigin><AllowedHeader>*</AllowedHeader></CORSRule></CORSConfiguration>";
+            var requestXml = "<CORSConfiguration><CORSRule><AllowedMethod>GET</AllowedMethod><AllowedOrigin>*</AllowedOrigin><AllowedHeader>*</AllowedHeader></CORSRule></CORSConfiguration>";
 
             request.Headers.Add("Content-MD5", Convert.ToBase64String(new MD5CryptoServiceProvider().ComputeHash(Encoding.UTF8.GetBytes(requestXml))));
 
-            CreateTemporarySignatureResponse response = client.CreateTemporarySignature(request);
+            var response = client.CreateTemporarySignature(request);
             Console.WriteLine("Setting bucket CORS using temporary signature url:");
             Console.WriteLine("\t" + response.SignUrl);
             GetResponse(request.Method, response, requestXml);
 
-            request = new CreateTemporarySignatureRequest();
-            request.BucketName = bucketName;
-            request.Method = HttpVerb.GET;
-            request.Expires = 3600;
-            request.SubResource = SubResourceEnum.Cors;
-            response = client.CreateTemporarySignature(request);
+            request             = new CreateTemporarySignatureRequest
+            {
+                BucketName  = bucketName,
+                Method      = HttpVerb.GET,
+                Expires     = 3600,
+                SubResource = SubResourceEnum.Cors
+            };
+            response            = client.CreateTemporarySignature(request);
             Console.WriteLine("Getting bucket CORS using temporary signature url:");
             Console.WriteLine("\t" + response.SignUrl);
             GetResponse(request.Method, response);
@@ -262,15 +277,17 @@ namespace ObsDemo
 
         private static void DoCreateBucket()
         {
-            CreateTemporarySignatureRequest request = new CreateTemporarySignatureRequest();
-            request.BucketName = bucketName;
-            request.Method = HttpVerb.PUT;
-            request.Expires = 3600;
-            CreateTemporarySignatureResponse response = client.CreateTemporarySignature(request);
+            var request = new CreateTemporarySignatureRequest
+            {
+                BucketName = bucketName,
+                Method     = HttpVerb.PUT,
+                Expires    = 3600
+            };
+            var response = client.CreateTemporarySignature(request);
             Console.WriteLine("Creating bucket using temporary signature url:");
             Console.WriteLine("\t" + response.SignUrl);
-            string location = "your location";
-            String requestXml = "<CreateBucketConfiguration><Location>" + location + "</Location></CreateBucketConfiguration>";
+            var location = "your location";
+            var requestXml = "<CreateBucketConfiguration><Location>" + location + "</Location></CreateBucketConfiguration>";
             GetResponse(request.Method, response);
         }
     }

@@ -97,9 +97,9 @@ namespace OBS.Internal
         {
             UploadCheckPoint temp = null;
 
-            XmlSerializer serializer = new XmlSerializer(this.GetType());
+            var serializer = new XmlSerializer(this.GetType());
 
-            using (XmlTextReader fs = new XmlTextReader(checkPointFile))
+            using (var fs = new XmlTextReader(checkPointFile))
             {
                 temp = (UploadCheckPoint)serializer.Deserialize(fs);
             }
@@ -129,13 +129,11 @@ namespace OBS.Internal
         public void Record(string checkPointFile)
         {
             this.Md5 = ComputeHash.HashCode<UploadCheckPoint>(this);
-            XmlSerializer serializer = new XmlSerializer(this.GetType());
+            var serializer = new XmlSerializer(this.GetType());
 
-            using (XmlTextWriter fs = new XmlTextWriter(checkPointFile, Encoding.UTF8))
-            {
-                fs.Formatting = Formatting.Indented;
-                serializer.Serialize(fs, this);
-            }
+            using var fs = new XmlTextWriter(checkPointFile, Encoding.UTF8);
+            fs.Formatting = Formatting.Indented;
+            serializer.Serialize(fs, this);
         }
 
         /// <summary>
@@ -153,7 +151,7 @@ namespace OBS.Internal
 
             if (uploadType == ResumableUploadTypeEnum.UploadFile)
             {
-                FileInfo upload = new FileInfo(uploadFile);
+                var upload = new FileInfo(uploadFile);
                 if (this.FileStatus.Size != upload.Length || this.FileStatus.LastModified != upload.LastWriteTime)
                     return false;
             }
@@ -170,25 +168,25 @@ namespace OBS.Internal
                     {
                         if (uploadType == ResumableUploadTypeEnum.UploadFile)
                         {
-                            using (FileStream fileStream = new FileStream(uploadFile, FileMode.Open))
-                            {
-                                //校验CheckSum值--UploadFile文件的一致性
-                                return this.FileStatus.CheckSum.Equals(CommonUtil.Base64Md5(fileStream));
-                            }
+                            using var fileStream = new FileStream(uploadFile, FileMode.Open);
+                            //校验CheckSum值--UploadFile文件的一致性
+                            return this.FileStatus.CheckSum.Equals(CommonUtil.Base64Md5(fileStream));
                         }
                         else
                         {
                             //校验CheckSum值--UploadStream流的一致性
-                            long originPosition = uploadStream.Position;
-                            bool flag =  this.FileStatus.CheckSum.Equals(CommonUtil.Base64Md5(uploadStream));
+                            var originPosition = uploadStream.Position;
+                            var flag =  this.FileStatus.CheckSum.Equals(CommonUtil.Base64Md5(uploadStream));
                             uploadStream.Seek(originPosition, SeekOrigin.Begin);
                             return flag;
                         }
                     }
                     catch (Exception ex)
                     {
-                        ObsException e = new ObsException(ex.Message, ex.InnerException);
-                        e.ErrorType = ErrorType.Sender;
+                        var e = new ObsException(ex.Message, ex.InnerException)
+                        {
+                            ErrorType = ErrorType.Sender
+                        };
                         throw e;
                     }
                 }
@@ -240,11 +238,11 @@ namespace OBS.Internal
         /// <returns></returns>
         public static FileStatus getFileStatus(string uploadFile, Stream uploadStream, bool checkSum, ResumableUploadTypeEnum uploadType)
         {
-            FileStatus fileStatus = new FileStatus();
+            var fileStatus = new FileStatus();
 
             if (uploadType == ResumableUploadTypeEnum.UploadFile)
             {
-                FileInfo fileInfo = new FileInfo(uploadFile);
+                var fileInfo = new FileInfo(uploadFile);
                 fileStatus.Size = fileInfo.Length;
                 fileStatus.LastModified = fileInfo.LastWriteTime;
             }
@@ -262,24 +260,24 @@ namespace OBS.Internal
                 {
                     if (uploadType == ResumableUploadTypeEnum.UploadFile)
                     {
-                        using (FileStream fileStream = new FileStream(uploadFile, FileMode.Open))
-                        {
-                            //计算UploadFile的hash值
-                            fileStatus.CheckSum = CommonUtil.Base64Md5(fileStream);
-                        }
+                        using var fileStream = new FileStream(uploadFile, FileMode.Open);
+                        //计算UploadFile的hash值
+                        fileStatus.CheckSum = CommonUtil.Base64Md5(fileStream);
                     }
                     else
                     {
                         //计算UploadStream的hash值
-                        long originPosition = uploadStream.Position;
+                        var originPosition = uploadStream.Position;
                         fileStatus.CheckSum = CommonUtil.Base64Md5(uploadStream);
                         uploadStream.Seek(originPosition, SeekOrigin.Begin);
                     }
                 }
                 catch(Exception ex)
                 {
-                    ObsException e = new ObsException(ex.Message, ex.InnerException);
-                    e.ErrorType = ErrorType.Sender;
+                    var e = new ObsException(ex.Message, ex.InnerException)
+                    {
+                        ErrorType = ErrorType.Sender
+                    };
                     throw e;
                 }
             }
@@ -328,9 +326,9 @@ namespace OBS.Internal
     {
         public static string HashCode<T>(T obj)
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
 
-            Type type = obj.GetType();
+            var type = obj.GetType();
 
             foreach (var property in type.GetProperties())
             {
@@ -341,7 +339,7 @@ namespace OBS.Internal
                 sb.Append(property.Name + ":" + property.GetValue(obj, null));
             }
 
-            byte[] content = Encoding.UTF8.GetBytes(sb.ToString());
+            var content = Encoding.UTF8.GetBytes(sb.ToString());
             return CommonUtil.Base64Md5(content);
         }
     }

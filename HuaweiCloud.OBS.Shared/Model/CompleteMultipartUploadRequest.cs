@@ -66,7 +66,7 @@ namespace OBS.Model
         /// <param name="partETags">Information about the part to be added</param>
         public void AddPartETags(params PartETag[] partETags)
         {
-            foreach (PartETag part in partETags)
+            foreach (var part in partETags)
             {
                 this.PartETags.Add(part);
             }
@@ -78,7 +78,7 @@ namespace OBS.Model
         /// <param name="partETags">Information about the part to be added</param>
         public void AddPartETags(IEnumerable<PartETag> partETags)
         {
-            foreach (PartETag part in partETags)
+            foreach (var part in partETags)
             {
                 this.PartETags.Add(part);
             }
@@ -90,7 +90,7 @@ namespace OBS.Model
         ///  <param name="responses">Response to the multipart upload</param>
         public void AddPartETags(params UploadPartResponse[] responses)
         {
-            foreach (UploadPartResponse response in responses)
+            foreach (var response in responses)
             {
                 this.PartETags.Add(new  PartETag(response.PartNumber, response.ETag));
             }
@@ -102,7 +102,7 @@ namespace OBS.Model
         /// <param name="responses">Response to the multipart upload</param>
         public void AddPartETags(IEnumerable<UploadPartResponse> responses)
         {
-            foreach (UploadPartResponse response in responses)
+            foreach (var response in responses)
             {
                 this.PartETags.Add(new PartETag(response.PartNumber, response.ETag));
             }
@@ -114,7 +114,7 @@ namespace OBS.Model
         /// <param name="responses">Response to the multipart copy</param>
         public void AddPartETags(params CopyPartResponse[] responses)
         {
-            foreach (CopyPartResponse response in responses)
+            foreach (var response in responses)
             {
                 this.PartETags.Add(new PartETag(response.PartNumber, response.ETag));
             }
@@ -126,7 +126,7 @@ namespace OBS.Model
         /// <param name="responses">Response to the multipart copy</param>
         public void AddPartETags(IEnumerable<CopyPartResponse> responses)
         {
-            foreach (CopyPartResponse response in responses)
+            foreach (var response in responses)
             {
                 this.PartETags.Add(new PartETag(response.PartNumber, response.ETag));
             }

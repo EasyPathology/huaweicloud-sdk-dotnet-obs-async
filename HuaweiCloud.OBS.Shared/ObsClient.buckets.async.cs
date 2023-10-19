@@ -65,7 +65,7 @@ namespace OBS
         public CreateBucketResponse EndCreateBucket(IAsyncResult ar)
         {
 
-            HttpObsAsyncResult result = ar as HttpObsAsyncResult;
+            var result = ar as HttpObsAsyncResult;
             try
             {
                 return this.EndDoRequest<CreateBucketRequest, CreateBucketResponse>(ar, false);
@@ -84,7 +84,7 @@ namespace OBS
                         result.HttpRequest.Content.Seek(0, SeekOrigin.Begin);
                     }
                     result.HttpContext.AuthType = AuthTypeEnum.V2;
-                    HttpObsAsyncResult retryResult = this.httpClient.BeginPerformRequest(result.HttpRequest, result.HttpContext,
+                    var retryResult = this.httpClient.BeginPerformRequest(result.HttpRequest, result.HttpContext,
                         result.AsyncCallback, result.AsyncState);
 
                     retryResult.AdditionalState = result.AdditionalState;

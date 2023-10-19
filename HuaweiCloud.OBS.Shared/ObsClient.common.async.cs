@@ -38,10 +38,10 @@ namespace OBS
         internal IAsyncResult BeginDoRequest<T>(T request, DoValidateDelegate doValidateDelegate,
              AsyncCallback callback, object state) where T : ObsWebServiceRequest
         {
-            HttpContext context = this.BeforeRequest(request, doValidateDelegate, true);
+            var context = this.BeforeRequest(request, doValidateDelegate, true);
             try
             {
-                HttpObsAsyncResult result = this.httpClient.BeginPerformRequest(this.PrepareHttpRequest(request, context), context, callback, state);
+                var result = this.httpClient.BeginPerformRequest(this.PrepareHttpRequest(request, context), context, callback, state);
                 
                 result.AdditionalState = new object[] { request, context };
                 return result;
@@ -79,7 +79,7 @@ namespace OBS
             {
                 throw new ObsException(Constants.NullRequestMessage, ErrorType.Sender, Constants.NullRequest, "");
             }
-            HttpObsAsyncResult result = ar as HttpObsAsyncResult;
+            var result = ar as HttpObsAsyncResult;
             
             if(result == null)
             {
@@ -87,13 +87,13 @@ namespace OBS
             }
             object[] additionalState = result.AdditionalState as object[];
 
-            T request = additionalState[0] as T;
-            HttpContext context = additionalState[1] as HttpContext;
+            var request = additionalState[0] as T;
+            var context = additionalState[1] as HttpContext;
             
             try
             {
                 
-                HttpResponse httpResponse = this.httpClient.EndPerformRequest(result);
+                var httpResponse = this.httpClient.EndPerformRequest(result);
                 return this.PrepareResponse<T, K>(request, context, result.HttpRequest, httpResponse);
             }
             catch (ObsException ex)

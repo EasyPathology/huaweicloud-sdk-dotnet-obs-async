@@ -119,7 +119,7 @@ namespace OBS.Internal
                 this.readFlag = true;
                 StartRead?.Invoke();
             }
-            int bytes = this.OriginStream.Read(buffer, offset, count);
+            var bytes = this.OriginStream.Read(buffer, offset, count);
             readedBytes += bytes;
             BytesReaded?.Invoke(bytes);
             return bytes;
@@ -210,7 +210,7 @@ namespace OBS.Internal
             IList<BytesUnit> _lastInstantaneousBytes = this.lastInstantaneousBytes;
             if (_lastInstantaneousBytes != null)
             {
-                foreach (BytesUnit item in _lastInstantaneousBytes)
+                foreach (var item in _lastInstantaneousBytes)
                 {
                     if ((now - item.DateTime).TotalMilliseconds < 1000)
                     {
@@ -218,9 +218,11 @@ namespace OBS.Internal
                     }
                 }
             }
-            BytesUnit unit = new BytesUnit();
-            unit.DateTime = now;
-            unit.Bytes = bytes;
+            var unit = new BytesUnit
+            {
+                DateTime = now,
+                Bytes    = bytes
+            };
             currentInstantaneousBytes.Add(unit);
             return currentInstantaneousBytes;
         }
@@ -231,8 +233,8 @@ namespace OBS.Internal
             {
                 return;
             }
-            DateTime now = DateTime.Now;
-            TransferStatus status = new TransferStatus(newlyTransferredBytes,
+            var now = DateTime.Now;
+            var status = new TransferStatus(newlyTransferredBytes,
                           transferredBytes, totalBytes, (now - lastCheckpoint).TotalSeconds, (now - startCheckpoint).TotalSeconds);
             status.SetInstantaneousBytes(this.CreateCurrentInstantaneousBytes(newlyTransferredBytes, now));
             handler(sender, status);
@@ -267,12 +269,12 @@ namespace OBS.Internal
         {
             transferredBytes += bytes;
             newlyTransferredBytes += bytes;
-            DateTime now = DateTime.Now;
+            var now = DateTime.Now;
             IList<BytesUnit> currentInstantaneousBytes = this.CreateCurrentInstantaneousBytes(bytes, now);
             this.lastInstantaneousBytes = currentInstantaneousBytes;
             if (newlyTransferredBytes >= this.interval || transferredBytes == totalBytes)
             {
-                TransferStatus status = new TransferStatus(newlyTransferredBytes,
+                var status = new TransferStatus(newlyTransferredBytes,
                    transferredBytes, totalBytes, (now - lastCheckpoint).TotalSeconds, (now - startCheckpoint).TotalSeconds);
                 status.SetInstantaneousBytes(currentInstantaneousBytes);
                 handler(sender, status);

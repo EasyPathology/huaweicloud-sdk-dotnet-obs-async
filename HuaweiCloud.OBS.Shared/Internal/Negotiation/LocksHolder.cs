@@ -30,7 +30,7 @@ namespace OBS.Internal.Negotiation
         {
             this.lockNum = lockNum;
             locks = new object[this.lockNum];
-            for(int i = 0; i < this.lockNum; i++)
+            for(var i = 0; i < this.lockNum; i++)
             {
                 locks[i] = new object();
             }
@@ -42,7 +42,7 @@ namespace OBS.Internal.Negotiation
             {
                 throw new ArgumentNullException("key");
             }
-            int index = Math.Abs("".GetHashCode()) % this.lockNum;
+            var index = Math.Abs("".GetHashCode()) % this.lockNum;
             return this.locks[index];
         }
     }

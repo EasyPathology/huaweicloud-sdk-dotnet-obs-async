@@ -35,7 +35,7 @@ namespace OBS.Internal
 
             foreach (KeyValuePair<string, string> header in httpResponse.Headers)
             {
-                string key = header.Key;
+                var key = header.Key;
                 if (key.StartsWith(iheaders.HeaderMetaPrefix()))
                 {
                     key = key.Substring(iheaders.HeaderMetaPrefix().Length);
@@ -58,26 +58,24 @@ namespace OBS.Internal
 
         public static void ParseErrorResponse(Stream stream, ObsException exception)
         {
-            using (XmlReader reader = XmlReader.Create(stream))
+            using var reader = XmlReader.Create(stream);
+            while (reader.Read())
             {
-                while (reader.Read())
+                if ("Code".Equals(reader.Name))
                 {
-                    if ("Code".Equals(reader.Name))
-                    {
-                        exception.ErrorCode = reader.ReadString();
-                    }
-                    else if ("Message".Equals(reader.Name))
-                    {
-                        exception.ErrorMessage = reader.ReadString();
-                    }
-                    else if ("RequestId".Equals(reader.Name))
-                    {
-                        exception.RequestId = reader.ReadString();
-                    }
-                    else if ("HostId".Equals(reader.Name))
-                    {
-                        exception.HostId = reader.ReadString();
-                    }
+                    exception.ErrorCode = reader.ReadString();
+                }
+                else if ("Message".Equals(reader.Name))
+                {
+                    exception.ErrorMessage = reader.ReadString();
+                }
+                else if ("RequestId".Equals(reader.Name))
+                {
+                    exception.RequestId = reader.ReadString();
+                }
+                else if ("HostId".Equals(reader.Name))
+                {
+                    exception.HostId = reader.ReadString();
                 }
             }
         }

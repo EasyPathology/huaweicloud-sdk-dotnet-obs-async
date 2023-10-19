@@ -93,9 +93,9 @@ namespace OBS.Internal
             try
             {
                 DownloadCheckPoint temp = null;
-                XmlSerializer serializer = new XmlSerializer(this.GetType());
+                var serializer = new XmlSerializer(this.GetType());
 
-                using (XmlTextReader fs = new XmlTextReader(checkPointFile))
+                using (var fs = new XmlTextReader(checkPointFile))
                 {
                     temp = (DownloadCheckPoint)serializer.Deserialize(fs);
                 }
@@ -135,11 +135,11 @@ namespace OBS.Internal
             if (this.Md5 != ComputeHash.HashCode<DownloadCheckPoint>(this))
                 return false;
 
-            FileInfo fileInfo = new FileInfo(tmpFilePath);
+            var fileInfo = new FileInfo(tmpFilePath);
             if (!this.TmpFileStatus.TmpFilePath.Equals(tmpFilePath) || this.TmpFileStatus.Size != fileInfo.Length)
                 return false;
 
-            GetObjectMetadataResponse response = obsClient.GetObjectMetadata(BucketName, ObjectKey, VersionId);
+            var response = obsClient.GetObjectMetadata(BucketName, ObjectKey, VersionId);
             if (!this.ObjectStatus.Etag.Equals(response.ETag) || this.ObjectStatus.Size != response.ContentLength || this.ObjectStatus.LastModified != response.LastModified)
                 return false;
 
@@ -167,12 +167,10 @@ namespace OBS.Internal
 
             try
             {
-                XmlSerializer serializer = new XmlSerializer(this.GetType());
+                var serializer = new XmlSerializer(this.GetType());
 
-                using (XmlTextWriter fs = new XmlTextWriter(checkPointFile, Encoding.UTF8))
-                {
-                    serializer.Serialize(fs, this);
-                }
+                using var fs = new XmlTextWriter(checkPointFile, Encoding.UTF8);
+                serializer.Serialize(fs, this);
             }
             catch (Exception ex)
             {

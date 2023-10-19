@@ -37,13 +37,13 @@ namespace OBS.Internal
         {
             if(response != null && response.HttpWebResponse != null)
             {
-                WebHeaderCollection headers = response.HttpWebResponse.Headers;
+                var headers = response.HttpWebResponse.Headers;
                 IDictionary<string, string> result = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-                int cnt = headers.Count;
-                for (int i = 0; i < cnt; i++)
+                var cnt = headers.Count;
+                for (var i = 0; i < cnt; i++)
                 {
-                    string key = headers.Keys[i];
-                    string value = headers.Get(key);
+                    var key = headers.Keys[i];
+                    var value = headers.Get(key);
                     if(string.IsNullOrEmpty(key) || value == null)
                     {
                         continue;
@@ -58,7 +58,7 @@ namespace OBS.Internal
 
                     if (result.ContainsKey(key))
                     {
-                        string _value = result[key] + "," + value;
+                        var _value = result[key] + "," + value;
                         result[key] = _value;
                     }else
                     {

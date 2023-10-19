@@ -25,9 +25,11 @@ namespace OBS.Model
 
         public void AddKey(string key, string versionId)
         {
-            KeyVersion kv = new KeyVersion();
-            kv.Key = key;
-            kv.VersionId = versionId;
+            var kv = new KeyVersion
+            {
+                Key       = key,
+                VersionId = versionId
+            };
             AddKey(kv);
         }
 

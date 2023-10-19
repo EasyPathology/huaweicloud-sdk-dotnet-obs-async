@@ -65,136 +65,141 @@ namespace OBS.Internal
 
         private AccessControlList ParseAccessControlList(HttpResponse httpResponse, bool isBucket)
         {
-            using (XmlReader xmlReader = XmlReader.Create(httpResponse.Content))
+            using var xmlReader    = XmlReader.Create(httpResponse.Content);
+            var       acl          = new AccessControlList();
+            var       innerOwner   = false;
+            Grant     currentGrant = null;
+            while (xmlReader.Read())
             {
-                AccessControlList acl = new AccessControlList();
-                bool innerOwner = false;
-                Grant currentGrant = null;
-                while (xmlReader.Read())
+                if ("Owner".Equals(xmlReader.Name))
                 {
-                    if ("Owner".Equals(xmlReader.Name))
+                    if (xmlReader.IsStartElement())
                     {
-                        if (xmlReader.IsStartElement())
-                        {
-                            acl.Owner = new Owner();
-                        }
-                        innerOwner = xmlReader.IsStartElement();
+                        acl.Owner = new Owner();
                     }
-                    else if ("ID".Equals(xmlReader.Name))
+                    innerOwner = xmlReader.IsStartElement();
+                }
+                else if ("ID".Equals(xmlReader.Name))
+                {
+                    if (innerOwner)
                     {
-                        if (innerOwner)
-                        {
-                            acl.Owner.Id = xmlReader.ReadString();
-                        }
-                        else
-                        {
-                            CanonicalGrantee grantee = new CanonicalGrantee();
-                            grantee.Id = xmlReader.ReadString();
-                            currentGrant.Grantee = grantee;
-                        }
+                        acl.Owner.Id = xmlReader.ReadString();
                     }
-                    else if ("Grant".Equals(xmlReader.Name))
+                    else
                     {
-                        if (xmlReader.IsStartElement())
+                        var grantee = new CanonicalGrantee
                         {
-                            currentGrant = new Grant();
-                            acl.Grants.Add(currentGrant);
-                        }
-                    }
-                    else if ("Canned".Equals(xmlReader.Name))
-                    {
-                        GroupGrantee grantee = new GroupGrantee();
-                        grantee.GroupGranteeType = this.ParseGroupGrantee(xmlReader.ReadString());
+                            Id = xmlReader.ReadString()
+                        };
                         currentGrant.Grantee = grantee;
                     }
-                    else if ("Permission".Equals(xmlReader.Name))
+                }
+                else if ("Grant".Equals(xmlReader.Name))
+                {
+                    if (xmlReader.IsStartElement())
                     {
-                        currentGrant.Permission = this.ParsePermission(xmlReader.ReadString());
-                    }
-                    else if ("Delivered".Equals(xmlReader.Name))
-                    {
-                        if (isBucket)
-                        {
-                            currentGrant.Delivered = Convert.ToBoolean(xmlReader.ReadString());
-                        }
-                        else
-                        {
-                            acl.Delivered = Convert.ToBoolean(xmlReader.ReadString());
-                        }
+                        currentGrant = new Grant();
+                        acl.Grants.Add(currentGrant);
                     }
                 }
-                return acl;
+                else if ("Canned".Equals(xmlReader.Name))
+                {
+                    var grantee = new GroupGrantee
+                    {
+                        GroupGranteeType = this.ParseGroupGrantee(xmlReader.ReadString())
+                    };
+                    currentGrant.Grantee     = grantee;
+                }
+                else if ("Permission".Equals(xmlReader.Name))
+                {
+                    currentGrant.Permission = this.ParsePermission(xmlReader.ReadString());
+                }
+                else if ("Delivered".Equals(xmlReader.Name))
+                {
+                    if (isBucket)
+                    {
+                        currentGrant.Delivered = Convert.ToBoolean(xmlReader.ReadString());
+                    }
+                    else
+                    {
+                        acl.Delivered = Convert.ToBoolean(xmlReader.ReadString());
+                    }
+                }
             }
+            return acl;
         }
 
         public override GetBucketAclResponse ParseGetBucketAclResponse(HttpResponse httpResponse)
         {
-            GetBucketAclResponse response = new GetBucketAclResponse();
+            var response = new GetBucketAclResponse();
             response.AccessControlList = this.ParseAccessControlList(httpResponse, true);
             return response;
         }
 
         public override GetObjectAclResponse ParseGetObjectAclResponse(HttpResponse httpResponse)
         {
-            GetObjectAclResponse response = new GetObjectAclResponse();
+            var response = new GetObjectAclResponse();
             response.AccessControlList = this.ParseAccessControlList(httpResponse, false);
             return response;
         }
 
         public override GetBucketLoggingResponse ParseGetBucketLoggingResponse(HttpResponse httpResponse)
         {
-            GetBucketLoggingResponse response = new GetBucketLoggingResponse();
+            var response = new GetBucketLoggingResponse();
 
-            using (XmlReader xmlReader = XmlReader.Create(httpResponse.Content))
+            using var xmlReader    = XmlReader.Create(httpResponse.Content);
+            Grant     currentGrant = null;
+            while (xmlReader.Read())
             {
-                Grant currentGrant = null;
-                while (xmlReader.Read())
+                if ("BucketLoggingStatus".Equals(xmlReader.Name))
                 {
-                    if ("BucketLoggingStatus".Equals(xmlReader.Name))
+                    if (xmlReader.IsStartElement())
                     {
-                        if (xmlReader.IsStartElement())
-                        {
-                            response.Configuration = new LoggingConfiguration();
-                        }
-                    }
-                    else if ("Agency".Equals(xmlReader.Name))
-                    {
-                        response.Configuration.Agency = xmlReader.ReadString();
-                    }
-                    else if ("TargetBucket".Equals(xmlReader.Name))
-                    {
-                        response.Configuration.TargetBucketName = xmlReader.ReadString();
-                    }
-                    else if ("TargetPrefix".Equals(xmlReader.Name))
-                    {
-                        response.Configuration.TargetPrefix = xmlReader.ReadString();
-                    }
-                    else if ("Grant".Equals(xmlReader.Name))
-                    {
-                        if (xmlReader.IsStartElement())
-                        {
-                            currentGrant = new Grant();
-                            response.Configuration.Grants.Add(currentGrant);
-                        }
-                    }
-                    else if ("ID".Equals(xmlReader.Name))
-                    {
-                        CanonicalGrantee grantee = new CanonicalGrantee();
-                        grantee.Id = xmlReader.ReadString();
-                        currentGrant.Grantee = grantee;
-                    }
-                    else if ("Canned".Equals(xmlReader.Name))
-                    {
-                        GroupGrantee grantee = new GroupGrantee();
-                        grantee.GroupGranteeType = this.ParseGroupGrantee(xmlReader.ReadString());
-                        currentGrant.Grantee = grantee;
-                    }
-                    else if ("Permission".Equals(xmlReader.Name))
-                    {
-                        currentGrant.Permission = this.ParsePermission(xmlReader.ReadString());
+                        response.Configuration = new LoggingConfiguration();
                     }
                 }
+                else if ("Agency".Equals(xmlReader.Name))
+                {
+                    response.Configuration.Agency = xmlReader.ReadString();
+                }
+                else if ("TargetBucket".Equals(xmlReader.Name))
+                {
+                    response.Configuration.TargetBucketName = xmlReader.ReadString();
+                }
+                else if ("TargetPrefix".Equals(xmlReader.Name))
+                {
+                    response.Configuration.TargetPrefix = xmlReader.ReadString();
+                }
+                else if ("Grant".Equals(xmlReader.Name))
+                {
+                    if (xmlReader.IsStartElement())
+                    {
+                        currentGrant = new Grant();
+                        response.Configuration.Grants.Add(currentGrant);
+                    }
+                }
+                else if ("ID".Equals(xmlReader.Name))
+                {
+                    var grantee = new CanonicalGrantee
+                    {
+                        Id = xmlReader.ReadString()
+                    };
+                    currentGrant.Grantee = grantee;
+                }
+                else if ("Canned".Equals(xmlReader.Name))
+                {
+                    var grantee = new GroupGrantee
+                    {
+                        GroupGranteeType = this.ParseGroupGrantee(xmlReader.ReadString())
+                    };
+                    currentGrant.Grantee     = grantee;
+                }
+                else if ("Permission".Equals(xmlReader.Name))
+                {
+                    currentGrant.Permission = this.ParsePermission(xmlReader.ReadString());
+                }
             }
+
             return response;
         }
 

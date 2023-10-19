@@ -34,9 +34,9 @@ namespace OBS.Internal
         internal string GetUrlWithoutQuerys()
         {
 
-            string url = Endpoint;
+            var url = Endpoint;
 
-            bool hasBucket = !string.IsNullOrEmpty(BucketName);
+            var hasBucket = !string.IsNullOrEmpty(BucketName);
 
             if (hasBucket)
             {
@@ -46,9 +46,9 @@ namespace OBS.Internal
                 }
                 else
                 {
-                    int index = url.IndexOf("//");
-                    string prefix = url.Substring(0, index + 2);
-                    string suffix = url.Substring(index + 2);
+                    var index = url.IndexOf("//");
+                    var prefix = url.Substring(0, index + 2);
+                    var suffix = url.Substring(index + 2);
 
                     url = prefix + BucketName + "." + suffix;
                 }
@@ -70,9 +70,9 @@ namespace OBS.Internal
                 return this._url;
             }
 
-            string url = Endpoint;
+            var url = Endpoint;
 
-            bool hasBucket = !string.IsNullOrEmpty(BucketName);
+            var hasBucket = !string.IsNullOrEmpty(BucketName);
 
             if (hasBucket)
             {
@@ -82,9 +82,9 @@ namespace OBS.Internal
                 }
                 else
                 {
-                    int index = url.IndexOf("//");
-                    string prefix = url.Substring(0, index + 2);
-                    string suffix = url.Substring(index + 2);
+                    var index = url.IndexOf("//");
+                    var prefix = url.Substring(0, index + 2);
+                    var suffix = url.Substring(index + 2);
 
                     url = prefix + BucketName + "." + suffix;
                 }
@@ -95,7 +95,7 @@ namespace OBS.Internal
                 url += "/" + CommonUtil.UrlEncode(ObjectKey, Constants.DefaultEncoding, "/");
             }
             
-            string paramString = CommonUtil.ConvertParamsToString(Params);
+            var paramString = CommonUtil.ConvertParamsToString(Params);
             if (!string.IsNullOrEmpty(paramString))
             {
                 url += "?" + paramString;
@@ -146,8 +146,8 @@ namespace OBS.Internal
 
         public string GetHost(string endpoint)
         {
-            UriBuilder ub = new UriBuilder(endpoint);
-            string host = ub.Host;
+            var ub = new UriBuilder(endpoint);
+            var host = ub.Host;
             if(ub.Port != 443 && ub.Port != 80)
             {
                 host += ":" + ub.Port;

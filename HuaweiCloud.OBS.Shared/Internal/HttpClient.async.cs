@@ -25,7 +25,7 @@ namespace OBS.Internal
             AsyncCallback callback, object state)
         {
             this.PrepareRequestAndContext(request, context);
-            HttpObsAsyncResult result = new HttpObsAsyncResult(callback, state);
+            var result = new HttpObsAsyncResult(callback, state);
             result.HttpRequest = request;
             result.HttpContext = context;
             result.OriginPos = (request.Content != null && request.Content.CanSeek) ? request.Content.Position : -1L;
@@ -38,15 +38,15 @@ namespace OBS.Internal
         internal HttpResponse EndPerformRequest(HttpObsAsyncResult result)
         {
             HttpResponse response = null;
-            HttpRequest request = result.HttpRequest;
-            HttpContext context = result.HttpContext;
-            int maxErrorRetry = context.ObsConfig.MaxErrorRetry;
-            long originPos = result.OriginPos;
+            var request = result.HttpRequest;
+            var context = result.HttpContext;
+            var maxErrorRetry = context.ObsConfig.MaxErrorRetry;
+            var originPos = result.OriginPos;
             try
             {
                 response = context.ObsConfig.AsyncSocketTimeout < 0 ? result.Get() : result.Get(context.ObsConfig.AsyncSocketTimeout);
                 new MergeResponseHeaderHandler(this.GetIHeaders(context));
-                int statusCode = Convert.ToInt32(response.StatusCode);
+                var statusCode = Convert.ToInt32(response.StatusCode);
                 new MergeResponseHeaderHandler(this.GetIHeaders(context)).Handle(response);
 
                 if (LoggerMgr.IsDebugEnabled)
@@ -58,7 +58,7 @@ namespace OBS.Internal
                 {
                     if (response.Headers.ContainsKey(Constants.CommonHeaders.Location))
                     {
-                        string location = response.Headers[Constants.CommonHeaders.Location];
+                        var location = response.Headers[Constants.CommonHeaders.Location];
                         if (!string.IsNullOrEmpty(location))
                         {
                             if (location.IndexOf("?") < 0)
@@ -88,7 +88,7 @@ namespace OBS.Internal
                 }
                 else if ((statusCode >= 400 && statusCode < 500) || statusCode == 304)
                 {
-                    ObsException exception = ParseObsException(response, "Request error", context);
+                    var exception = ParseObsException(response, "Request error", context);
                     if (Constants.RequestTimeout.Equals(exception.ErrorCode))
                     {
                         if (ShouldRetry(request, null, result.RetryCount, maxErrorRetry))
@@ -125,7 +125,7 @@ namespace OBS.Internal
                     throw ParseObsException(response, "Request error", context);
                 }
 
-                foreach (HttpResponseHandler handler in context.Handlers)
+                foreach (var handler in context.Handlers)
                 {
                     handler.Handle(response);
                 }
@@ -172,8 +172,8 @@ namespace OBS.Internal
 
         private void BeginDoRequest(HttpObsAsyncResult asyncResult)
         {
-            HttpRequest httpRequest = asyncResult.HttpRequest;
-            HttpContext context = asyncResult.HttpContext;
+            var httpRequest = asyncResult.HttpRequest;
+            var context = asyncResult.HttpContext;
             if (!context.SkipAuth)
             {
                 this.GetSigner(context).DoAuth(httpRequest, context, this.GetIHeaders(context));
@@ -184,7 +184,7 @@ namespace OBS.Internal
                 httpRequest.Headers.Add(Constants.CommonHeaders.Connection, "Close");
             }
 
-            HttpWebRequest request = HttpWebRequestFactory.BuildWebRequest(httpRequest, context);
+            var request = HttpWebRequestFactory.BuildWebRequest(httpRequest, context);
             asyncResult.HttpWebRequest = request;
             asyncResult.HttpStartDateTime = DateTime.Now;
 
@@ -202,8 +202,8 @@ namespace OBS.Internal
 
         private void BeginSetContent(HttpObsAsyncResult asyncResult)
         {
-            HttpWebRequest webRequest = asyncResult.HttpWebRequest;
-            HttpRequest httpRequest = asyncResult.HttpRequest;
+            var webRequest = asyncResult.HttpWebRequest;
+            var httpRequest = asyncResult.HttpRequest;
 
             long userSetContentLength = -1;
             if (httpRequest.Headers.ContainsKey(Constants.CommonHeaders.ContentLength))
@@ -230,17 +230,17 @@ namespace OBS.Internal
 
         private void EndGetRequestStream(IAsyncResult ar)
         {
-            HttpObsAsyncResult asyncResult = ar.AsyncState as HttpObsAsyncResult;
-            HttpWebRequest webRequest = asyncResult.HttpWebRequest;
-            ObsConfig obsConfig = asyncResult.HttpContext.ObsConfig;
-            Stream data = asyncResult.HttpRequest.Content;
+            var asyncResult = ar.AsyncState as HttpObsAsyncResult;
+            var webRequest = asyncResult.HttpWebRequest;
+            var obsConfig = asyncResult.HttpContext.ObsConfig;
+            var data = asyncResult.HttpRequest.Content;
             if (data == null)
             {
                 data = new MemoryStream();
             }
             try
             {
-                using (Stream requestStream = webRequest.EndGetRequestStream(ar))
+                using (var requestStream = webRequest.EndGetRequestStream(ar))
                 {
                     ObsCallback callback = delegate ()
                     {
@@ -265,16 +265,16 @@ namespace OBS.Internal
 
         private void EndGetResponse(IAsyncResult ar)
         {
-            HttpObsAsyncResult asyncResult = ar.AsyncState as HttpObsAsyncResult;
+            var asyncResult = ar.AsyncState as HttpObsAsyncResult;
             asyncResult.IsTimeout = false;
             try
             {
-                HttpResponse httpResponse = new HttpResponse(asyncResult.HttpWebRequest.EndGetResponse(ar) as HttpWebResponse);
+                var httpResponse = new HttpResponse(asyncResult.HttpWebRequest.EndGetResponse(ar) as HttpWebResponse);
                 asyncResult.Set(httpResponse);
             }
             catch (WebException ex)
             {
-                HttpWebResponse response = ex.Response as HttpWebResponse;
+                var response = ex.Response as HttpWebResponse;
                 if (response == null)
                 {
                     asyncResult.Abort(ex);

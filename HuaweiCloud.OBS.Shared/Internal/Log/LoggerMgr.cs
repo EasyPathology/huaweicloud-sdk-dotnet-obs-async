@@ -66,15 +66,15 @@ namespace OBS.Internal.Log
                                 return;
                             }
 
-                            Assembly log4netDll = Assembly.LoadFile(Environment.CurrentDirectory + "/log4net.dll");
-                            Type logManagerType = log4netDll.GetType("log4net.LogManager", true, true);
-                            Type repositoryType = log4netDll.GetType("log4net.Repository.ILoggerRepository", true, true);
-                            object repository = logManagerType.GetMethod("CreateRepository", new Type[] { typeof(string) }).Invoke(null, new object[] { "LoggerMgrRepository" });
+                            var log4netDll = Assembly.LoadFile(Environment.CurrentDirectory + "/log4net.dll");
+                            var logManagerType = log4netDll.GetType("log4net.LogManager", true, true);
+                            var repositoryType = log4netDll.GetType("log4net.Repository.ILoggerRepository", true, true);
+                            var repository = logManagerType.GetMethod("CreateRepository", new Type[] { typeof(string) }).Invoke(null, new object[] { "LoggerMgrRepository" });
 
                             log4netDll.GetType("log4net.Config.XmlConfigurator", true, true).GetMethod("ConfigureAndWatch", new Type[] { repositoryType, typeof(FileInfo) }).Invoke(null, new object[] {repository, fileInfo });
 
-                            object _logger = logManagerType.GetMethod("GetLogger", new Type[] { typeof(string), typeof(string) }).Invoke(null, new object[] { "LoggerMgrRepository", "LoggerMgr" });
-                            Type loggerType = _logger.GetType();
+                            var _logger = logManagerType.GetMethod("GetLogger", new Type[] { typeof(string), typeof(string) }).Invoke(null, new object[] { "LoggerMgrRepository", "LoggerMgr" });
+                            var loggerType = _logger.GetType();
 
                             isDebugEnabled = loggerType.GetProperty("IsDebugEnabled");
                             isInfoEnabled = loggerType.GetProperty("IsInfoEnabled");

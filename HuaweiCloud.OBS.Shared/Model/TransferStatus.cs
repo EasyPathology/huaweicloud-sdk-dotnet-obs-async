@@ -54,7 +54,7 @@ namespace OBS.Model
                 if(this._instantaneousBytes != null)
                 {
                     long instantaneousSpeed = 0;
-                    foreach (BytesUnit item in this._instantaneousBytes)
+                    foreach (var item in this._instantaneousBytes)
                     {
                         instantaneousSpeed += item.Bytes;
                     }

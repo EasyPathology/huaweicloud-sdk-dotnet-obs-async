@@ -23,24 +23,24 @@ namespace OBS.Internal.Auth
     {
         protected override void _DoAuth(HttpRequest request, HttpContext context, IHeaders iheaders)
         {
-            string signature = this.GetSignature(request, context, iheaders)["Signature"];
+            var signature = this.GetSignature(request, context, iheaders)["Signature"];
 
-            string auth = new StringBuilder(this.GetAuthPrefix()).Append(" ")
+            var auth = new StringBuilder(this.GetAuthPrefix()).Append(" ")
                 .Append(context.SecurityProvider.Ak).Append(":").Append(signature).ToString();
             request.Headers.Add(Constants.CommonHeaders.Authorization, auth);
         }
 
         internal override IDictionary<string, string> GetSignature(HttpRequest request, HttpContext context, IHeaders iheaders)
         {
-            StringBuilder stringToSign = new StringBuilder();
+            var stringToSign = new StringBuilder();
 
             stringToSign.Append(request.Method.ToString()).Append("\n");
 
-            string dateHeader = Constants.CommonHeaders.Date.ToLower();
-            string contentTypeHeader = Constants.CommonHeaders.ContentType.ToLower();
-            string contentMd5Header = Constants.CommonHeaders.ContentMd5.ToLower();
-            string headerPrefix = iheaders.HeaderPrefix();
-            string headerMetaPrefix = iheaders.HeaderMetaPrefix();
+            var dateHeader = Constants.CommonHeaders.Date.ToLower();
+            var contentTypeHeader = Constants.CommonHeaders.ContentType.ToLower();
+            var contentMd5Header = Constants.CommonHeaders.ContentMd5.ToLower();
+            var headerPrefix = iheaders.HeaderPrefix();
+            var headerMetaPrefix = iheaders.HeaderMetaPrefix();
 
             IDictionary<string, string> tempDict = new Dictionary<string, string>();
 
@@ -53,7 +53,7 @@ namespace OBS.Internal.Auth
                         continue;
                     }
 
-                    string key = entry.Key.Trim().ToLower();
+                    var key = entry.Key.Trim().ToLower();
                     if (key.StartsWith(headerPrefix) || key.Equals(contentTypeHeader) || key.Equals(contentMd5Header))
                     {
                         tempDict.Add(key, entry.Value);
@@ -153,7 +153,7 @@ namespace OBS.Internal.Auth
             });
             if (kvlist.Count > 0)
             {
-                bool isFirst = true;
+                var isFirst = true;
                 foreach (KeyValuePair<string, string> kv in kvlist)
                 {
                     if (isFirst)

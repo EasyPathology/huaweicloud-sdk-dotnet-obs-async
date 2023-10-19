@@ -110,7 +110,7 @@ namespace OBS
         /// <returns></returns>
         private CompleteMultipartUploadResponse ResumableUploadExcute(ResumableUploadRequest resumableUploadRequest)
         {
-            UploadCheckPoint uploadCheckPoint = new UploadCheckPoint();
+            var uploadCheckPoint = new UploadCheckPoint();
 
             ResumableUploadTypeEnum uploadType;
             if (resumableUploadRequest is UploadFileRequest)
@@ -126,9 +126,9 @@ namespace OBS
 
             if (resumableUploadRequest.EnableCheckpoint)
             {
-                bool loadFileFlag = true;
-                bool paraVerifyFlag = true;
-                bool fileVerifyFlag = true;
+                var loadFileFlag = true;
+                var paraVerifyFlag = true;
+                var fileVerifyFlag = true;
 
                 if (!File.Exists(resumableUploadRequest.CheckpointFile))
                 {
@@ -155,7 +155,7 @@ namespace OBS
 
                     if (uploadType == ResumableUploadTypeEnum.UploadFile)
                     {
-                        UploadFileRequest uploadFileRequest = resumableUploadRequest as UploadFileRequest;
+                        var uploadFileRequest = resumableUploadRequest as UploadFileRequest;
 
                         if (!(uploadFileRequest.BucketName.Equals(uploadCheckPoint.BucketName)
                             && uploadFileRequest.ObjectKey.Equals(uploadCheckPoint.ObjectKey)
@@ -173,7 +173,7 @@ namespace OBS
 
                     else
                     {
-                        UploadStreamRequest uploadStreamRequest = resumableUploadRequest as UploadStreamRequest;
+                        var uploadStreamRequest = resumableUploadRequest as UploadStreamRequest;
 
                         if (!(uploadStreamRequest.BucketName.Equals(uploadCheckPoint.BucketName)
                             && uploadStreamRequest.ObjectKey.Equals(uploadCheckPoint.ObjectKey)))
@@ -225,7 +225,7 @@ namespace OBS
 
 
 
-                foreach (PartResultUpload result in partResultsUpload)
+                foreach (var result in partResultsUpload)
                 {
 
                     if (result.IsFailed && result.Exception != null)
@@ -261,7 +261,7 @@ namespace OBS
 
 
 
-            CompleteMultipartUploadRequest completeMultipartUploadRequest = new CompleteMultipartUploadRequest
+            var completeMultipartUploadRequest = new CompleteMultipartUploadRequest
             {
                 BucketName = resumableUploadRequest.BucketName,
                 ObjectKey = resumableUploadRequest.ObjectKey,
@@ -270,13 +270,15 @@ namespace OBS
             };
             try
             {
-                CompleteMultipartUploadResponse completeMultipartUploadResponse = CompleteMultipartUpload(completeMultipartUploadRequest);
+                var completeMultipartUploadResponse = CompleteMultipartUpload(completeMultipartUploadRequest);
                 if (resumableUploadRequest.UploadEventHandler != null)
                 {
-                    ResumableUploadEvent e = new ResumableUploadEvent();
-                    e.EventType = ResumableUploadEventTypeEnum.CompleteMultipartUploadSucceed;
-                    e.UploadId = uploadCheckPoint.UploadId;
-                    e.ETag = completeMultipartUploadResponse.ETag;
+                    var e = new ResumableUploadEvent
+                    {
+                        EventType = ResumableUploadEventTypeEnum.CompleteMultipartUploadSucceed,
+                        UploadId  = uploadCheckPoint.UploadId,
+                        ETag      = completeMultipartUploadResponse.ETag
+                    };
                     resumableUploadRequest.UploadEventHandler(this, e);
                 }
                 if (resumableUploadRequest.EnableCheckpoint)
@@ -315,9 +317,11 @@ namespace OBS
 
                 if (resumableUploadRequest.UploadEventHandler != null)
                 {
-                    ResumableUploadEvent e = new ResumableUploadEvent();
-                    e.EventType = ResumableUploadEventTypeEnum.CompleteMultipartUploadFailed;
-                    e.UploadId = uploadCheckPoint.UploadId;
+                    var e = new ResumableUploadEvent
+                    {
+                        EventType = ResumableUploadEventTypeEnum.CompleteMultipartUploadFailed,
+                        UploadId  = uploadCheckPoint.UploadId
+                    };
                     resumableUploadRequest.UploadEventHandler(this, e);
                 }
 
@@ -339,13 +343,13 @@ namespace OBS
             long originPosition = 0;
             if (resumableUploadRequest is UploadFileRequest)
             {
-                UploadFileRequest uploadFileRequest = resumableUploadRequest as UploadFileRequest;
+                var uploadFileRequest = resumableUploadRequest as UploadFileRequest;
                 uploadCheckPoint.UploadFile = uploadFileRequest.UploadFile;
                 uploadCheckPoint.FileStatus = FileStatus.getFileStatus(uploadFileRequest.UploadFile, null, uploadFileRequest.EnableCheckSum, ResumableUploadTypeEnum.UploadFile);
             }
             else
             {
-                UploadStreamRequest uploadStreamRequest = resumableUploadRequest as UploadStreamRequest;
+                var uploadStreamRequest = resumableUploadRequest as UploadStreamRequest;
                 uploadCheckPoint.UploadStream = uploadStreamRequest.UploadStream;
                 uploadCheckPoint.FileStatus = FileStatus.getFileStatus(null, uploadStreamRequest.UploadStream, uploadStreamRequest.EnableCheckSum, ResumableUploadTypeEnum.UploadStream);
                 originPosition = uploadCheckPoint.UploadStream.Position;
@@ -355,7 +359,7 @@ namespace OBS
             uploadCheckPoint.PartEtags = new List<PartETag>();
 
 
-            InitiateMultipartUploadRequest initiateRequest = new InitiateMultipartUploadRequest()
+            var initiateRequest = new InitiateMultipartUploadRequest()
             {
                 BucketName = resumableUploadRequest.BucketName,
                 ObjectKey = resumableUploadRequest.ObjectKey,
@@ -383,8 +387,10 @@ namespace OBS
             {
                 if (resumableUploadRequest.UploadEventHandler != null)
                 {
-                    ResumableUploadEvent e = new ResumableUploadEvent();
-                    e.EventType = ResumableUploadEventTypeEnum.InitiateMultipartUploadFailed;
+                    var e = new ResumableUploadEvent
+                    {
+                        EventType = ResumableUploadEventTypeEnum.InitiateMultipartUploadFailed
+                    };
                     resumableUploadRequest.UploadEventHandler(this, e);
                 }
                 throw ex;
@@ -407,16 +413,20 @@ namespace OBS
                     AbortMultipartUpload(uploadCheckPoint);
 
 
-                    ObsException exception = new ObsException(ex.Message, ex);
-                    exception.ErrorType = ErrorType.Sender;
+                    var exception = new ObsException(ex.Message, ex)
+                    {
+                        ErrorType = ErrorType.Sender
+                    };
                     throw exception;
                 }
             }
             if (resumableUploadRequest.UploadEventHandler != null)
             {
-                ResumableUploadEvent e = new ResumableUploadEvent();
-                e.UploadId = uploadCheckPoint.UploadId;
-                e.EventType = ResumableUploadEventTypeEnum.InitiateMultipartUploadSucceed;
+                var e = new ResumableUploadEvent
+                {
+                    UploadId  = uploadCheckPoint.UploadId,
+                    EventType = ResumableUploadEventTypeEnum.InitiateMultipartUploadSucceed
+                };
                 resumableUploadRequest.UploadEventHandler(this, e);
             }
         }
@@ -431,7 +441,7 @@ namespace OBS
         {
             List<UploadPart> parts = new List<UploadPart>();
 
-            int partNumber = Convert.ToInt32(fileLength / partSize);
+            var partNumber = Convert.ToInt32(fileLength / partSize);
 
             if (partNumber >= 10000)
             {
@@ -454,7 +464,7 @@ namespace OBS
             }
             else
             {
-                for (int i = 0; i < partNumber; i++)
+                for (var i = 0; i < partNumber; i++)
                 {
                     parts.Add(new UploadPart()
                     {
@@ -496,19 +506,19 @@ namespace OBS
 
         private void UploadPartExcute(object state)
         {
-            UploadPartExcuteParam param = state as UploadPartExcuteParam;
+            var param = state as UploadPartExcuteParam;
 
-            UploadPart uploadPart = param.uploadPart;
+            var uploadPart = param.uploadPart;
 
-            PartResultUpload partResultUpload = new PartResultUpload();
+            var partResultUpload = new PartResultUpload();
 
-            UploadCheckPoint uploadCheckPoint = param.uploadCheckPoint;
+            var uploadCheckPoint = param.uploadCheckPoint;
 
             try
             {
                 if (!uploadCheckPoint.IsUploadAbort)
                 {
-                    UploadPartRequest uploadPartRequest = new UploadPartRequest()
+                    var uploadPartRequest = new UploadPartRequest()
                     {
                         BucketName = uploadCheckPoint.BucketName,
                         ObjectKey = uploadCheckPoint.ObjectKey,
@@ -525,15 +535,13 @@ namespace OBS
                     {
                         if (param.mgr != null)
                         {
-                            using (TransferStream stream = new TransferStream(new FileStream(uploadCheckPoint.UploadFile, FileMode.Open, FileAccess.Read)))
-                            {
-                                stream.Seek(uploadPart.Offset, SeekOrigin.Begin);
-                                stream.BytesReaded += param.mgr.BytesTransfered;
-                                stream.StartRead += param.mgr.TransferStart;
-                                stream.BytesReset += param.mgr.TransferReset;
-                                uploadPartRequest.InputStream = stream;
-                                uploadPartResponse = UploadPart(uploadPartRequest);
-                            }
+                            using var stream = new TransferStream(new FileStream(uploadCheckPoint.UploadFile, FileMode.Open, FileAccess.Read));
+                            stream.Seek(uploadPart.Offset, SeekOrigin.Begin);
+                            stream.BytesReaded            += param.mgr.BytesTransfered;
+                            stream.StartRead              += param.mgr.TransferStart;
+                            stream.BytesReset             += param.mgr.TransferReset;
+                            uploadPartRequest.InputStream =  stream;
+                            uploadPartResponse            =  UploadPart(uploadPartRequest);
                         }
                         else
                         {
@@ -547,7 +555,7 @@ namespace OBS
                     {
                         if (param.mgr != null)
                         {
-                            TransferStream stream = new TransferStream(uploadCheckPoint.UploadStream);
+                            var stream = new TransferStream(uploadCheckPoint.UploadStream);
                             stream.Seek(uploadPart.Offset, SeekOrigin.Begin);
                             stream.BytesReaded += param.mgr.BytesTransfered;
                             stream.StartRead += param.mgr.TransferStart;
@@ -563,7 +571,7 @@ namespace OBS
                         }
                     }
 
-                    PartETag partEtag = new PartETag(uploadPartResponse.PartNumber, uploadPartResponse.ETag);
+                    var partEtag = new PartETag(uploadPartResponse.PartNumber, uploadPartResponse.ETag);
 
                     partResultUpload.IsFailed = false;
                     uploadPart.IsCompleted = true;
@@ -578,11 +586,13 @@ namespace OBS
 
                     if (param.eventHandler != null)
                     {
-                        ResumableUploadEvent e = new ResumableUploadEvent();
-                        e.EventType = ResumableUploadEventTypeEnum.UploadPartSucceed;
-                        e.UploadId = uploadCheckPoint.UploadId;
-                        e.PartNumber = uploadPart.PartNumber;
-                        e.ETag = partEtag.ETag;
+                        var e = new ResumableUploadEvent
+                        {
+                            EventType  = ResumableUploadEventTypeEnum.UploadPartSucceed,
+                            UploadId   = uploadCheckPoint.UploadId,
+                            PartNumber = uploadPart.PartNumber,
+                            ETag       = partEtag.ETag
+                        };
                         param.eventHandler(this, e);
                     }
 
@@ -610,10 +620,12 @@ namespace OBS
 
                 if (param.eventHandler != null)
                 {
-                    ResumableUploadEvent e = new ResumableUploadEvent();
-                    e.EventType = ResumableUploadEventTypeEnum.UploadPartFailed;
-                    e.UploadId = uploadCheckPoint.UploadId;
-                    e.PartNumber = uploadPart.PartNumber;
+                    var e = new ResumableUploadEvent
+                    {
+                        EventType  = ResumableUploadEventTypeEnum.UploadPartFailed,
+                        UploadId   = uploadCheckPoint.UploadId,
+                        PartNumber = uploadPart.PartNumber
+                    };
                     param.eventHandler(this, e);
                 }
 
@@ -621,15 +633,19 @@ namespace OBS
             catch (Exception ex)
             {
                 partResultUpload.IsFailed = true;
-                ObsException exception = new ObsException(ex.Message, ex);
-                exception.ErrorType = ErrorType.Sender;
+                var exception = new ObsException(ex.Message, ex)
+                {
+                    ErrorType = ErrorType.Sender
+                };
                 partResultUpload.Exception = exception;
                 if (param.eventHandler != null)
                 {
-                    ResumableUploadEvent e = new ResumableUploadEvent();
-                    e.EventType = ResumableUploadEventTypeEnum.UploadPartFailed;
-                    e.UploadId = uploadCheckPoint.UploadId;
-                    e.PartNumber = uploadPart.PartNumber;
+                    var e = new ResumableUploadEvent
+                    {
+                        EventType  = ResumableUploadEventTypeEnum.UploadPartFailed,
+                        UploadId   = uploadCheckPoint.UploadId,
+                        PartNumber = uploadPart.PartNumber
+                    };
                     param.eventHandler(this, e);
                 }
             }
@@ -655,8 +671,10 @@ namespace OBS
                 if (uploadPart.IsCompleted)
                 {
                     transferredBytes += uploadPart.Size;
-                    PartResultUpload result = new PartResultUpload();
-                    result.IsFailed = false;
+                    var result = new PartResultUpload
+                    {
+                        IsFailed = false
+                    };
                     partResultsUpload.Add(result);
                 }
                 else
@@ -708,7 +726,7 @@ namespace OBS
                 mgr = null;
             }
 
-            int taskNum = 1;
+            var taskNum = 1;
             if (uploadType == ResumableUploadTypeEnum.UploadFile)
             {
                 taskNum = Math.Min((resumableUploadRequest as UploadFileRequest).TaskNum, uploadParts.Count);
@@ -716,17 +734,19 @@ namespace OBS
 
             ManualResetEvent[] events = new ManualResetEvent[taskNum];
             UploadPartExcuteParam[] executeParams = new UploadPartExcuteParam[taskNum];
-            for (int i = 0; i < taskNum; i++)
+            for (var i = 0; i < taskNum; i++)
             {
-                UploadPartExcuteParam param = new UploadPartExcuteParam();
-                param.uploadType = uploadType;
-                param.uploadPart = uploadParts[i];
-                param.uploadCheckPoint = uploadCheckPoint;
-                param.executeEvent = new ManualResetEvent(false);
-                param.enableCheckpoint = resumableUploadRequest.EnableCheckpoint;
-                param.checkpointFile = resumableUploadRequest.CheckpointFile;
-                param.eventHandler = resumableUploadRequest.UploadEventHandler;
-                param.mgr = mgr;
+                var param = new UploadPartExcuteParam
+                {
+                    uploadType       = uploadType,
+                    uploadPart       = uploadParts[i],
+                    uploadCheckPoint = uploadCheckPoint,
+                    executeEvent     = new ManualResetEvent(false),
+                    enableCheckpoint = resumableUploadRequest.EnableCheckpoint,
+                    checkpointFile   = resumableUploadRequest.CheckpointFile,
+                    eventHandler     = resumableUploadRequest.UploadEventHandler,
+                    mgr              = mgr
+                };
                 events[i] = param.executeEvent;
                 executeParams[i] = param;
                 ThreadPool.QueueUserWorkItem(UploadPartExcute, param);
@@ -741,8 +761,8 @@ namespace OBS
                     {
                         break;
                     }
-                    int finished = WaitHandle.WaitAny(events);
-                    UploadPartExcuteParam finishedParam = executeParams[finished];
+                    var finished = WaitHandle.WaitAny(events);
+                    var finishedParam = executeParams[finished];
                     partResultsUpload.Add(finishedParam.partResultUpload);
                     finishedParam.partResultUpload = null;
                     finishedParam.uploadPart = uploadParts[taskNum++];
@@ -753,9 +773,9 @@ namespace OBS
             finally
             {
                 WaitHandle.WaitAll(events);
-                for (int i = 0; i < events.Length; i++)
+                for (var i = 0; i < events.Length; i++)
                 {
-                    UploadPartExcuteParam finishedParam = executeParams[i];
+                    var finishedParam = executeParams[i];
                     partResultsUpload.Add(finishedParam.partResultUpload);
                     events[i].Close();
                 }
@@ -771,7 +791,7 @@ namespace OBS
         {
             try
             {
-                AbortMultipartUploadRequest abortRequest = new AbortMultipartUploadRequest
+                var abortRequest = new AbortMultipartUploadRequest
                 {
                     BucketName = uploadCheckPoint.BucketName,
                     ObjectKey = uploadCheckPoint.ObjectKey,
@@ -835,16 +855,16 @@ namespace OBS
         /// </summary>
         private GetObjectMetadataResponse DownloadFileExcute(DownloadFileRequest downloadFileRequest)
         {
-            DownloadCheckPoint downloadCheckPoint = new DownloadCheckPoint();
+            var downloadCheckPoint = new DownloadCheckPoint();
 
             GetObjectMetadataResponse response = null;
 
 
             if (downloadFileRequest.EnableCheckpoint)
             {
-                bool loadFileFlag = true;
-                bool paraVerifyFlag = true;
-                bool fileVerifyFlag = true;
+                var loadFileFlag = true;
+                var paraVerifyFlag = true;
+                var fileVerifyFlag = true;
                 ObsException obsException = null;
                 try
                 {
@@ -890,7 +910,7 @@ namespace OBS
                         }
                         catch (ObsException ex)
                         {
-                            int statusCode = Convert.ToInt32(ex.StatusCode);
+                            var statusCode = Convert.ToInt32(ex.StatusCode);
                             if (statusCode >= 400 && statusCode < 500)
                             {
                                 fileVerifyFlag = false;
@@ -944,7 +964,7 @@ namespace OBS
                 IList<PartResultDown> partResultsDowns = DownloadFileBegin(downloadFileRequest, downloadCheckPoint, out mgr);
 
 
-                foreach (PartResultDown result in partResultsDowns)
+                foreach (var result in partResultsDowns)
                 {
 
                     if (result.IsFailed && result.Exception != null)
@@ -992,8 +1012,10 @@ namespace OBS
                 {
                     File.Delete(downloadFileRequest.CheckpointFile);
                 }
-                ObsException exception = new ObsException(ex.Message, ex);
-                exception.ErrorType = ErrorType.Sender;
+                var exception = new ObsException(ex.Message, ex)
+                {
+                    ErrorType = ErrorType.Sender
+                };
                 throw exception;
             }
 
@@ -1012,11 +1034,13 @@ namespace OBS
 
         private GetObjectMetadataResponse GetObjectMetadata(DownloadFileRequest downloadFileRequest, DownloadCheckPoint downloadCheckPoint)
         {
-            GetObjectMetadataRequest request = new GetObjectMetadataRequest();
-            request.BucketName = downloadCheckPoint.BucketName;
-            request.ObjectKey = downloadCheckPoint.ObjectKey;
-            request.VersionId = downloadCheckPoint.VersionId;
-            request.SseCHeader = downloadFileRequest.SseCHeader;
+            var request = new GetObjectMetadataRequest
+            {
+                BucketName = downloadCheckPoint.BucketName,
+                ObjectKey  = downloadCheckPoint.ObjectKey,
+                VersionId  = downloadCheckPoint.VersionId,
+                SseCHeader = downloadFileRequest.SseCHeader
+            };
             return this.GetObjectMetadata(request);
         }
 
@@ -1031,7 +1055,7 @@ namespace OBS
             downloadCheckPoint.ObjectKey = downloadFileRequest.ObjectKey;
             downloadCheckPoint.VersionId = downloadFileRequest.VersionId;
             downloadCheckPoint.DownloadFile = downloadFileRequest.DownloadFile;
-            GetObjectMetadataResponse response = this.GetObjectMetadata(downloadFileRequest, downloadCheckPoint);
+            var response = this.GetObjectMetadata(downloadFileRequest, downloadCheckPoint);
             downloadCheckPoint.ObjectStatus = new ObjectStatus()
             {
                 Size = response.ContentLength,
@@ -1042,16 +1066,15 @@ namespace OBS
 
             try
             {
-
-                using (FileStream fs = new FileStream(downloadFileRequest.TempDownloadFile, FileMode.Create))
-                {
-                    fs.SetLength(downloadCheckPoint.ObjectStatus.Size);
-                }
+                using var fs = new FileStream(downloadFileRequest.TempDownloadFile, FileMode.Create);
+                fs.SetLength(downloadCheckPoint.ObjectStatus.Size);
             }
             catch (Exception ex)
             {
-                ObsException exception = new ObsException(ex.Message, ex);
-                exception.ErrorType = ErrorType.Sender;
+                var exception = new ObsException(ex.Message, ex)
+                {
+                    ErrorType = ErrorType.Sender
+                };
                 throw exception;
             }
 
@@ -1082,8 +1105,10 @@ namespace OBS
                         }
                     }
 
-                    ObsException exception = new ObsException(ex.Message, ex);
-                    exception.ErrorType = ErrorType.Sender;
+                    var exception = new ObsException(ex.Message, ex)
+                    {
+                        ErrorType = ErrorType.Sender
+                    };
                     throw exception;
                 }
             }
@@ -1097,7 +1122,7 @@ namespace OBS
         {
             List<DownloadPart> parts = new List<DownloadPart>();
 
-            int partNumber = Convert.ToInt32(objectSize / partSize);
+            var partNumber = Convert.ToInt32(objectSize / partSize);
 
             if (partNumber >= 10000)
             {
@@ -1108,7 +1133,7 @@ namespace OBS
             if (objectSize % partSize > 0)
                 partNumber++;
 
-            for (int i = 0; i < partNumber; i++)
+            for (var i = 0; i < partNumber; i++)
             {
                 parts.Add(new DownloadPart()
                 {
@@ -1157,33 +1182,33 @@ namespace OBS
         /// </summary>
         private void DownloadPartExcute(object state)
         {
-            DownloadPartExcuteParam param = state as DownloadPartExcuteParam;
-            DownloadCheckPoint downloadCheckPoint = param.downloadCheckPoint;
-            DownloadPart downloadPart = param.downloadPart;
-            DownloadFileRequest downloadFileRequest = param.downloadFileRequest;
+            var param = state as DownloadPartExcuteParam;
+            var downloadCheckPoint = param.downloadCheckPoint;
+            var downloadPart = param.downloadPart;
+            var downloadFileRequest = param.downloadFileRequest;
 
-            PartResultDown partResultDown = new PartResultDown();
+            var partResultDown = new PartResultDown();
 
             try
             {
                 if (!downloadCheckPoint.IsDownloadAbort)
                 {
 
-                    GetObjectRequest getObjectRequest = new GetObjectRequest()
+                    var getObjectRequest = new GetObjectRequest
                     {
-                        BucketName = downloadCheckPoint.BucketName,
-                        ObjectKey = downloadCheckPoint.ObjectKey,
-                        ByteRange = new ByteRange(downloadPart.Start, downloadPart.End),
-                        SseCHeader = downloadFileRequest.SseCHeader,
-                        VersionId = downloadCheckPoint.VersionId
+                        BucketName        = downloadCheckPoint.BucketName,
+                        ObjectKey         = downloadCheckPoint.ObjectKey,
+                        ByteRange         = new ByteRange(downloadPart.Start, downloadPart.End),
+                        SseCHeader        = downloadFileRequest.SseCHeader,
+                        VersionId         = downloadCheckPoint.VersionId,
+                        IfMatch           = downloadFileRequest.IfMatch,
+                        IfNoneMatch       = downloadFileRequest.IfNoneMatch,
+                        IfModifiedSince   = downloadFileRequest.IfModifiedSince,
+                        IfUnmodifiedSince = downloadFileRequest.IfUnmodifiedSince
                     };
-                    getObjectRequest.IfMatch = downloadFileRequest.IfMatch;
-                    getObjectRequest.IfNoneMatch = downloadFileRequest.IfNoneMatch;
-                    getObjectRequest.IfModifiedSince = downloadFileRequest.IfModifiedSince;
-                    getObjectRequest.IfUnmodifiedSince = downloadFileRequest.IfUnmodifiedSince;
 
 
-                    GetObjectResponse getObjectResponse = this.GetObject(getObjectRequest);
+                    var getObjectResponse = this.GetObject(getObjectRequest);
 
                     if (getObjectResponse.OutputStream == null || getObjectResponse.ContentLength == 0)
                     {
@@ -1197,7 +1222,7 @@ namespace OBS
                         {
                             if (param.mgr != null)
                             {
-                                TransferStream stream = new TransferStream(getObjectResponse.OutputStream);
+                                var stream = new TransferStream(getObjectResponse.OutputStream);
                                 stream.BytesReaded += param.mgr.BytesTransfered;
                                 stream.StartRead += param.mgr.TransferStart;
                                 stream.BytesReset += param.mgr.TransferReset;
@@ -1213,19 +1238,17 @@ namespace OBS
                                 throw new ObsException("The length of the response returned is not the same as expected.");
                             }
 
-                            using (FileStream output = new FileStream(downloadFileRequest.TempDownloadFile, FileMode.Open, FileAccess.Write, FileShare.ReadWrite,
-                                Constants.DefaultBufferSize))
+                            using var output = new FileStream(downloadFileRequest.TempDownloadFile, FileMode.Open, FileAccess.Write, FileShare.ReadWrite,
+                                Constants.DefaultBufferSize);
+                            output.Seek(downloadPart.Start, SeekOrigin.Begin);
+
+                            var buffer = new byte[Constants.DefaultBufferSize];
+
+                            var bytesRead = 0;
+
+                            while ((bytesRead = content.Read(buffer, 0, buffer.Length)) > 0)
                             {
-                                output.Seek(downloadPart.Start, SeekOrigin.Begin);
-
-                                byte[] buffer = new byte[Constants.DefaultBufferSize];
-
-                                int bytesRead = 0;
-
-                                while ((bytesRead = content.Read(buffer, 0, buffer.Length)) > 0)
-                                {
-                                    output.Write(buffer, 0, bytesRead);
-                                }
+                                output.Write(buffer, 0, bytesRead);
                             }
                         }
                         finally
@@ -1254,9 +1277,11 @@ namespace OBS
 
                     if (param.eventHandler != null)
                     {
-                        ResumableDownloadEvent e = new ResumableDownloadEvent();
-                        e.EventType = ResumableDownloadEventTypeEnum.DownloadPartSucceed;
-                        e.PartNumber = downloadPart.PartNumber;
+                        var e = new ResumableDownloadEvent
+                        {
+                            EventType  = ResumableDownloadEventTypeEnum.DownloadPartSucceed,
+                            PartNumber = downloadPart.PartNumber
+                        };
                         param.eventHandler(this, e);
                     }
                 }
@@ -1280,9 +1305,11 @@ namespace OBS
                 partResultDown.Exception = ex;
                 if (param.eventHandler != null)
                 {
-                    ResumableDownloadEvent e = new ResumableDownloadEvent();
-                    e.EventType = ResumableDownloadEventTypeEnum.DownloadPartFailed;
-                    e.PartNumber = downloadPart.PartNumber;
+                    var e = new ResumableDownloadEvent
+                    {
+                        EventType  = ResumableDownloadEventTypeEnum.DownloadPartFailed,
+                        PartNumber = downloadPart.PartNumber
+                    };
                     param.eventHandler(this, e);
                 }
             }
@@ -1294,14 +1321,18 @@ namespace OBS
                 }
 
                 partResultDown.IsFailed = true;
-                ObsException exception = new ObsException(ex.Message, ex);
-                exception.ErrorType = ErrorType.Sender;
+                var exception = new ObsException(ex.Message, ex)
+                {
+                    ErrorType = ErrorType.Sender
+                };
                 partResultDown.Exception = exception;
                 if (param.eventHandler != null)
                 {
-                    ResumableDownloadEvent e = new ResumableDownloadEvent();
-                    e.EventType = ResumableDownloadEventTypeEnum.DownloadPartFailed;
-                    e.PartNumber = downloadPart.PartNumber;
+                    var e = new ResumableDownloadEvent
+                    {
+                        EventType  = ResumableDownloadEventTypeEnum.DownloadPartFailed,
+                        PartNumber = downloadPart.PartNumber
+                    };
                     param.eventHandler(this, e);
                 }
             }
@@ -1332,8 +1363,10 @@ namespace OBS
             {
                 if (partResultDown.IsCompleted)
                 {
-                    PartResultDown result = new PartResultDown();
-                    result.IsFailed = false;
+                    var result = new PartResultDown
+                    {
+                        IsFailed = false
+                    };
                     partResultsDowns.Add(result);
                     transferredBytes += (partResultDown.End - partResultDown.Start) + 1;
                 }
@@ -1367,18 +1400,20 @@ namespace OBS
                 mgr = null;
             }
 
-            int taskNum = Math.Min(downloadFileRequest.TaskNum, downloadParts.Count);
+            var taskNum = Math.Min(downloadFileRequest.TaskNum, downloadParts.Count);
             ManualResetEvent[] events = new ManualResetEvent[taskNum];
             DownloadPartExcuteParam[] executeParams = new DownloadPartExcuteParam[taskNum];
-            for (int i = 0; i < taskNum; i++)
+            for (var i = 0; i < taskNum; i++)
             {
-                DownloadPartExcuteParam param = new DownloadPartExcuteParam();
-                param.downloadPart = downloadParts[i];
-                param.downloadCheckPoint = downloadCheckPoint;
-                param.executeEvent = new ManualResetEvent(false);
-                param.downloadFileRequest = downloadFileRequest;
-                param.eventHandler = downloadFileRequest.DownloadEventHandler;
-                param.mgr = mgr;
+                var param = new DownloadPartExcuteParam
+                {
+                    downloadPart        = downloadParts[i],
+                    downloadCheckPoint  = downloadCheckPoint,
+                    executeEvent        = new ManualResetEvent(false),
+                    downloadFileRequest = downloadFileRequest,
+                    eventHandler        = downloadFileRequest.DownloadEventHandler,
+                    mgr                 = mgr
+                };
                 events[i] = param.executeEvent;
                 executeParams[i] = param;
                 ThreadPool.QueueUserWorkItem(DownloadPartExcute, param);
@@ -1393,8 +1428,8 @@ namespace OBS
                     {
                         break;
                     }
-                    int finished = WaitHandle.WaitAny(events);
-                    DownloadPartExcuteParam finishedParam = executeParams[finished];
+                    var finished = WaitHandle.WaitAny(events);
+                    var finishedParam = executeParams[finished];
                     partResultsDowns.Add(finishedParam.partResultDown);
                     finishedParam.partResultDown = null;
                     finishedParam.downloadPart = downloadParts[taskNum++];
@@ -1405,9 +1440,9 @@ namespace OBS
             finally
             {
                 WaitHandle.WaitAll(events);
-                for (int i = 0; i < events.Length; i++)
+                for (var i = 0; i < events.Length; i++)
                 {
-                    DownloadPartExcuteParam finishedParam = executeParams[i];
+                    var finishedParam = executeParams[i];
                     partResultsDowns.Add(finishedParam.partResultDown);
                     events[i].Close();
                 }
@@ -1440,26 +1475,24 @@ namespace OBS
 
             catch (Exception)
             {
-                byte[] buffer = new byte[Constants.DefaultBufferSize];
-                int bytesRead = 0;
+                var buffer = new byte[Constants.DefaultBufferSize];
+                var bytesRead = 0;
 
                 try
                 {
-                    using (FileStream tempDownloadStream = new FileStream(tempDownloadFilePath, FileMode.Open))
+                    using var tempDownloadStream = new FileStream(tempDownloadFilePath, FileMode.Open);
+                    while ((bytesRead = tempDownloadStream.Read(buffer, 0, buffer.Length)) > 0)
                     {
-                        while ((bytesRead = tempDownloadStream.Read(buffer, 0, buffer.Length)) > 0)
-                        {
-                            using (FileStream downloadStream = new FileStream(downloadFilePath, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite, Constants.DefaultBufferSize))
-                            {
-                                downloadStream.Write(buffer, 0, bytesRead);
-                            }
-                        }
+                        using var downloadStream = new FileStream(downloadFilePath, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite, Constants.DefaultBufferSize);
+                        downloadStream.Write(buffer, 0, bytesRead);
                     }
                 }
                 catch (Exception ex)
                 {
-                    ObsException exception = new ObsException(ex.Message, ex);
-                    exception.ErrorType = ErrorType.Sender;
+                    var exception = new ObsException(ex.Message, ex)
+                    {
+                        ErrorType = ErrorType.Sender
+                    };
                     throw exception;
                 }
                 finally

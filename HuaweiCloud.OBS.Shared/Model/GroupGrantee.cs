@@ -60,7 +60,7 @@ namespace OBS.Model
                 return false;
             }
 
-            GroupGrantee _obj = obj as GroupGrantee;
+            var _obj = obj as GroupGrantee;
             return this.GroupGranteeType == _obj.GroupGranteeType;
         }
 

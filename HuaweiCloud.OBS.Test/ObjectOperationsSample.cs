@@ -108,13 +108,13 @@ namespace ObsDemo
         {
             try
             {
-                PutObjectRequest request = new PutObjectRequest()
+                var request = new PutObjectRequest()
                 {
                     BucketName = bucketName,
                     ObjectKey = objectName,
                     FilePath = filePath
                 };
-                PutObjectResponse response = client.PutObject(request);
+                var response = client.PutObject(request);
 
                 Console.WriteLine("PutObject response: {0}", response.StatusCode);
             }
@@ -131,23 +131,21 @@ namespace ObsDemo
         {
             try
             {
-                GetObjectRequest request = new GetObjectRequest()
+                var request = new GetObjectRequest()
                 {
                     BucketName = bucketName,
                     ObjectKey = objectName,
                 };
 
-                using (GetObjectResponse response = client.GetObject(request))
+                using var response = client.GetObject(request);
+                //save the object to file with specified path
+                var dest = "savepath";
+                if (!File.Exists(dest))
                 {
-                    //save the object to file with specified path
-                    string dest = "savepath";
-                    if (!File.Exists(dest))
-                    {
-                        response.WriteResponseStreamToFile(dest);
-                    }
-
-                    Console.WriteLine("Get object response: {0}", response.StatusCode);
+                    response.WriteResponseStreamToFile(dest);
                 }
+
+                Console.WriteLine("Get object response: {0}", response.StatusCode);
             }
             catch (ObsException ex)
             {
@@ -162,14 +160,14 @@ namespace ObsDemo
         {
             try
             {
-                CopyObjectRequest request = new CopyObjectRequest()
+                var request = new CopyObjectRequest()
                 {
                     SourceBucketName = bucketName,
                     SourceObjectKey = objectName,
                     SourceVersionId = versionId,
                     ObjectKey = destobjectName,
                 };
-                CopyObjectResponse response = client.CopyObject(request);
+                var response = client.CopyObject(request);
                 Console.WriteLine("CopyObject response: {0}", response.StatusCode);
             }
             catch (ObsException ex)
@@ -185,13 +183,13 @@ namespace ObsDemo
         {
             try
             {
-                DeleteObjectRequest request = new DeleteObjectRequest()
+                var request = new DeleteObjectRequest()
                 {
                     BucketName = bucketName,
                     ObjectKey = objectName,
                     VersionId = versionId,
                 };
-                DeleteObjectResponse response = client.DeleteObject(request);
+                var response = client.DeleteObject(request);
 
                 Console.WriteLine("Deleted object response: {0}", response.StatusCode);
             }
@@ -208,13 +206,15 @@ namespace ObsDemo
         {
             try
             {
-                DeleteObjectsRequest request = new DeleteObjectsRequest();
-                request.BucketName = bucketName;
-                request.Quiet = true;
+                var request = new DeleteObjectsRequest
+                {
+                    BucketName = bucketName,
+                    Quiet      = true
+                };
                 request.AddKey(objectName);
                 request.AddKey(destobjectName);
 
-                DeleteObjectsResponse response = client.DeleteObjects(request);
+                var response = client.DeleteObjects(request);
 
                 Console.WriteLine("Delete objects response: {0}", response.StatusCode);
             }
@@ -231,12 +231,12 @@ namespace ObsDemo
         {
             try
             {
-                GetObjectMetadataRequest request = new GetObjectMetadataRequest()
+                var request = new GetObjectMetadataRequest()
                 {
                     BucketName = bucketName,
                     ObjectKey = objectName
                 };
-                GetObjectMetadataResponse response = client.GetObjectMetadata(request);
+                var response = client.GetObjectMetadata(request);
 
                 Console.WriteLine("Get object metadata response: {0}", response.StatusCode);
             }
@@ -253,14 +253,14 @@ namespace ObsDemo
         {
             try
             {
-                SetObjectAclRequest request = new SetObjectAclRequest()
+                var request = new SetObjectAclRequest()
                 {
                     BucketName = bucketName,
                     ObjectKey = objectName,
                     CannedAcl = CannedAclEnum.PublicRead
                 };
 
-                SetObjectAclResponse response = client.SetObjectAcl(request);
+                var response = client.SetObjectAcl(request);
 
                 Console.WriteLine("Set object acl response: {0}.", response.StatusCode);
             }
@@ -277,18 +277,18 @@ namespace ObsDemo
         {
             try
             {
-                GetObjectAclRequest request = new GetObjectAclRequest()
+                var request = new GetObjectAclRequest()
                 {
                     BucketName = bucketName,
                     ObjectKey = objectName
                 };
-                GetObjectAclResponse response = client.GetObjectAcl(request);
+                var response = client.GetObjectAcl(request);
 
                 Console.WriteLine("Get object acl response: {0}.", response.StatusCode);
 
-                foreach (Grant grant in response.AccessControlList.Grants)
+                foreach (var grant in response.AccessControlList.Grants)
                 {
-                    CanonicalGrantee grantee = (CanonicalGrantee)grant.Grantee;
+                    var grantee = (CanonicalGrantee)grant.Grantee;
                     Console.WriteLine("Grantee canonical user id: {0}", grantee.Id);
                     Console.WriteLine("Grantee canonical user display name: {0}", grantee.DisplayName);
                     Console.WriteLine("Grant permission: {0}", grant.Permission);
@@ -307,14 +307,14 @@ namespace ObsDemo
         {
             try
             {
-                AppendObjectRequest request = new AppendObjectRequest()
+                var request = new AppendObjectRequest()
                 {
                     BucketName = bucketName,
                     ObjectKey = objectName,
                     FilePath = filePath,
                     Position = 10
                 };
-                AppendObjectResponse response = client.AppendObject(request);
+                var response = client.AppendObject(request);
 
                 Console.WriteLine("Append object response: {0}", response.StatusCode);
                 Console.WriteLine("ETag: {0}", response.ETag);
@@ -334,7 +334,7 @@ namespace ObsDemo
         {
             try
             {
-                RestoreObjectRequest request = new RestoreObjectRequest()
+                var request = new RestoreObjectRequest()
                 {
                     BucketName = bucketName,
                     ObjectKey = objectName,
@@ -342,7 +342,7 @@ namespace ObsDemo
                     Tier = RestoreTierEnum.Expedited,
                     VersionId = versionId
                 };
-                RestoreObjectResponse response = client.RestoreObject(request);
+                var response = client.RestoreObject(request);
 
                 Console.WriteLine("Get restore object response: {0}", response.StatusCode);
             }
@@ -359,12 +359,12 @@ namespace ObsDemo
         {
             try
             {
-                InitiateMultipartUploadRequest request = new InitiateMultipartUploadRequest()
+                var request = new InitiateMultipartUploadRequest()
                 {
                     BucketName = bucketName,
                     ObjectKey = objectName,
                 };
-                InitiateMultipartUploadResponse response = client.InitiateMultipartUpload(request);
+                var response = client.InitiateMultipartUpload(request);
 
                 Console.WriteLine("Initiate multipart upload response: {0}", response.StatusCode);
                 Console.WriteLine("upload id: {0}", response.UploadId);
@@ -383,13 +383,13 @@ namespace ObsDemo
         {
             try
             {
-                AbortMultipartUploadRequest request = new AbortMultipartUploadRequest()
+                var request = new AbortMultipartUploadRequest()
                 {
                     BucketName = bucketName,
                     ObjectKey = objectName,
                     UploadId = uploadId
                 };
-                AbortMultipartUploadResponse response = client.AbortMultipartUpload(request);
+                var response = client.AbortMultipartUpload(request);
 
                 Console.WriteLine("Abort multipart upload response: {0}", response.StatusCode);
             }
@@ -407,19 +407,21 @@ namespace ObsDemo
             try
             {
                 List<PartETag> partEtags = new List<PartETag>();
-                PartETag partEtag1 = new PartETag();
-                partEtag1.PartNumber = 1;
-                partEtag1.ETag = etag;
+                var            partEtag1 = new PartETag
+                {
+                    PartNumber = 1,
+                    ETag       = etag
+                };
                 partEtags.Add(partEtag1);
 
-                CompleteMultipartUploadRequest request = new CompleteMultipartUploadRequest()
+                var request = new CompleteMultipartUploadRequest()
                 {
                     BucketName = bucketName,
                     ObjectKey = objectName,
                     UploadId = uploadId,
                     PartETags = partEtags
                 };
-                CompleteMultipartUploadResponse response = client.CompleteMultipartUpload(request);
+                var response = client.CompleteMultipartUpload(request);
 
                 Console.WriteLine("Complete multipart upload response: {0}", response.StatusCode);
             }
@@ -436,7 +438,7 @@ namespace ObsDemo
         {
             try
             {
-                UploadPartRequest request = new UploadPartRequest()
+                var request = new UploadPartRequest()
                 {
                     BucketName = bucketName,
                     ObjectKey = objectName,
@@ -446,7 +448,7 @@ namespace ObsDemo
                     UploadId = uploadId,
                     Offset = 100,
                 };
-                UploadPartResponse response = client.UploadPart(request);
+                var response = client.UploadPart(request);
 
                 Console.WriteLine("UploadPart response: {0}", response.StatusCode);
                 Console.WriteLine("ETag: {0}", response.ETag);
@@ -465,9 +467,9 @@ namespace ObsDemo
         {
             try
             {
-                ByteRange range = new ByteRange(10, 20);
+                var range = new ByteRange(10, 20);
 
-                CopyPartRequest request = new CopyPartRequest()
+                var request = new CopyPartRequest()
                 {
                     SourceBucketName = bucketName,
                     SourceObjectKey = objectName,
@@ -477,7 +479,7 @@ namespace ObsDemo
                     UploadId = uploadId,
                     ByteRange = range
                 };
-                CopyPartResponse response = client.CopyPart(request);
+                var response = client.CopyPart(request);
 
                 Console.WriteLine("Copy part response: {0}", response.StatusCode);
                 Console.WriteLine("ETag: {0}", response.ETag);
@@ -496,7 +498,7 @@ namespace ObsDemo
         {
             try
             {
-                ListPartsRequest request = new ListPartsRequest()
+                var request = new ListPartsRequest()
                 {
                     BucketName = bucketName,
                     ObjectKey = objectName,
@@ -504,7 +506,7 @@ namespace ObsDemo
                     MaxParts = 10,
                     PartNumberMarker = 1,
                 };
-                ListPartsResponse response = client.ListParts(request);
+                var response = client.ListParts(request);
 
                 Console.WriteLine("List parts response: {0}", response.StatusCode);
                 Console.WriteLine("Lis parts count: " + response.Parts.Count);

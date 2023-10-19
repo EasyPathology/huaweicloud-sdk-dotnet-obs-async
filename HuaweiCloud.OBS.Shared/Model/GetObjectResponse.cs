@@ -31,11 +31,11 @@ namespace OBS.Model
 
         internal override void HandleObsWebServiceRequest(ObsWebServiceRequest req)
         {
-            GetObjectRequest request = req as GetObjectRequest;
+            var request = req as GetObjectRequest;
 
             if (request != null && request.DownloadProgress != null && this.OutputStream != null && this.ContentLength > 0)
             {
-                TransferStream stream = new TransferStream(this.OutputStream);
+                var stream = new TransferStream(this.OutputStream);
 
                 TransferStreamManager mgr;
                 if (request.ProgressType == ProgressTypeEnum.ByBytes)
@@ -95,29 +95,28 @@ namespace OBS.Model
             try
             {
                 filePath = System.IO.Path.GetFullPath(filePath);
-                FileInfo fi = new FileInfo(filePath);
+                var fi = new FileInfo(filePath);
                 Directory.CreateDirectory(fi.DirectoryName);
 
-                FileMode fm = FileMode.Create;
+                var fm = FileMode.Create;
                 if (append && File.Exists(filePath))
                 {
                     fm = FileMode.Append;
                 }
-                using (Stream downloadStream = new FileStream(filePath, fm, FileAccess.Write, FileShare.Read, Constants.DefaultBufferSize))
-                {
-                    long current = 0;
-                    byte[] buffer = new byte[Constants.DefaultBufferSize];
-                    int bytesRead = 0;
-                    while ((bytesRead = this.OutputStream.Read(buffer, 0, buffer.Length)) > 0)
-                    {
-                        downloadStream.Write(buffer, 0, bytesRead);
-                        current += bytesRead;
 
-                    }
-                    if (current != this.ContentLength)
-                    {
-                        throw new ObsException(string.Format("The total bytes read {0} from response stream is not equal to the Content-Length {1}", current, this.ContentLength), ErrorType.Receiver, null);
-                    }
+                using Stream downloadStream = new FileStream(filePath, fm, FileAccess.Write, FileShare.Read, Constants.DefaultBufferSize);
+                long         current        = 0;
+                var          buffer         = new byte[Constants.DefaultBufferSize];
+                var          bytesRead      = 0;
+                while ((bytesRead = this.OutputStream.Read(buffer, 0, buffer.Length)) > 0)
+                {
+                    downloadStream.Write(buffer, 0, bytesRead);
+                    current += bytesRead;
+
+                }
+                if (current != this.ContentLength)
+                {
+                    throw new ObsException(string.Format("The total bytes read {0} from response stream is not equal to the Content-Length {1}", current, this.ContentLength), ErrorType.Receiver, null);
                 }
             }
             catch (ObsException ex)
@@ -134,8 +133,10 @@ namespace OBS.Model
                 {
                     LoggerMgr.Error(ex.Message, ex);
                 }
-                ObsException exception = new ObsException(ex.Message, ex);
-                exception.ErrorType = ErrorType.Receiver;
+                var exception = new ObsException(ex.Message, ex)
+                {
+                    ErrorType = ErrorType.Receiver
+                };
                 throw exception;
             }
             finally

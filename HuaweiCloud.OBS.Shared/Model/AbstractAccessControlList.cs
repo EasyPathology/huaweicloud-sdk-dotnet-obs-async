@@ -48,9 +48,11 @@ namespace OBS.Model
         /// <param name="permission">Permission information</param>
         public void AddGrant(Grantee grantee, PermissionEnum permission)
         {
-            Grant grant = new Grant { };
-            grant.Grantee = grantee;
-            grant.Permission = permission;
+            var grant = new Grant
+            {
+                Grantee    = grantee,
+                Permission = permission
+            };
             Grants.Add(grant);
         }
 
@@ -61,7 +63,7 @@ namespace OBS.Model
         /// <param name="permission">Permission information</param>
         public void RemoveGrant(Grantee grantee, PermissionEnum permission)
         {
-            foreach (Grant grant in Grants)
+            foreach (var grant in Grants)
             {
                 if (grant.Grantee.Equals(grantee) && grant.Permission == permission)
                 {
@@ -78,14 +80,14 @@ namespace OBS.Model
         public void RemoveGrant(Grantee grantee)
         {
             IList<Grant> removeList = new List<Grant>();
-            foreach (Grant grant in Grants)
+            foreach (var grant in Grants)
             {
                 if (grant.Grantee.Equals(grantee))
                 {
                     removeList.Add(grant);
                 }
             }
-            foreach (Grant grant in removeList)
+            foreach (var grant in removeList)
             {
                 this.Grants.Remove(grant);
             }

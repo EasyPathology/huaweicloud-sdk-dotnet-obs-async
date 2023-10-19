@@ -83,7 +83,7 @@ namespace OBS.Internal
                 {
                     if (!ParseMethodsHolder.ContainsKey(responseType))
                     {
-                        MethodInfo info = iparser.GetType().GetMethod("Parse" + responseType.Name, BindingFlags.Public | BindingFlags.Instance, null,
+                        var info = iparser.GetType().GetMethod("Parse" + responseType.Name, BindingFlags.Public | BindingFlags.Instance, null,
                    new Type[] { typeof(HttpResponse) }, null);
                         ParseMethodsHolder.Add(responseType, info);
                     }
@@ -103,9 +103,9 @@ namespace OBS.Internal
                     continue;
                 }
 
-                string key = header.Key.Trim();
-                string value = header.Value == null ? "" : header.Value;
-                bool isValid = false;
+                var key = header.Key.Trim();
+                var value = header.Value == null ? "" : header.Value;
+                var isValid = false;
                 if (key.StartsWith(headerPrefix, StringComparison.OrdinalIgnoreCase) || key.StartsWith(Constants.ObsHeaderPrefix, StringComparison.OrdinalIgnoreCase) || Constants.AllowedRequestHttpHeaders.Contains(key.ToLower()))
                 {
                     isValid = true;
@@ -136,8 +136,8 @@ namespace OBS.Internal
 
         public static void WriteTo(Stream src, Stream dest, int bufferSize, ObsCallback callback)
         {
-            DateTime reqTime = DateTime.Now;
-            byte[] buffer = new byte[bufferSize];
+            var reqTime = DateTime.Now;
+            var buffer = new byte[bufferSize];
             int bytesRead;
             while ((bytesRead = src.Read(buffer, 0, buffer.Length)) > 0)
             {
@@ -157,7 +157,7 @@ namespace OBS.Internal
             {
                 throw new ArgumentNullException("Endpoint is null");
             }
-            UriBuilder ub = new UriBuilder(endpoint);
+            var ub = new UriBuilder(endpoint);
 
             return IPPattern.IsMatch(ub.Host);
         }
@@ -185,13 +185,13 @@ namespace OBS.Internal
 
         public static long WriteTo(Stream orignStream, Stream destStream, long totalSize, int bufferSize, ObsCallback callback)
         {
-            DateTime reqTime = DateTime.Now;
-            byte[] buffer = new byte[bufferSize];
+            var reqTime = DateTime.Now;
+            var buffer = new byte[bufferSize];
 
             long alreadyRead = 0;
             while (alreadyRead < totalSize)
             {
-                int readSize = orignStream.Read(buffer, 0, bufferSize);
+                var readSize = orignStream.Read(buffer, 0, bufferSize);
                 if (readSize <= 0)
                 {
                     break;
@@ -218,7 +218,7 @@ namespace OBS.Internal
 
         public static string ConvertHeadersToString(IDictionary<String, String> headers)
         {
-            StringBuilder headerString = new StringBuilder();
+            var headerString = new StringBuilder();
             headerString.Append("{");
             if (headers != null)
             {
@@ -235,31 +235,31 @@ namespace OBS.Internal
 
         public static byte[] HmacSha1(string key, string toSign)
         {
-            byte[] byteToSign = Encoding.UTF8.GetBytes(toSign);
-            byte[] byteKey = Encoding.UTF8.GetBytes(key);
-            HMACSHA1 hmac = new HMACSHA1(byteKey);
+            var byteToSign = Encoding.UTF8.GetBytes(toSign);
+            var byteKey = Encoding.UTF8.GetBytes(key);
+            var hmac = new HMACSHA1(byteKey);
             return hmac.ComputeHash(byteToSign);
         }
 
         public static byte[] HmacSha256(byte[] key, string toSign)
         {
-            byte[] byteToSign = Encoding.UTF8.GetBytes(toSign);
-            HMACSHA256 hmac = new HMACSHA256(key);
+            var byteToSign = Encoding.UTF8.GetBytes(toSign);
+            var hmac = new HMACSHA256(key);
             return hmac.ComputeHash(byteToSign);
         }
 
         public static byte[] HmacSha256(string key, string toSign)
         {
-            byte[] byteToSign = Encoding.UTF8.GetBytes(toSign);
-            byte[] byteKey = Encoding.UTF8.GetBytes(key);
-            HMACSHA256 hmac = new HMACSHA256(byteKey);
+            var byteToSign = Encoding.UTF8.GetBytes(toSign);
+            var byteKey = Encoding.UTF8.GetBytes(key);
+            var hmac = new HMACSHA256(byteKey);
             return hmac.ComputeHash(byteToSign);
         }
 
         public static string ToHex(byte[] data)
         {
-            StringBuilder sbBytes = new StringBuilder(data.Length * 2);
-            foreach (byte b in data)
+            var sbBytes = new StringBuilder(data.Length * 2);
+            foreach (var b in data)
             {
                 sbBytes.AppendFormat("{0:x2}", b);
             }
@@ -303,11 +303,11 @@ namespace OBS.Internal
 
         public static string ConvertParamsToCanonicalQueryString(List<KeyValuePair<string, string>> kvlist)
         {
-            StringBuilder queryString = new StringBuilder();
+            var queryString = new StringBuilder();
             if (kvlist != null && kvlist.Count > 0)
             {
-                int cnt = kvlist.Count;
-                int index = 0;
+                var cnt = kvlist.Count;
+                var index = 0;
                 foreach (KeyValuePair<string, string> p in kvlist)
                 {
                     queryString.Append(UrlEncode(p.Key, Constants.DefaultEncoding, "/")).Append("=").Append(UrlEncode(p.Value == null ? "" : p.Value, Constants.DefaultEncoding));
@@ -323,11 +323,11 @@ namespace OBS.Internal
 
         public static string ConvertParamsToString(IDictionary<string, string> parameters)
         {
-            StringBuilder queryString = new StringBuilder();
+            var queryString = new StringBuilder();
             if (parameters != null && parameters.Count > 0)
             {
 
-                bool isFirst = true;
+                var isFirst = true;
 
                 foreach (KeyValuePair<string, string> p in parameters)
                 {
@@ -358,8 +358,8 @@ namespace OBS.Internal
         {
             if (chineseOnly)
             {
-                StringBuilder sb = new StringBuilder();
-                foreach (char c in uriToEncode)
+                var sb = new StringBuilder();
+                foreach (var c in uriToEncode)
                 {
                     if (ChinesePattern.IsMatch(c.ToString()))
                     {
@@ -402,11 +402,11 @@ namespace OBS.Internal
             }
 
             const string escapeFlag = "%";
-            StringBuilder encodedUri = new StringBuilder(uriToEncode.Length * 2);
-            byte[] bytes = Encoding.GetEncoding(charset).GetBytes(uriToEncode);
-            foreach (byte b in bytes)
+            var encodedUri = new StringBuilder(uriToEncode.Length * 2);
+            var bytes = Encoding.GetEncoding(charset).GetBytes(uriToEncode);
+            foreach (var b in bytes)
             {
-                char ch = (char)b;
+                var ch = (char)b;
                 if (Constants.AllowedInUrl.IndexOf(ch) != -1)
                 {
                     encodedUri.Append(ch);

@@ -84,7 +84,7 @@ namespace OBS
         /// <returns>Response to a part upload request</returns>
         public UploadPartResponse UploadPart(UploadPartRequest request)
         {
-            UploadPartResponse response = this.DoRequest<UploadPartRequest, UploadPartResponse>(request, delegate ()
+            var response = this.DoRequest<UploadPartRequest, UploadPartResponse>(request, delegate ()
             {
                 if (request.ObjectKey == null)
                 {
@@ -114,7 +114,7 @@ namespace OBS
         /// <returns> Response to a part copy request</returns>
         public CopyPartResponse CopyPart(CopyPartRequest request)
         {
-            CopyPartResponse response = this.DoRequest<CopyPartRequest, CopyPartResponse>(request, delegate ()
+            var response = this.DoRequest<CopyPartRequest, CopyPartResponse>(request, delegate ()
             {
                 if (request.ObjectKey == null)
                 {
@@ -150,7 +150,7 @@ namespace OBS
         /// <returns>Response to an object download request</returns>
         public GetObjectResponse GetObject(GetObjectRequest request)
         {
-            GetObjectResponse response = this.DoRequest<GetObjectRequest, GetObjectResponse>(request, delegate ()
+            var response = this.DoRequest<GetObjectRequest, GetObjectResponse>(request, delegate ()
             {
                 if (request.ObjectKey == null)
                 {
@@ -169,7 +169,7 @@ namespace OBS
         /// <returns>Response to a request for obtaining object properties</returns>
         public GetObjectMetadataResponse GetObjectMetadata(GetObjectMetadataRequest request)
         {
-            GetObjectMetadataResponse response = this.DoRequest<GetObjectMetadataRequest, GetObjectMetadataResponse>(request, delegate ()
+            var response = this.DoRequest<GetObjectMetadataRequest, GetObjectMetadataResponse>(request, delegate ()
             {
                 if (request.ObjectKey == null)
                 {
@@ -207,9 +207,11 @@ namespace OBS
         /// <returns>Response to a request for obtaining object properties</returns>
         public GetObjectMetadataResponse GetObjectMetadata(string bucketName, string objectKey)
         {
-            GetObjectMetadataRequest request = new GetObjectMetadataRequest();
-            request.BucketName = bucketName;
-            request.ObjectKey = objectKey;
+            var request = new GetObjectMetadataRequest
+            {
+                BucketName = bucketName,
+                ObjectKey  = objectKey
+            };
             return this.GetObjectMetadata(request);
         }
 
@@ -223,10 +225,12 @@ namespace OBS
         /// <returns>Response to a request for obtaining object properties</returns>
         public GetObjectMetadataResponse GetObjectMetadata(string bucketName, string objectKey, string versionId)
         {
-            GetObjectMetadataRequest request = new GetObjectMetadataRequest();
-            request.BucketName = bucketName;
-            request.ObjectKey = objectKey;
-            request.VersionId = versionId;
+            var request = new GetObjectMetadataRequest
+            {
+                BucketName = bucketName,
+                ObjectKey  = objectKey,
+                VersionId  = versionId
+            };
             return this.GetObjectMetadata(request);
         }
 

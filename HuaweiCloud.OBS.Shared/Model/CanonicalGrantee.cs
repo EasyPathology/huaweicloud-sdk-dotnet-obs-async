@@ -68,7 +68,7 @@ namespace OBS.Model
                 return false;
             }
 
-            CanonicalGrantee _obj = obj as CanonicalGrantee;
+            var _obj = obj as CanonicalGrantee;
             if (string.IsNullOrEmpty(this.Id))
             {
                 if (string.IsNullOrEmpty(_obj.Id))

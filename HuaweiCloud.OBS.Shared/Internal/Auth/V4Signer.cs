@@ -45,7 +45,7 @@ namespace OBS.Internal.Auth
         {
             IDictionary<string, string> ret = this.GetSignature(request, context, iheaders);
 
-            string auth = new StringBuilder(Algorithm).Append(" ")
+            var auth = new StringBuilder(Algorithm).Append(" ")
                 .Append("Credential=").Append(context.SecurityProvider.Ak).Append("/").Append(ret["ShortDate"])
                 .Append(ScopeSuffix).Append(",SignedHeaders=").Append(ret["SignedHeaders"])
                 .Append(",Signature=").Append(ret["Signature"])
@@ -55,7 +55,7 @@ namespace OBS.Internal.Auth
 
         internal static string CaculateSignature(string stringToSign, string shortDate, string sk)
         {
-            byte[] key = CommonUtil.HmacSha256("AWS4" + sk, shortDate);
+            var key = CommonUtil.HmacSha256("AWS4" + sk, shortDate);
             key = CommonUtil.HmacSha256(key, RegionKey);
             key = CommonUtil.HmacSha256(key, ServiceKey);
             key = CommonUtil.HmacSha256(key, RequestKey);
@@ -82,7 +82,7 @@ namespace OBS.Internal.Auth
                 longDate = DateTime.UtcNow.ToString(Constants.LongDateFormat, Constants.CultureInfo);
             }
 
-            string shortDate = longDate.Substring(0, longDate.IndexOf("T"));
+            var shortDate = longDate.Substring(0, longDate.IndexOf("T"));
             IDictionary<string, string> tempDict = new Dictionary<string, string>();
             tempDict.Add("LongDate", longDate);
             tempDict.Add("ShortDate", shortDate);
@@ -102,10 +102,10 @@ namespace OBS.Internal.Auth
 
         internal static string GetSignedHeaders(List<string> klist)
         {
-            StringBuilder signedHeaders = new StringBuilder();
-            int index = 0;
-            int cnt = klist.Count;
-            foreach (string k in klist)
+            var signedHeaders = new StringBuilder();
+            var index = 0;
+            var cnt = klist.Count;
+            foreach (var k in klist)
             {
                 signedHeaders.Append(k);
                 if (index++ != cnt - 1)
@@ -120,7 +120,7 @@ namespace OBS.Internal.Auth
         internal static string GetTemporarySignature(HttpRequest request, HttpContext context, IHeaders iheaders, IDictionary<string, string> dateDict, string signedHeaders,
             IDictionary<string, string> headerDict, List<string> signedHeaderList, string payload)
         {
-            StringBuilder canonicalRequest = new StringBuilder();
+            var canonicalRequest = new StringBuilder();
             canonicalRequest.Append(request.Method).Append("\n");
 
             // Canonical URI
@@ -183,7 +183,7 @@ namespace OBS.Internal.Auth
                 }
             }
 
-            foreach (string key in signedHeaderList)
+            foreach (var key in signedHeaderList)
             {
                 canonicalRequest.Append(key).Append(":").Append(headerDict[key]).Append("\n");
             }
@@ -202,7 +202,7 @@ namespace OBS.Internal.Auth
                 LoggerMgr.Debug("CanonicalRequest: ******");
             }
 
-            StringBuilder stringToSign = new StringBuilder(Algorithm).Append("\n")
+            var stringToSign = new StringBuilder(Algorithm).Append("\n")
                 .Append(dateDict["LongDate"]).Append("\n")
                 .Append(dateDict["ShortDate"]).Append(ScopeSuffix).Append("\n")
                 .Append(CommonUtil.HexSha256(canonicalRequest.ToString()));
@@ -231,11 +231,11 @@ namespace OBS.Internal.Auth
             }
 
             List<string> signedHeadersList = V4Signer.GetSignedHeaderList(tempDict);
-            string signedHeaders = V4Signer.GetSignedHeaders(signedHeadersList);
+            var signedHeaders = V4Signer.GetSignedHeaders(signedHeadersList);
 
             IDictionary<string, string> dateDict = V4Signer.GetLongDateAndShortDate(request, iheaders);
 
-            string signature = GetTemporarySignature(request, context, iheaders, dateDict, signedHeaders, tempDict, signedHeadersList, ContentSha256);
+            var signature = GetTemporarySignature(request, context, iheaders, dateDict, signedHeaders, tempDict, signedHeadersList, ContentSha256);
 
             IDictionary<string, string> ret = new Dictionary<string, string>();
             ret.Add("Signature", signature);

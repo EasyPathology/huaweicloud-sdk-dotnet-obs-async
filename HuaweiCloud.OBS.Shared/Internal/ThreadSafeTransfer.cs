@@ -59,17 +59,17 @@ namespace OBS.Internal
         {
             Interlocked.Add(ref transferredBytes, bytes);
             Interlocked.Add(ref newlyTransferredBytes, bytes);
-            DateTime now = DateTime.Now;
+            var now = DateTime.Now;
             IList<BytesUnit> currentInstantaneousBytes = this.CreateCurrentInstantaneousBytes(bytes, now);
             this.lastInstantaneousBytes = currentInstantaneousBytes;
 
-            long _newlyTransferredBytes = Interlocked.Read(ref newlyTransferredBytes);
-            long _transferredBytes = Interlocked.Read(ref transferredBytes);
+            var _newlyTransferredBytes = Interlocked.Read(ref newlyTransferredBytes);
+            var _transferredBytes = Interlocked.Read(ref transferredBytes);
             if (_newlyTransferredBytes >= this.interval && (_transferredBytes < totalBytes || totalBytes == -1))
             {
                 if (Interlocked.CompareExchange(ref newlyTransferredBytes, 0, _newlyTransferredBytes) == _newlyTransferredBytes)
                 {
-                    TransferStatus status = new TransferStatus(_newlyTransferredBytes,
+                    var status = new TransferStatus(_newlyTransferredBytes,
                        _transferredBytes, totalBytes, (now - lastCheckpoint).TotalSeconds, (now - startCheckpoint).TotalSeconds);
                     status.SetInstantaneousBytes(currentInstantaneousBytes);
                     handler(sender, status);
@@ -93,12 +93,12 @@ namespace OBS.Internal
 
         public void DoRecord(object state)
         {
-            DateTime now = DateTime.Now;
-            long _transferredBytes = Interlocked.Read(ref transferredBytes);
+            var now = DateTime.Now;
+            var _transferredBytes = Interlocked.Read(ref transferredBytes);
             if (_transferredBytes < this.totalBytes)
             {
-                long _newlyTransferredBytes = Interlocked.Read(ref newlyTransferredBytes);
-                TransferStatus status = new TransferStatus(_newlyTransferredBytes,
+                var _newlyTransferredBytes = Interlocked.Read(ref newlyTransferredBytes);
+                var status = new TransferStatus(_newlyTransferredBytes,
                     _transferredBytes, totalBytes, interval, (now - startCheckpoint).TotalSeconds);
                 handler(sender, status);
                 // Reset
@@ -126,8 +126,8 @@ namespace OBS.Internal
             lock (_lock)
             {
                 timer?.Dispose();
-                DateTime now = DateTime.Now;
-                TransferStatus status = new TransferStatus(Interlocked.Read(ref newlyTransferredBytes),
+                var now = DateTime.Now;
+                var status = new TransferStatus(Interlocked.Read(ref newlyTransferredBytes),
                               Interlocked.Read(ref transferredBytes), totalBytes, (now - lastCheckpoint).TotalSeconds, (now - startCheckpoint).TotalSeconds);
                 handler(sender, status);
             }

@@ -42,9 +42,9 @@ namespace OBS.Internal
                     EnumValueDict.TryGetValue(value, out ret);
                     if (ret == null)
                     {
-                        FieldInfo field = value.GetType().GetField(value.ToString());
+                        var field = value.GetType().GetField(value.ToString());
                         object[] attribArray = field.GetCustomAttributes(false);
-                        StringValueAttribute attrib = attribArray.Length > 0 ? attribArray[0] as StringValueAttribute : null;
+                        var attrib = attribArray.Length > 0 ? attribArray[0] as StringValueAttribute : null;
                         ret = attrib != null ? attrib.StringValue : value.ToString();
                         EnumValueDict.Add(value, ret);
                     }

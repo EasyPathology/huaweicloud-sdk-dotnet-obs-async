@@ -99,83 +99,81 @@ namespace OBS.Internal
 
         public ListBucketsResponse ParseListBucketsResponse(HttpResponse httpResponse)
         {
-            ListBucketsResponse response = new ListBucketsResponse();
+            var response = new ListBucketsResponse();
 
-            using (XmlReader reader = XmlReader.Create(httpResponse.Content))
+            using var reader        = XmlReader.Create(httpResponse.Content);
+            Owner     owner         = null;
+            ObsBucket currentBucket = null;
+            while (reader.Read())
             {
-                Owner owner = null;
-                ObsBucket currentBucket = null;
-                while (reader.Read())
+                if ("Owner".Equals(reader.Name))
                 {
-                    if ("Owner".Equals(reader.Name))
+                    if (reader.IsStartElement())
                     {
-                        if (reader.IsStartElement())
-                        {
-                            owner = new Owner();
-                            response.Owner = owner;
-                        }
-                    }
-                    else if ("ID".Equals(reader.Name))
-                    {
-                        if (owner != null)
-                        {
-                            owner.Id = reader.ReadString();
-                        }
-                    }
-                    else if ("DisplayName".Equals(reader.Name))
-                    {
-                        if (owner != null)
-                        {
-                            owner.DisplayName = reader.ReadString();
-                        }
-                    }
-                    else if ("Bucket".Equals(reader.Name))
-                    {
-                        if (reader.IsStartElement())
-                        {
-                            currentBucket = new ObsBucket();
-                            response.Buckets.Add(currentBucket);
-                        }
-                    }
-                    else if ("Name".Equals(reader.Name))
-                    {
-                        currentBucket.BucketName = reader.ReadString();
-                    }
-                    else if ("CreationDate".Equals(reader.Name))
-                    {
-                        currentBucket.CreationDate = CommonUtil.ParseToDateTime(reader.ReadString());
-                    }
-                    else if ("Location".Equals(reader.Name))
-                    {
-                        currentBucket.Location = reader.ReadString();
+                        owner          = new Owner();
+                        response.Owner = owner;
                     }
                 }
+                else if ("ID".Equals(reader.Name))
+                {
+                    if (owner != null)
+                    {
+                        owner.Id = reader.ReadString();
+                    }
+                }
+                else if ("DisplayName".Equals(reader.Name))
+                {
+                    if (owner != null)
+                    {
+                        owner.DisplayName = reader.ReadString();
+                    }
+                }
+                else if ("Bucket".Equals(reader.Name))
+                {
+                    if (reader.IsStartElement())
+                    {
+                        currentBucket = new ObsBucket();
+                        response.Buckets.Add(currentBucket);
+                    }
+                }
+                else if ("Name".Equals(reader.Name))
+                {
+                    currentBucket.BucketName = reader.ReadString();
+                }
+                else if ("CreationDate".Equals(reader.Name))
+                {
+                    currentBucket.CreationDate = CommonUtil.ParseToDateTime(reader.ReadString());
+                }
+                else if ("Location".Equals(reader.Name))
+                {
+                    currentBucket.Location = reader.ReadString();
+                }
             }
+
             return response;
         }
 
 
         public GetBucketStoragePolicyResponse ParseGetBucketStoragePolicyResponse(HttpResponse httpResponse)
         {
-            GetBucketStoragePolicyResponse response = new GetBucketStoragePolicyResponse();
+            var response = new GetBucketStoragePolicyResponse();
 
-            using (XmlReader xmlReader = XmlReader.Create(httpResponse.Content))
+            using var xmlReader = XmlReader.Create(httpResponse.Content);
+            while (xmlReader.Read())
             {
-                while (xmlReader.Read())
+                if (xmlReader.Name.Equals(BucketStorageClassTag))
                 {
-                    if (xmlReader.Name.Equals(BucketStorageClassTag))
-                    {
-                        response.StorageClass = ParseStorageClass(xmlReader.ReadString());
-                    }
+                    response.StorageClass = ParseStorageClass(xmlReader.ReadString());
                 }
             }
+
             return response;
         }
 
 
         public GetBucketMetadataResponse ParseGetBucketMetadataResponse(HttpResponse httpResponse)
         {
-            GetBucketMetadataResponse response = new GetBucketMetadataResponse();
+            var response = new GetBucketMetadataResponse();
 
             string storageClass;
             httpResponse.Headers.TryGetValue(this.iheaders.DefaultStorageClassHeader(), out storageClass);
@@ -194,7 +192,7 @@ namespace OBS.Internal
 
             if (httpResponse.Headers.ContainsKey(this.iheaders.AzRedundancyHeader()))
             {
-                string value = httpResponse.Headers[this.iheaders.AzRedundancyHeader()];
+                var value = httpResponse.Headers[this.iheaders.AzRedundancyHeader()];
                 if (Constants.ThreeAz.Equals(value))
                 {
                     response.AvailableZone = AvailableZoneEnum.MultiAz;
@@ -207,18 +205,17 @@ namespace OBS.Internal
 
         public GetBucketLocationResponse ParseGetBucketLocationResponse(HttpResponse httpResponse)
         {
-            GetBucketLocationResponse response = new GetBucketLocationResponse();
+            var response = new GetBucketLocationResponse();
 
-            using (XmlReader xmlReader = XmlReader.Create(httpResponse.Content))
+            using var xmlReader = XmlReader.Create(httpResponse.Content);
+            while (xmlReader.Read())
             {
-                while (xmlReader.Read())
+                if (xmlReader.Name.Equals(this.BucketLocationTag))
                 {
-                    if (xmlReader.Name.Equals(this.BucketLocationTag))
-                    {
-                        response.Location = xmlReader.ReadString();
-                    }
+                    response.Location = xmlReader.ReadString();
                 }
             }
+
             return response;
         }
 
@@ -226,400 +223,396 @@ namespace OBS.Internal
 
         public GetBucketStorageInfoResponse ParseGetBucketStorageInfoResponse(HttpResponse httpResponse)
         {
-            GetBucketStorageInfoResponse response = new GetBucketStorageInfoResponse();
+            var response = new GetBucketStorageInfoResponse();
 
-            using (XmlReader xmlReader = XmlReader.Create(httpResponse.Content))
+            using var xmlReader = XmlReader.Create(httpResponse.Content);
+            while (xmlReader.Read())
             {
-                while (xmlReader.Read())
+                if ("Size".Equals(xmlReader.Name))
                 {
-                    if ("Size".Equals(xmlReader.Name))
-                    {
-                        response.Size = Convert.ToInt64(xmlReader.ReadString());
-                    }
-                    else if ("ObjectNumber".Equals(xmlReader.Name))
-                    {
-                        response.ObjectNumber = Convert.ToInt64(xmlReader.ReadString());
-                    }
+                    response.Size = Convert.ToInt64(xmlReader.ReadString());
+                }
+                else if ("ObjectNumber".Equals(xmlReader.Name))
+                {
+                    response.ObjectNumber = Convert.ToInt64(xmlReader.ReadString());
                 }
             }
+
             return response;
         }
 
 
         public ListObjectsResponse ParseListObjectsResponse(HttpResponse httpResponse)
         {
-            ListObjectsResponse response = new ListObjectsResponse();
+            var response = new ListObjectsResponse();
 
             if (httpResponse.Headers.ContainsKey(this.iheaders.BucketRegionHeader()))
             {
                 response.Location = httpResponse.Headers[this.iheaders.BucketRegionHeader()];
             }
 
-            using (XmlReader xmlReader = XmlReader.Create(httpResponse.Content))
-            {
-                ObsObject currentObject = null;
-                bool innerCommonprefixes = false;
+            using var xmlReader           = XmlReader.Create(httpResponse.Content);
+            ObsObject currentObject       = null;
+            var       innerCommonprefixes = false;
 
-                while (xmlReader.Read())
+            while (xmlReader.Read())
+            {
+                if ("Name".Equals(xmlReader.Name))
                 {
-                    if ("Name".Equals(xmlReader.Name))
+                    response.BucketName = xmlReader.ReadString();
+                }
+                else if ("Prefix".Equals(xmlReader.Name))
+                {
+                    if (innerCommonprefixes)
                     {
-                        response.BucketName = xmlReader.ReadString();
+                        response.CommonPrefixes.Add(xmlReader.ReadString());
                     }
-                    else if ("Prefix".Equals(xmlReader.Name))
+                    else
                     {
-                        if (innerCommonprefixes)
-                        {
-                            response.CommonPrefixes.Add(xmlReader.ReadString());
-                        }
-                        else
-                        {
-                            response.Prefix = xmlReader.ReadString();
-                        }
-                    }
-                    else if ("Marker".Equals(xmlReader.Name))
-                    {
-                        response.Marker = xmlReader.ReadString();
-                    }
-                    else if ("NextMarker".Equals(xmlReader.Name))
-                    {
-                        response.NextMarker = xmlReader.ReadString();
-                    }
-                    else if ("MaxKeys".Equals(xmlReader.Name))
-                    {
-                        response.MaxKeys = CommonUtil.ParseToInt32(xmlReader.ReadString());
-                    }
-                    else if ("Delimiter".Equals(xmlReader.Name))
-                    {
-                        response.Delimiter = xmlReader.ReadString();
-                    }
-                    else if ("IsTruncated".Equals(xmlReader.Name))
-                    {
-                        response.IsTruncated = Convert.ToBoolean(xmlReader.ReadString());
-                    }
-                    else if ("Contents".Equals(xmlReader.Name))
-                    {
-                        if (xmlReader.IsStartElement())
-                        {
-                            currentObject = new ObsObject();
-                            response.ObsObjects.Add(currentObject);
-                        }
-                    }
-                    else if ("Key".Equals(xmlReader.Name))
-                    {
-                        currentObject.ObjectKey = xmlReader.ReadString();
-                    }
-                    else if ("LastModified".Equals(xmlReader.Name))
-                    {
-                        currentObject.LastModified = CommonUtil.ParseToDateTime(xmlReader.ReadString());
-                    }
-                    else if ("ETag".Equals(xmlReader.Name))
-                    {
-                        currentObject.ETag = xmlReader.ReadString();
-                    }
-                    else if ("Size".Equals(xmlReader.Name))
-                    {
-                        currentObject.Size = Convert.ToInt64(xmlReader.ReadString());
-                    }
-                    else if ("Type".Equals(xmlReader.Name))
-                    {
-                        currentObject.Appendable = "Appendable".Equals(xmlReader.ReadString());
-                    }
-                    else if ("Owner".Equals(xmlReader.Name))
-                    {
-                        if (xmlReader.IsStartElement())
-                        {
-                            currentObject.Owner = new Owner();
-                        }
-                    }
-                    else if ("ID".Equals(xmlReader.Name))
-                    {
-                        currentObject.Owner.Id = xmlReader.ReadString();
-                    }
-                    else if ("DisplayName".Equals(xmlReader.Name))
-                    {
-                        currentObject.Owner.DisplayName = xmlReader.ReadString();
-                    }
-                    else if ("StorageClass".Equals(xmlReader.Name))
-                    {
-                        currentObject.StorageClass = this.ParseStorageClass(xmlReader.ReadString());
-                    }
-                    else if ("CommonPrefixes".Equals(xmlReader.Name))
-                    {
-                        innerCommonprefixes = xmlReader.IsStartElement();
+                        response.Prefix = xmlReader.ReadString();
                     }
                 }
+                else if ("Marker".Equals(xmlReader.Name))
+                {
+                    response.Marker = xmlReader.ReadString();
+                }
+                else if ("NextMarker".Equals(xmlReader.Name))
+                {
+                    response.NextMarker = xmlReader.ReadString();
+                }
+                else if ("MaxKeys".Equals(xmlReader.Name))
+                {
+                    response.MaxKeys = CommonUtil.ParseToInt32(xmlReader.ReadString());
+                }
+                else if ("Delimiter".Equals(xmlReader.Name))
+                {
+                    response.Delimiter = xmlReader.ReadString();
+                }
+                else if ("IsTruncated".Equals(xmlReader.Name))
+                {
+                    response.IsTruncated = Convert.ToBoolean(xmlReader.ReadString());
+                }
+                else if ("Contents".Equals(xmlReader.Name))
+                {
+                    if (xmlReader.IsStartElement())
+                    {
+                        currentObject = new ObsObject();
+                        response.ObsObjects.Add(currentObject);
+                    }
+                }
+                else if ("Key".Equals(xmlReader.Name))
+                {
+                    currentObject.ObjectKey = xmlReader.ReadString();
+                }
+                else if ("LastModified".Equals(xmlReader.Name))
+                {
+                    currentObject.LastModified = CommonUtil.ParseToDateTime(xmlReader.ReadString());
+                }
+                else if ("ETag".Equals(xmlReader.Name))
+                {
+                    currentObject.ETag = xmlReader.ReadString();
+                }
+                else if ("Size".Equals(xmlReader.Name))
+                {
+                    currentObject.Size = Convert.ToInt64(xmlReader.ReadString());
+                }
+                else if ("Type".Equals(xmlReader.Name))
+                {
+                    currentObject.Appendable = "Appendable".Equals(xmlReader.ReadString());
+                }
+                else if ("Owner".Equals(xmlReader.Name))
+                {
+                    if (xmlReader.IsStartElement())
+                    {
+                        currentObject.Owner = new Owner();
+                    }
+                }
+                else if ("ID".Equals(xmlReader.Name))
+                {
+                    currentObject.Owner.Id = xmlReader.ReadString();
+                }
+                else if ("DisplayName".Equals(xmlReader.Name))
+                {
+                    currentObject.Owner.DisplayName = xmlReader.ReadString();
+                }
+                else if ("StorageClass".Equals(xmlReader.Name))
+                {
+                    currentObject.StorageClass = this.ParseStorageClass(xmlReader.ReadString());
+                }
+                else if ("CommonPrefixes".Equals(xmlReader.Name))
+                {
+                    innerCommonprefixes = xmlReader.IsStartElement();
+                }
             }
+
             return response;
         }
 
         public ListVersionsResponse ParseListVersionsResponse(HttpResponse httpResponse)
         {
-            ListVersionsResponse response = new ListVersionsResponse();
+            var response = new ListVersionsResponse();
 
             if (httpResponse.Headers.ContainsKey(this.iheaders.BucketRegionHeader()))
             {
                 response.Location = httpResponse.Headers[this.iheaders.BucketRegionHeader()];
             }
 
-            using (XmlReader xmlReader = XmlReader.Create(httpResponse.Content))
-            {
-                ObsObjectVersion currentObject = null;
-                bool innerCommonprefixes = false;
+            using var        xmlReader           = XmlReader.Create(httpResponse.Content);
+            ObsObjectVersion currentObject       = null;
+            var              innerCommonprefixes = false;
 
-                while (xmlReader.Read())
+            while (xmlReader.Read())
+            {
+                if ("Name".Equals(xmlReader.Name))
                 {
-                    if ("Name".Equals(xmlReader.Name))
+                    response.BucketName = xmlReader.ReadString();
+                }
+                else if ("Prefix".Equals(xmlReader.Name))
+                {
+                    if (innerCommonprefixes)
                     {
-                        response.BucketName = xmlReader.ReadString();
+                        response.CommonPrefixes.Add(xmlReader.ReadString());
                     }
-                    else if ("Prefix".Equals(xmlReader.Name))
+                    else
                     {
-                        if (innerCommonprefixes)
-                        {
-                            response.CommonPrefixes.Add(xmlReader.ReadString());
-                        }
-                        else
-                        {
-                            response.Prefix = xmlReader.ReadString();
-                        }
-                    }
-                    else if ("KeyMarker".Equals(xmlReader.Name))
-                    {
-                        response.KeyMarker = xmlReader.ReadString();
-                    }
-                    else if ("NextKeyMarker".Equals(xmlReader.Name))
-                    {
-                        response.NextKeyMarker = xmlReader.ReadString();
-                    }
-                    else if ("VersionIdMarker".Equals(xmlReader.Name))
-                    {
-                        response.VersionIdMarker = xmlReader.ReadString();
-                    }
-                    else if ("NextVersionIdMarker".Equals(xmlReader.Name))
-                    {
-                        response.NextVersionIdMarker = xmlReader.ReadString();
-                    }
-                    else if ("MaxKeys".Equals(xmlReader.Name))
-                    {
-                        response.MaxKeys = CommonUtil.ParseToInt32(xmlReader.ReadString());
-                    }
-                    else if ("Delimiter".Equals(xmlReader.Name))
-                    {
-                        response.Delimiter = xmlReader.ReadString();
-                    }
-                    else if ("IsTruncated".Equals(xmlReader.Name))
-                    {
-                        response.IsTruncated = Convert.ToBoolean(xmlReader.ReadString());
-                    }
-                    else if ("Version".Equals(xmlReader.Name))
-                    {
-                        if (xmlReader.IsStartElement())
-                        {
-                            currentObject = new ObsObjectVersion();
-                            response.Versions.Add(currentObject);
-                        }
-                    }
-                    else if ("DeleteMarker".Equals(xmlReader.Name))
-                    {
-                        if (xmlReader.IsStartElement())
-                        {
-                            currentObject = new ObsObjectVersion();
-                            currentObject.IsDeleteMarker = true;
-                            response.Versions.Add(currentObject);
-                        }
-                    }
-                    else if ("Key".Equals(xmlReader.Name))
-                    {
-                        currentObject.ObjectKey = xmlReader.ReadString();
-                    }
-                    else if ("VersionId".Equals(xmlReader.Name))
-                    {
-                        currentObject.VersionId = xmlReader.ReadString();
-                    }
-                    else if ("LastModified".Equals(xmlReader.Name))
-                    {
-                        currentObject.LastModified = CommonUtil.ParseToDateTime(xmlReader.ReadString());
-                    }
-                    else if ("IsLatest".Equals(xmlReader.Name))
-                    {
-                        currentObject.IsLatest = Convert.ToBoolean(xmlReader.ReadString());
-                    }
-                    else if ("ETag".Equals(xmlReader.Name))
-                    {
-                        currentObject.ETag = xmlReader.ReadString();
-                    }
-                    else if ("Size".Equals(xmlReader.Name))
-                    {
-                        currentObject.Size = Convert.ToInt64(xmlReader.ReadString());
-                    }
-                    else if ("Type".Equals(xmlReader.Name))
-                    {
-                        currentObject.Appendable = "Appendable".Equals(xmlReader.ReadString());
-                    }
-                    else if ("Owner".Equals(xmlReader.Name))
-                    {
-                        if (xmlReader.IsStartElement())
-                        {
-                            currentObject.Owner = new Owner();
-                        }
-                    }
-                    else if ("ID".Equals(xmlReader.Name))
-                    {
-                        currentObject.Owner.Id = xmlReader.ReadString();
-                    }
-                    else if ("DisplayName".Equals(xmlReader.Name))
-                    {
-                        currentObject.Owner.DisplayName = xmlReader.ReadString();
-                    }
-                    else if ("StorageClass".Equals(xmlReader.Name))
-                    {
-                        currentObject.StorageClass = this.ParseStorageClass(xmlReader.ReadString());
-                    }
-                    else if ("CommonPrefixes".Equals(xmlReader.Name))
-                    {
-                        innerCommonprefixes = xmlReader.IsStartElement();
+                        response.Prefix = xmlReader.ReadString();
                     }
                 }
+                else if ("KeyMarker".Equals(xmlReader.Name))
+                {
+                    response.KeyMarker = xmlReader.ReadString();
+                }
+                else if ("NextKeyMarker".Equals(xmlReader.Name))
+                {
+                    response.NextKeyMarker = xmlReader.ReadString();
+                }
+                else if ("VersionIdMarker".Equals(xmlReader.Name))
+                {
+                    response.VersionIdMarker = xmlReader.ReadString();
+                }
+                else if ("NextVersionIdMarker".Equals(xmlReader.Name))
+                {
+                    response.NextVersionIdMarker = xmlReader.ReadString();
+                }
+                else if ("MaxKeys".Equals(xmlReader.Name))
+                {
+                    response.MaxKeys = CommonUtil.ParseToInt32(xmlReader.ReadString());
+                }
+                else if ("Delimiter".Equals(xmlReader.Name))
+                {
+                    response.Delimiter = xmlReader.ReadString();
+                }
+                else if ("IsTruncated".Equals(xmlReader.Name))
+                {
+                    response.IsTruncated = Convert.ToBoolean(xmlReader.ReadString());
+                }
+                else if ("Version".Equals(xmlReader.Name))
+                {
+                    if (xmlReader.IsStartElement())
+                    {
+                        currentObject = new ObsObjectVersion();
+                        response.Versions.Add(currentObject);
+                    }
+                }
+                else if ("DeleteMarker".Equals(xmlReader.Name))
+                {
+                    if (xmlReader.IsStartElement())
+                    {
+                        currentObject                = new ObsObjectVersion
+                        {
+                            IsDeleteMarker = true
+                        };
+                        response.Versions.Add(currentObject);
+                    }
+                }
+                else if ("Key".Equals(xmlReader.Name))
+                {
+                    currentObject.ObjectKey = xmlReader.ReadString();
+                }
+                else if ("VersionId".Equals(xmlReader.Name))
+                {
+                    currentObject.VersionId = xmlReader.ReadString();
+                }
+                else if ("LastModified".Equals(xmlReader.Name))
+                {
+                    currentObject.LastModified = CommonUtil.ParseToDateTime(xmlReader.ReadString());
+                }
+                else if ("IsLatest".Equals(xmlReader.Name))
+                {
+                    currentObject.IsLatest = Convert.ToBoolean(xmlReader.ReadString());
+                }
+                else if ("ETag".Equals(xmlReader.Name))
+                {
+                    currentObject.ETag = xmlReader.ReadString();
+                }
+                else if ("Size".Equals(xmlReader.Name))
+                {
+                    currentObject.Size = Convert.ToInt64(xmlReader.ReadString());
+                }
+                else if ("Type".Equals(xmlReader.Name))
+                {
+                    currentObject.Appendable = "Appendable".Equals(xmlReader.ReadString());
+                }
+                else if ("Owner".Equals(xmlReader.Name))
+                {
+                    if (xmlReader.IsStartElement())
+                    {
+                        currentObject.Owner = new Owner();
+                    }
+                }
+                else if ("ID".Equals(xmlReader.Name))
+                {
+                    currentObject.Owner.Id = xmlReader.ReadString();
+                }
+                else if ("DisplayName".Equals(xmlReader.Name))
+                {
+                    currentObject.Owner.DisplayName = xmlReader.ReadString();
+                }
+                else if ("StorageClass".Equals(xmlReader.Name))
+                {
+                    currentObject.StorageClass = this.ParseStorageClass(xmlReader.ReadString());
+                }
+                else if ("CommonPrefixes".Equals(xmlReader.Name))
+                {
+                    innerCommonprefixes = xmlReader.IsStartElement();
+                }
             }
+
             return response;
         }
 
         public GetBucketQuotaResponse ParseGetBucketQuotaResponse(HttpResponse httpResponse)
         {
-            GetBucketQuotaResponse response = new GetBucketQuotaResponse();
-            using (XmlReader xmlReader = XmlReader.Create(httpResponse.Content))
+            var       response  = new GetBucketQuotaResponse();
+            using var xmlReader = XmlReader.Create(httpResponse.Content);
+            while (xmlReader.Read())
             {
-                while (xmlReader.Read())
+                if ("StorageQuota".Equals(xmlReader.Name))
                 {
-                    if ("StorageQuota".Equals(xmlReader.Name))
-                    {
-                        response.StorageQuota = Convert.ToInt64(xmlReader.ReadString());
-                    }
+                    response.StorageQuota = Convert.ToInt64(xmlReader.ReadString());
                 }
             }
+
             return response;
         }
 
         public virtual GetBucketAclResponse ParseGetBucketAclResponse(HttpResponse httpResponse)
         {
-            GetBucketAclResponse response = new GetBucketAclResponse();
+            var response = new GetBucketAclResponse();
             response.AccessControlList = this.ParseAccessControlList(httpResponse);
             return response;
         }
 
         public ListMultipartUploadsResponse ParseListMultipartUploadsResponse(HttpResponse httpResponse)
         {
-            ListMultipartUploadsResponse response = new ListMultipartUploadsResponse();
+            var response = new ListMultipartUploadsResponse();
 
-            using (XmlReader xmlReader = XmlReader.Create(httpResponse.Content))
+            using var       xmlReader     = XmlReader.Create(httpResponse.Content);
+            MultipartUpload currentUpload = null;
+
+            var innerOwner     = false;
+            var innerInitiator = false;
+
+            while (xmlReader.Read())
             {
-                MultipartUpload currentUpload = null;
-
-                bool innerOwner = false;
-                bool innerInitiator = false;
-
-                while (xmlReader.Read())
+                if ("Bucket".Equals(xmlReader.Name))
                 {
-                    if ("Bucket".Equals(xmlReader.Name))
-                    {
-                        response.BucketName = xmlReader.ReadString();
-                    }
+                    response.BucketName = xmlReader.ReadString();
+                }
 
-                    else if ("KeyMarker".Equals(xmlReader.Name))
+                else if ("KeyMarker".Equals(xmlReader.Name))
+                {
+                    response.KeyMarker = xmlReader.ReadString();
+                }
+                else if ("NextKeyMarker".Equals(xmlReader.Name))
+                {
+                    response.NextKeyMarker = xmlReader.ReadString();
+                }
+                else if ("UploadIdMarker".Equals(xmlReader.Name))
+                {
+                    response.UploadIdMarker = xmlReader.ReadString();
+                }
+                else if ("NextUploadIdMarker".Equals(xmlReader.Name))
+                {
+                    response.NextUploadIdMarker = xmlReader.ReadString();
+                }
+                else if ("MaxUploads".Equals(xmlReader.Name))
+                {
+                    response.MaxUploads = CommonUtil.ParseToInt32(xmlReader.ReadString());
+                }
+                else if ("Delimiter".Equals(xmlReader.Name))
+                {
+                    response.Delimiter = xmlReader.ReadString();
+                }
+                else if ("IsTruncated".Equals(xmlReader.Name))
+                {
+                    response.IsTruncated = Convert.ToBoolean(xmlReader.ReadString());
+                }
+                else if ("Upload".Equals(xmlReader.Name))
+                {
+                    if (xmlReader.IsStartElement())
                     {
-                        response.KeyMarker = xmlReader.ReadString();
+                        currentUpload = new MultipartUpload();
+                        response.MultipartUploads.Add(currentUpload);
                     }
-                    else if ("NextKeyMarker".Equals(xmlReader.Name))
+                }
+                else if ("Key".Equals(xmlReader.Name))
+                {
+                    currentUpload.ObjectKey = xmlReader.ReadString();
+                }
+                else if ("UploadId".Equals(xmlReader.Name))
+                {
+                    currentUpload.UploadId = xmlReader.ReadString();
+                }
+                else if ("Initiated".Equals(xmlReader.Name))
+                {
+                    currentUpload.Initiated = CommonUtil.ParseToDateTime(xmlReader.ReadString());
+                }
+                else if ("Initiator".Equals(xmlReader.Name))
+                {
+                    if (xmlReader.IsStartElement())
                     {
-                        response.NextKeyMarker = xmlReader.ReadString();
+                        currentUpload.Initiator = new Initiator();
                     }
-                    else if ("UploadIdMarker".Equals(xmlReader.Name))
+                    innerInitiator = xmlReader.IsStartElement();
+                }
+                else if ("Owner".Equals(xmlReader.Name))
+                {
+                    if (xmlReader.IsStartElement())
                     {
-                        response.UploadIdMarker = xmlReader.ReadString();
+                        currentUpload.Owner = new Owner();
                     }
-                    else if ("NextUploadIdMarker".Equals(xmlReader.Name))
+                    innerOwner = xmlReader.IsStartElement();
+                }
+                else if ("ID".Equals(xmlReader.Name))
+                {
+                    if (innerInitiator)
                     {
-                        response.NextUploadIdMarker = xmlReader.ReadString();
+                        currentUpload.Initiator.Id = xmlReader.ReadString();
                     }
-                    else if ("MaxUploads".Equals(xmlReader.Name))
+                    else if (innerOwner)
                     {
-                        response.MaxUploads = CommonUtil.ParseToInt32(xmlReader.ReadString());
+                        currentUpload.Owner.Id = xmlReader.ReadString();
                     }
-                    else if ("Delimiter".Equals(xmlReader.Name))
+                }
+                else if ("DisplayName".Equals(xmlReader.Name))
+                {
+                    if (innerInitiator)
                     {
-                        response.Delimiter = xmlReader.ReadString();
+                        currentUpload.Initiator.DisplayName = xmlReader.ReadString();
                     }
-                    else if ("IsTruncated".Equals(xmlReader.Name))
+                    else if (innerOwner)
                     {
-                        response.IsTruncated = Convert.ToBoolean(xmlReader.ReadString());
+                        currentUpload.Owner.DisplayName = xmlReader.ReadString();
                     }
-                    else if ("Upload".Equals(xmlReader.Name))
-                    {
-                        if (xmlReader.IsStartElement())
-                        {
-                            currentUpload = new MultipartUpload();
-                            response.MultipartUploads.Add(currentUpload);
-                        }
-                    }
-                    else if ("Key".Equals(xmlReader.Name))
-                    {
-                        currentUpload.ObjectKey = xmlReader.ReadString();
-                    }
-                    else if ("UploadId".Equals(xmlReader.Name))
-                    {
-                        currentUpload.UploadId = xmlReader.ReadString();
-                    }
-                    else if ("Initiated".Equals(xmlReader.Name))
-                    {
-                        currentUpload.Initiated = CommonUtil.ParseToDateTime(xmlReader.ReadString());
-                    }
-                    else if ("Initiator".Equals(xmlReader.Name))
-                    {
-                        if (xmlReader.IsStartElement())
-                        {
-                            currentUpload.Initiator = new Initiator();
-                        }
-                        innerInitiator = xmlReader.IsStartElement();
-                    }
-                    else if ("Owner".Equals(xmlReader.Name))
-                    {
-                        if (xmlReader.IsStartElement())
-                        {
-                            currentUpload.Owner = new Owner();
-                        }
-                        innerOwner = xmlReader.IsStartElement();
-                    }
-                    else if ("ID".Equals(xmlReader.Name))
-                    {
-                        if (innerInitiator)
-                        {
-                            currentUpload.Initiator.Id = xmlReader.ReadString();
-                        }
-                        else if (innerOwner)
-                        {
-                            currentUpload.Owner.Id = xmlReader.ReadString();
-                        }
-                    }
-                    else if ("DisplayName".Equals(xmlReader.Name))
-                    {
-                        if (innerInitiator)
-                        {
-                            currentUpload.Initiator.DisplayName = xmlReader.ReadString();
-                        }
-                        else if (innerOwner)
-                        {
-                            currentUpload.Owner.DisplayName = xmlReader.ReadString();
-                        }
-                    }
-                    else if ("StorageClass".Equals(xmlReader.Name))
-                    {
-                        currentUpload.StorageClass = this.ParseStorageClass(xmlReader.ReadString());
-                    }
-                    else if ("Prefix".Equals(xmlReader.Name))
-                    {
-                        response.CommonPrefixes.Add(xmlReader.ReadString());
-                    }
+                }
+                else if ("StorageClass".Equals(xmlReader.Name))
+                {
+                    currentUpload.StorageClass = this.ParseStorageClass(xmlReader.ReadString());
+                }
+                else if ("Prefix".Equals(xmlReader.Name))
+                {
+                    response.CommonPrefixes.Add(xmlReader.ReadString());
                 }
             }
 
@@ -628,379 +621,372 @@ namespace OBS.Internal
 
         public virtual GetBucketLoggingResponse ParseGetBucketLoggingResponse(HttpResponse httpResponse)
         {
-            GetBucketLoggingResponse response = new GetBucketLoggingResponse();
+            var response = new GetBucketLoggingResponse();
 
-            using (XmlReader xmlReader = XmlReader.Create(httpResponse.Content))
+            using var xmlReader    = XmlReader.Create(httpResponse.Content);
+            Grant     currentGrant = null;
+            while (xmlReader.Read())
             {
-                Grant currentGrant = null;
-                while (xmlReader.Read())
+                if ("BucketLoggingStatus".Equals(xmlReader.Name))
                 {
-                    if ("BucketLoggingStatus".Equals(xmlReader.Name))
+                    if (xmlReader.IsStartElement())
                     {
-                        if (xmlReader.IsStartElement())
-                        {
-                            response.Configuration = new LoggingConfiguration();
-                        }
-                    }
-                    else if ("TargetBucket".Equals(xmlReader.Name))
-                    {
-                        response.Configuration.TargetBucketName = xmlReader.ReadString();
-                    }
-                    else if ("TargetPrefix".Equals(xmlReader.Name))
-                    {
-                        response.Configuration.TargetPrefix = xmlReader.ReadString();
-                    }
-                    else if ("Grant".Equals(xmlReader.Name))
-                    {
-                        if (xmlReader.IsStartElement())
-                        {
-                            currentGrant = new Grant();
-                            response.Configuration.Grants.Add(currentGrant);
-                        }
-                    }
-                    else if ("Grantee".Equals(xmlReader.Name))
-                    {
-                        if (xmlReader.IsStartElement())
-                        {
-                            Grantee grantee;
-                            if (xmlReader.GetAttribute("xsi:type").Equals("CanonicalUser"))
-                            {
-                                grantee = new CanonicalGrantee();
-                            }
-                            else
-                            {
-                                grantee = new GroupGrantee();
-                            }
-                            currentGrant.Grantee = grantee;
-                        }
-                    }
-                    else if ("ID".Equals(xmlReader.Name))
-                    {
-
-                        CanonicalGrantee grantee = currentGrant.Grantee as CanonicalGrantee;
-                        if (grantee != null)
-                        {
-                            grantee.Id = xmlReader.ReadString();
-                        }
-
-                    }
-                    else if ("DisplayName".Equals(xmlReader.Name))
-                    {
-
-                        CanonicalGrantee grantee = currentGrant.Grantee as CanonicalGrantee;
-                        if (grantee != null)
-                        {
-                            grantee.DisplayName = xmlReader.ReadString();
-                        }
-                    }
-                    else if ("URI".Equals(xmlReader.Name))
-                    {
-                        GroupGrantee grantee = currentGrant.Grantee as GroupGrantee;
-                        if (grantee != null)
-                        {
-                            grantee.GroupGranteeType = this.ParseGroupGrantee(xmlReader.ReadString());
-                        }
-                    }
-                    else if ("Permission".Equals(xmlReader.Name))
-                    {
-                        currentGrant.Permission = this.ParsePermission(xmlReader.ReadString());
+                        response.Configuration = new LoggingConfiguration();
                     }
                 }
+                else if ("TargetBucket".Equals(xmlReader.Name))
+                {
+                    response.Configuration.TargetBucketName = xmlReader.ReadString();
+                }
+                else if ("TargetPrefix".Equals(xmlReader.Name))
+                {
+                    response.Configuration.TargetPrefix = xmlReader.ReadString();
+                }
+                else if ("Grant".Equals(xmlReader.Name))
+                {
+                    if (xmlReader.IsStartElement())
+                    {
+                        currentGrant = new Grant();
+                        response.Configuration.Grants.Add(currentGrant);
+                    }
+                }
+                else if ("Grantee".Equals(xmlReader.Name))
+                {
+                    if (xmlReader.IsStartElement())
+                    {
+                        Grantee grantee;
+                        if (xmlReader.GetAttribute("xsi:type").Equals("CanonicalUser"))
+                        {
+                            grantee = new CanonicalGrantee();
+                        }
+                        else
+                        {
+                            grantee = new GroupGrantee();
+                        }
+                        currentGrant.Grantee = grantee;
+                    }
+                }
+                else if ("ID".Equals(xmlReader.Name))
+                {
+
+                    var grantee = currentGrant.Grantee as CanonicalGrantee;
+                    if (grantee != null)
+                    {
+                        grantee.Id = xmlReader.ReadString();
+                    }
+
+                }
+                else if ("DisplayName".Equals(xmlReader.Name))
+                {
+
+                    var grantee = currentGrant.Grantee as CanonicalGrantee;
+                    if (grantee != null)
+                    {
+                        grantee.DisplayName = xmlReader.ReadString();
+                    }
+                }
+                else if ("URI".Equals(xmlReader.Name))
+                {
+                    var grantee = currentGrant.Grantee as GroupGrantee;
+                    if (grantee != null)
+                    {
+                        grantee.GroupGranteeType = this.ParseGroupGrantee(xmlReader.ReadString());
+                    }
+                }
+                else if ("Permission".Equals(xmlReader.Name))
+                {
+                    currentGrant.Permission = this.ParsePermission(xmlReader.ReadString());
+                }
             }
+
             return response;
         }
 
         public GetBucketPolicyResponse ParseGetBucketPolicyResponse(HttpResponse httpResponse)
         {
-            GetBucketPolicyResponse response = new GetBucketPolicyResponse();
+            var response = new GetBucketPolicyResponse();
 
-            using (StreamReader streamReader = new StreamReader(httpResponse.Content, Encoding.UTF8))
-            {
-                response.Policy = streamReader.ReadToEnd();
-            }
+            using var streamReader = new StreamReader(httpResponse.Content, Encoding.UTF8);
+            response.Policy = streamReader.ReadToEnd();
             return response;
         }
 
         public GetBucketCorsResponse ParseGetBucketCorsResponse(HttpResponse httpResponse)
         {
-            GetBucketCorsResponse response = new GetBucketCorsResponse();
-            using (XmlReader xmlReader = XmlReader.Create(httpResponse.Content))
+            var       response        = new GetBucketCorsResponse();
+            using var xmlReader       = XmlReader.Create(httpResponse.Content);
+            CorsRule  currentCorsRule = null;
+            while (xmlReader.Read())
             {
-                CorsRule currentCorsRule = null;
-                while (xmlReader.Read())
+                if ("CORSConfiguration".Equals(xmlReader.Name))
                 {
-                    if ("CORSConfiguration".Equals(xmlReader.Name))
+                    if (xmlReader.IsStartElement())
                     {
-                        if (xmlReader.IsStartElement())
-                        {
-                            response.Configuration = new CorsConfiguration();
-                        }
-                    }
-                    else if ("CORSRule".Equals(xmlReader.Name))
-                    {
-                        if (xmlReader.IsStartElement())
-                        {
-                            currentCorsRule = new CorsRule();
-                            response.Configuration.Rules.Add(currentCorsRule);
-                        }
-                    }
-                    else if ("AllowedMethod".Equals(xmlReader.Name))
-                    {
-                        HttpVerb? temp = this.ParseHttpVerb(xmlReader.ReadString());
-                        if (temp.HasValue)
-                        {
-                            currentCorsRule.AllowedMethods.Add(temp.Value);
-                        }
-                    }
-                    else if ("AllowedOrigin".Equals(xmlReader.Name))
-                    {
-                        currentCorsRule.AllowedOrigins.Add(xmlReader.ReadString());
-                    }
-                    else if ("AllowedHeader".Equals(xmlReader.Name))
-                    {
-                        currentCorsRule.AllowedHeaders.Add(xmlReader.ReadString());
-                    }
-                    else if ("MaxAgeSeconds".Equals(xmlReader.Name))
-                    {
-                        currentCorsRule.MaxAgeSeconds = CommonUtil.ParseToInt32(xmlReader.ReadString());
-                    }
-                    else if ("ExposeHeader".Equals(xmlReader.Name))
-                    {
-                        currentCorsRule.ExposeHeaders.Add(xmlReader.ReadString());
+                        response.Configuration = new CorsConfiguration();
                     }
                 }
+                else if ("CORSRule".Equals(xmlReader.Name))
+                {
+                    if (xmlReader.IsStartElement())
+                    {
+                        currentCorsRule = new CorsRule();
+                        response.Configuration.Rules.Add(currentCorsRule);
+                    }
+                }
+                else if ("AllowedMethod".Equals(xmlReader.Name))
+                {
+                    var temp = this.ParseHttpVerb(xmlReader.ReadString());
+                    if (temp.HasValue)
+                    {
+                        currentCorsRule.AllowedMethods.Add(temp.Value);
+                    }
+                }
+                else if ("AllowedOrigin".Equals(xmlReader.Name))
+                {
+                    currentCorsRule.AllowedOrigins.Add(xmlReader.ReadString());
+                }
+                else if ("AllowedHeader".Equals(xmlReader.Name))
+                {
+                    currentCorsRule.AllowedHeaders.Add(xmlReader.ReadString());
+                }
+                else if ("MaxAgeSeconds".Equals(xmlReader.Name))
+                {
+                    currentCorsRule.MaxAgeSeconds = CommonUtil.ParseToInt32(xmlReader.ReadString());
+                }
+                else if ("ExposeHeader".Equals(xmlReader.Name))
+                {
+                    currentCorsRule.ExposeHeaders.Add(xmlReader.ReadString());
+                }
             }
+
             return response;
         }
 
         public GetBucketLifecycleResponse ParseGetBucketLifecycleResponse(HttpResponse httpResponse)
         {
-            GetBucketLifecycleResponse response = new GetBucketLifecycleResponse();
-            using (XmlReader xmlReader = XmlReader.Create(httpResponse.Content))
+            var                         response                           = new GetBucketLifecycleResponse();
+            using var                   xmlReader                          = XmlReader.Create(httpResponse.Content);
+            LifecycleRule               currentRule                        = null;
+            var                         innerExpiration                    = false;
+            var                         innerNoncurrentVersionExpiration   = false;
+            var                         innerTransition                    = false;
+            var                         innerNoncurrentVersionTransition   = false;
+            Transition                  currentTransition                  = null;
+            NoncurrentVersionTransition currentNoncurrentVersionTransition = null;
+            while (xmlReader.Read())
             {
-                LifecycleRule currentRule = null;
-                bool innerExpiration = false;
-                bool innerNoncurrentVersionExpiration = false;
-                bool innerTransition = false;
-                bool innerNoncurrentVersionTransition = false;
-                Transition currentTransition = null;
-                NoncurrentVersionTransition currentNoncurrentVersionTransition = null;
-                while (xmlReader.Read())
+                if ("LifecycleConfiguration".Equals(xmlReader.Name))
                 {
-                    if ("LifecycleConfiguration".Equals(xmlReader.Name))
+                    if (xmlReader.IsStartElement())
                     {
-                        if (xmlReader.IsStartElement())
-                        {
-                            response.Configuration = new LifecycleConfiguration();
-                        }
+                        response.Configuration = new LifecycleConfiguration();
                     }
-                    else if ("Rule".Equals(xmlReader.Name))
-                    {
-                        if (xmlReader.IsStartElement())
-                        {
-                            currentRule = new LifecycleRule();
-                            response.Configuration.Rules.Add(currentRule);
-                        }
-                    }
-                    else if ("ID".Equals(xmlReader.Name))
-                    {
-                        currentRule.Id = xmlReader.ReadString();
-                    }
-                    else if ("Prefix".Equals(xmlReader.Name))
-                    {
-                        currentRule.Prefix = xmlReader.ReadString();
-                    }
-                    else if ("Status".Equals(xmlReader.Name))
-                    {
-                        RuleStatusEnum? temp = this.ParseRuleStatus(xmlReader.ReadString());
-                        if (temp.HasValue)
-                        {
-                            currentRule.Status = temp.Value;
-                        }
-                    }
-                    else if ("Expiration".Equals(xmlReader.Name))
-                    {
-                        if (xmlReader.IsStartElement())
-                        {
-                            currentRule.Expiration = new Expiration();
-                        }
-                        innerExpiration = xmlReader.IsStartElement();
-                    }
-                    else if ("NoncurrentVersionExpiration".Equals(xmlReader.Name))
-                    {
-                        if (xmlReader.IsStartElement())
-                        {
-                            currentRule.NoncurrentVersionExpiration = new NoncurrentVersionExpiration();
-                        }
-                        innerNoncurrentVersionExpiration = xmlReader.IsStartElement();
-                    }
-                    else if ("Transition".Equals(xmlReader.Name))
-                    {
-                        if (xmlReader.IsStartElement())
-                        {
-                            currentTransition = new Transition();
-                            currentRule.Transitions.Add(currentTransition);
-                        }
-
-                        innerTransition = xmlReader.IsStartElement();
-                    }
-                    else if ("NoncurrentVersionTransition".Equals(xmlReader.Name))
-                    {
-                        if (xmlReader.IsStartElement())
-                        {
-                            currentNoncurrentVersionTransition = new NoncurrentVersionTransition();
-                            currentRule.NoncurrentVersionTransitions.Add(currentNoncurrentVersionTransition);
-                        }
-                        innerNoncurrentVersionTransition = xmlReader.IsStartElement();
-                    }
-                    else if ("Days".Equals(xmlReader.Name))
-                    {
-                        if (innerExpiration)
-                        {
-                            currentRule.Expiration.Days = CommonUtil.ParseToInt32(xmlReader.ReadString());
-                        }
-                        else if (innerTransition)
-                        {
-                            currentTransition.Days = CommonUtil.ParseToInt32(xmlReader.ReadString());
-                        }
-                    }
-                    else if ("Date".Equals(xmlReader.Name))
-                    {
-                        if (innerExpiration)
-                        {
-                            currentRule.Expiration.Date = CommonUtil.ParseToDateTime(xmlReader.ReadString());
-                        }
-                        else if (innerTransition)
-                        {
-                            currentTransition.Date = CommonUtil.ParseToDateTime(xmlReader.ReadString());
-                        }
-                    }
-                    else if ("NoncurrentDays".Equals(xmlReader.Name))
-                    {
-                        if (innerNoncurrentVersionExpiration)
-                        {
-                            currentRule.NoncurrentVersionExpiration.NoncurrentDays = Convert.ToInt32(xmlReader.ReadString());
-                        }
-                        else if (innerNoncurrentVersionTransition)
-                        {
-                            currentNoncurrentVersionTransition.NoncurrentDays = Convert.ToInt32(xmlReader.ReadString());
-                        }
-                    }
-                    else if ("StorageClass".Equals(xmlReader.Name))
-                    {
-                        if (innerTransition)
-                        {
-                            currentTransition.StorageClass = this.ParseStorageClass(xmlReader.ReadString());
-                        }
-                        else if (innerNoncurrentVersionTransition)
-                        {
-                            currentNoncurrentVersionTransition.StorageClass = this.ParseStorageClass(xmlReader.ReadString());
-                        }
-                    }
-
                 }
+                else if ("Rule".Equals(xmlReader.Name))
+                {
+                    if (xmlReader.IsStartElement())
+                    {
+                        currentRule = new LifecycleRule();
+                        response.Configuration.Rules.Add(currentRule);
+                    }
+                }
+                else if ("ID".Equals(xmlReader.Name))
+                {
+                    currentRule.Id = xmlReader.ReadString();
+                }
+                else if ("Prefix".Equals(xmlReader.Name))
+                {
+                    currentRule.Prefix = xmlReader.ReadString();
+                }
+                else if ("Status".Equals(xmlReader.Name))
+                {
+                    var temp = this.ParseRuleStatus(xmlReader.ReadString());
+                    if (temp.HasValue)
+                    {
+                        currentRule.Status = temp.Value;
+                    }
+                }
+                else if ("Expiration".Equals(xmlReader.Name))
+                {
+                    if (xmlReader.IsStartElement())
+                    {
+                        currentRule.Expiration = new Expiration();
+                    }
+                    innerExpiration = xmlReader.IsStartElement();
+                }
+                else if ("NoncurrentVersionExpiration".Equals(xmlReader.Name))
+                {
+                    if (xmlReader.IsStartElement())
+                    {
+                        currentRule.NoncurrentVersionExpiration = new NoncurrentVersionExpiration();
+                    }
+                    innerNoncurrentVersionExpiration = xmlReader.IsStartElement();
+                }
+                else if ("Transition".Equals(xmlReader.Name))
+                {
+                    if (xmlReader.IsStartElement())
+                    {
+                        currentTransition = new Transition();
+                        currentRule.Transitions.Add(currentTransition);
+                    }
+
+                    innerTransition = xmlReader.IsStartElement();
+                }
+                else if ("NoncurrentVersionTransition".Equals(xmlReader.Name))
+                {
+                    if (xmlReader.IsStartElement())
+                    {
+                        currentNoncurrentVersionTransition = new NoncurrentVersionTransition();
+                        currentRule.NoncurrentVersionTransitions.Add(currentNoncurrentVersionTransition);
+                    }
+                    innerNoncurrentVersionTransition = xmlReader.IsStartElement();
+                }
+                else if ("Days".Equals(xmlReader.Name))
+                {
+                    if (innerExpiration)
+                    {
+                        currentRule.Expiration.Days = CommonUtil.ParseToInt32(xmlReader.ReadString());
+                    }
+                    else if (innerTransition)
+                    {
+                        currentTransition.Days = CommonUtil.ParseToInt32(xmlReader.ReadString());
+                    }
+                }
+                else if ("Date".Equals(xmlReader.Name))
+                {
+                    if (innerExpiration)
+                    {
+                        currentRule.Expiration.Date = CommonUtil.ParseToDateTime(xmlReader.ReadString());
+                    }
+                    else if (innerTransition)
+                    {
+                        currentTransition.Date = CommonUtil.ParseToDateTime(xmlReader.ReadString());
+                    }
+                }
+                else if ("NoncurrentDays".Equals(xmlReader.Name))
+                {
+                    if (innerNoncurrentVersionExpiration)
+                    {
+                        currentRule.NoncurrentVersionExpiration.NoncurrentDays = Convert.ToInt32(xmlReader.ReadString());
+                    }
+                    else if (innerNoncurrentVersionTransition)
+                    {
+                        currentNoncurrentVersionTransition.NoncurrentDays = Convert.ToInt32(xmlReader.ReadString());
+                    }
+                }
+                else if ("StorageClass".Equals(xmlReader.Name))
+                {
+                    if (innerTransition)
+                    {
+                        currentTransition.StorageClass = this.ParseStorageClass(xmlReader.ReadString());
+                    }
+                    else if (innerNoncurrentVersionTransition)
+                    {
+                        currentNoncurrentVersionTransition.StorageClass = this.ParseStorageClass(xmlReader.ReadString());
+                    }
+                }
+
             }
+
             return response;
         }
 
         public GetBucketWebsiteResponse ParseGetBucketWebsiteResponse(HttpResponse httpResponse)
         {
-            GetBucketWebsiteResponse response = new GetBucketWebsiteResponse();
+            var response = new GetBucketWebsiteResponse();
 
-            using (XmlReader xmlReader = XmlReader.Create(httpResponse.Content))
+            using var   xmlReader                  = XmlReader.Create(httpResponse.Content);
+            var         innerRedirectAllRequestsTo = false;
+            RoutingRule currentRoutingRule         = null;
+            while (xmlReader.Read())
             {
-                bool innerRedirectAllRequestsTo = false;
-                RoutingRule currentRoutingRule = null;
-                while (xmlReader.Read())
+                if ("WebsiteConfiguration".Equals(xmlReader.Name))
                 {
-                    if ("WebsiteConfiguration".Equals(xmlReader.Name))
+                    if (xmlReader.IsStartElement())
                     {
-                        if (xmlReader.IsStartElement())
-                        {
-                            response.Configuration = new WebsiteConfiguration();
-                        }
+                        response.Configuration = new WebsiteConfiguration();
                     }
-                    else if ("RedirectAllRequestsTo".Equals(xmlReader.Name))
+                }
+                else if ("RedirectAllRequestsTo".Equals(xmlReader.Name))
+                {
+                    if (xmlReader.IsStartElement())
                     {
-                        if (xmlReader.IsStartElement())
-                        {
-                            response.Configuration.RedirectAllRequestsTo = new RedirectBasic();
-                        }
+                        response.Configuration.RedirectAllRequestsTo = new RedirectBasic();
+                    }
 
-                        innerRedirectAllRequestsTo = xmlReader.IsStartElement();
-                    }
-                    else if ("HostName".Equals(xmlReader.Name))
+                    innerRedirectAllRequestsTo = xmlReader.IsStartElement();
+                }
+                else if ("HostName".Equals(xmlReader.Name))
+                {
+                    if (innerRedirectAllRequestsTo)
                     {
-                        if (innerRedirectAllRequestsTo)
-                        {
-                            response.Configuration.RedirectAllRequestsTo.HostName = xmlReader.ReadString();
-                        }
-                        else
-                        {
-                            currentRoutingRule.Redirect.HostName = xmlReader.ReadString();
-                        }
+                        response.Configuration.RedirectAllRequestsTo.HostName = xmlReader.ReadString();
                     }
-                    else if ("Protocol".Equals(xmlReader.Name))
+                    else
                     {
-                        if (innerRedirectAllRequestsTo)
-                        {
-                            response.Configuration.RedirectAllRequestsTo.Protocol = this.ParseProtocol(xmlReader.ReadString());
-                        }
-                        else
-                        {
-                            currentRoutingRule.Redirect.Protocol = this.ParseProtocol(xmlReader.ReadString());
-                        }
+                        currentRoutingRule.Redirect.HostName = xmlReader.ReadString();
                     }
-                    else if ("Suffix".Equals(xmlReader.Name))
+                }
+                else if ("Protocol".Equals(xmlReader.Name))
+                {
+                    if (innerRedirectAllRequestsTo)
                     {
-                        response.Configuration.IndexDocument = xmlReader.ReadString();
+                        response.Configuration.RedirectAllRequestsTo.Protocol = this.ParseProtocol(xmlReader.ReadString());
                     }
-                    else if ("Key".Equals(xmlReader.Name))
+                    else
                     {
-                        response.Configuration.ErrorDocument = xmlReader.ReadString();
+                        currentRoutingRule.Redirect.Protocol = this.ParseProtocol(xmlReader.ReadString());
                     }
-                    else if ("RoutingRule".Equals(xmlReader.Name))
+                }
+                else if ("Suffix".Equals(xmlReader.Name))
+                {
+                    response.Configuration.IndexDocument = xmlReader.ReadString();
+                }
+                else if ("Key".Equals(xmlReader.Name))
+                {
+                    response.Configuration.ErrorDocument = xmlReader.ReadString();
+                }
+                else if ("RoutingRule".Equals(xmlReader.Name))
+                {
+                    if (xmlReader.IsStartElement())
                     {
-                        if (xmlReader.IsStartElement())
-                        {
-                            currentRoutingRule = new RoutingRule();
-                            response.Configuration.RoutingRules.Add(currentRoutingRule);
-                        }
+                        currentRoutingRule = new RoutingRule();
+                        response.Configuration.RoutingRules.Add(currentRoutingRule);
                     }
-                    else if ("Condition".Equals(xmlReader.Name))
+                }
+                else if ("Condition".Equals(xmlReader.Name))
+                {
+                    if (xmlReader.IsStartElement())
                     {
-                        if (xmlReader.IsStartElement())
-                        {
-                            currentRoutingRule.Condition = new Condition();
-                        }
+                        currentRoutingRule.Condition = new Condition();
                     }
-                    else if ("KeyPrefixEquals".Equals(xmlReader.Name))
+                }
+                else if ("KeyPrefixEquals".Equals(xmlReader.Name))
+                {
+                    currentRoutingRule.Condition.KeyPrefixEquals = xmlReader.ReadString();
+                }
+                else if ("HttpErrorCodeReturnedEquals".Equals(xmlReader.Name))
+                {
+                    currentRoutingRule.Condition.HttpErrorCodeReturnedEquals = xmlReader.ReadString();
+                }
+                else if ("Redirect".Equals(xmlReader.Name))
+                {
+                    if (xmlReader.IsStartElement())
                     {
-                        currentRoutingRule.Condition.KeyPrefixEquals = xmlReader.ReadString();
+                        currentRoutingRule.Redirect = new Redirect();
                     }
-                    else if ("HttpErrorCodeReturnedEquals".Equals(xmlReader.Name))
-                    {
-                        currentRoutingRule.Condition.HttpErrorCodeReturnedEquals = xmlReader.ReadString();
-                    }
-                    else if ("Redirect".Equals(xmlReader.Name))
-                    {
-                        if (xmlReader.IsStartElement())
-                        {
-                            currentRoutingRule.Redirect = new Redirect();
-                        }
-                    }
-                    else if ("ReplaceKeyPrefixWith".Equals(xmlReader.Name))
-                    {
-                        currentRoutingRule.Redirect.ReplaceKeyPrefixWith = xmlReader.ReadString();
-                    }
-                    else if ("ReplaceKeyWith".Equals(xmlReader.Name))
-                    {
-                        currentRoutingRule.Redirect.ReplaceKeyWith = xmlReader.ReadString();
-                    }
-                    else if ("HttpRedirectCode".Equals(xmlReader.Name))
-                    {
-                        currentRoutingRule.Redirect.HttpRedirectCode = xmlReader.ReadString();
-                    }
+                }
+                else if ("ReplaceKeyPrefixWith".Equals(xmlReader.Name))
+                {
+                    currentRoutingRule.Redirect.ReplaceKeyPrefixWith = xmlReader.ReadString();
+                }
+                else if ("ReplaceKeyWith".Equals(xmlReader.Name))
+                {
+                    currentRoutingRule.Redirect.ReplaceKeyWith = xmlReader.ReadString();
+                }
+                else if ("HttpRedirectCode".Equals(xmlReader.Name))
+                {
+                    currentRoutingRule.Redirect.HttpRedirectCode = xmlReader.ReadString();
                 }
             }
 
@@ -1009,161 +995,158 @@ namespace OBS.Internal
 
         public GetBucketVersioningResponse ParseGetBucketVersioningResponse(HttpResponse httpResponse)
         {
-            GetBucketVersioningResponse response = new GetBucketVersioningResponse();
-            using (XmlReader xmlReader = XmlReader.Create(httpResponse.Content))
+            var       response  = new GetBucketVersioningResponse();
+            using var xmlReader = XmlReader.Create(httpResponse.Content);
+            while (xmlReader.Read())
             {
-                while (xmlReader.Read())
+                if ("VersioningConfiguration".Equals(xmlReader.Name))
                 {
-                    if ("VersioningConfiguration".Equals(xmlReader.Name))
+                    if (xmlReader.IsStartElement())
                     {
-                        if (xmlReader.IsStartElement())
-                        {
-                            response.Configuration = new VersioningConfiguration();
-                        }
-                    }
-                    else if ("Status".Equals(xmlReader.Name))
-                    {
-                        response.Configuration.Status = this.ParseVersionStatusEnum(xmlReader.ReadString());
+                        response.Configuration = new VersioningConfiguration();
                     }
                 }
+                else if ("Status".Equals(xmlReader.Name))
+                {
+                    response.Configuration.Status = this.ParseVersionStatusEnum(xmlReader.ReadString());
+                }
             }
+
             return response;
         }
 
         public GetBucketTaggingResponse ParseGetBucketTaggingResponse(HttpResponse httpResponse)
         {
-            GetBucketTaggingResponse response = new GetBucketTaggingResponse();
-            using (XmlReader xmlReader = XmlReader.Create(httpResponse.Content))
+            var       response   = new GetBucketTaggingResponse();
+            using var xmlReader  = XmlReader.Create(httpResponse.Content);
+            Tag       currentTag = null;
+            while (xmlReader.Read())
             {
-                Tag currentTag = null;
-                while (xmlReader.Read())
-                {
 
-                    if ("Tag".Equals(xmlReader.Name))
+                if ("Tag".Equals(xmlReader.Name))
+                {
+                    if (xmlReader.IsStartElement())
                     {
-                        if (xmlReader.IsStartElement())
-                        {
-                            currentTag = new Tag();
-                            response.Tags.Add(currentTag);
-                        }
-                    }
-                    else if ("Key".Equals(xmlReader.Name))
-                    {
-                        currentTag.Key = xmlReader.ReadString();
-                    }
-                    else if ("Value".Equals(xmlReader.Name))
-                    {
-                        currentTag.Value = xmlReader.ReadString();
+                        currentTag = new Tag();
+                        response.Tags.Add(currentTag);
                     }
                 }
+                else if ("Key".Equals(xmlReader.Name))
+                {
+                    currentTag.Key = xmlReader.ReadString();
+                }
+                else if ("Value".Equals(xmlReader.Name))
+                {
+                    currentTag.Value = xmlReader.ReadString();
+                }
             }
+
             return response;
         }
 
         public GetBucketNotificationReponse ParseGetBucketNotificationReponse(HttpResponse httpResponse)
         {
-            GetBucketNotificationReponse response = new GetBucketNotificationReponse();
-            using (XmlReader xmlReader = XmlReader.Create(httpResponse.Content))
+            var                        response                        = new GetBucketNotificationReponse();
+            using var                  xmlReader                       = XmlReader.Create(httpResponse.Content);
+            TopicConfiguration         currentTc                       = null;
+            FunctionGraphConfiguration currentFc                       = null;
+            var                        innerTopicConfiguration         = false;
+            var                        innerFunctionGraphConfiguration = false;
+            FilterRule                 currentFr                       = null;
+            while (xmlReader.Read())
             {
-                TopicConfiguration currentTc = null;
-                FunctionGraphConfiguration currentFc = null;
-                bool innerTopicConfiguration = false;
-                bool innerFunctionGraphConfiguration = false;
-                FilterRule currentFr = null;
-                while (xmlReader.Read())
+                if ("NotificationConfiguration".Equals(xmlReader.Name))
                 {
-                    if ("NotificationConfiguration".Equals(xmlReader.Name))
+                    if (xmlReader.IsStartElement())
                     {
-                        if (xmlReader.IsStartElement())
-                        {
-                            response.Configuration = new NotificationConfiguration();
-                        }
+                        response.Configuration = new NotificationConfiguration();
                     }
-                    else if ("TopicConfiguration".Equals(xmlReader.Name))
+                }
+                else if ("TopicConfiguration".Equals(xmlReader.Name))
+                {
+                    if (xmlReader.IsStartElement())
                     {
-                        if (xmlReader.IsStartElement())
-                        {
-                            currentTc = new TopicConfiguration();
-                            response.Configuration.TopicConfigurations.Add(currentTc);
-                        }
-                        innerTopicConfiguration = xmlReader.IsStartElement();
+                        currentTc = new TopicConfiguration();
+                        response.Configuration.TopicConfigurations.Add(currentTc);
                     }
-                    else if ("FunctionGraphConfiguration".Equals(xmlReader.Name))
+                    innerTopicConfiguration = xmlReader.IsStartElement();
+                }
+                else if ("FunctionGraphConfiguration".Equals(xmlReader.Name))
+                {
+                    if (xmlReader.IsStartElement())
                     {
-                        if (xmlReader.IsStartElement())
-                        {
-                            currentFc = new FunctionGraphConfiguration();
-                            response.Configuration.FunctionGraphConfigurations.Add(currentFc);
-                        }
-                        innerFunctionGraphConfiguration = xmlReader.IsStartElement();
+                        currentFc = new FunctionGraphConfiguration();
+                        response.Configuration.FunctionGraphConfigurations.Add(currentFc);
                     }
-                    else if ("Id".Equals(xmlReader.Name))
+                    innerFunctionGraphConfiguration = xmlReader.IsStartElement();
+                }
+                else if ("Id".Equals(xmlReader.Name))
+                {
+                    if (innerTopicConfiguration)
+                    {
+                        currentTc.Id = xmlReader.ReadString();
+                    }else if (innerFunctionGraphConfiguration)
+                    {
+                        currentFc.Id = xmlReader.ReadString(); 
+                    }
+                }
+                else if ("FilterRule".Equals(xmlReader.Name))
+                {
+                    if (xmlReader.IsStartElement())
                     {
                         if (innerTopicConfiguration)
                         {
-                            currentTc.Id = xmlReader.ReadString();
+                            currentFr = new FilterRule();
+                            currentTc.FilterRules.Add(currentFr);
                         }else if (innerFunctionGraphConfiguration)
                         {
-                            currentFc.Id = xmlReader.ReadString(); 
+                            currentFc.FilterRules.Add(currentFr);
                         }
                     }
-                    else if ("FilterRule".Equals(xmlReader.Name))
-                    {
-                        if (xmlReader.IsStartElement())
-                        {
-                            if (innerTopicConfiguration)
-                            {
-                                currentFr = new FilterRule();
-                                currentTc.FilterRules.Add(currentFr);
-                            }else if (innerFunctionGraphConfiguration)
-                            {
-                                currentFc.FilterRules.Add(currentFr);
-                            }
-                        }
 
-                    }
-                    else if ("Name".Equals(xmlReader.Name))
+                }
+                else if ("Name".Equals(xmlReader.Name))
+                {
+                    currentFr.Name = this.ParseFilterName(xmlReader.ReadString());
+                }
+                else if ("Value".Equals(xmlReader.Value))
+                {
+                    currentFr.Value = xmlReader.ReadString();
+                }
+                else if ("Topic".Equals(xmlReader.Name))
+                {
+                    currentTc.Topic = xmlReader.ReadString();
+                }
+                else if ("FunctionGraph".Equals(xmlReader.Name))
+                {
+                    currentFc.FunctionGraph = xmlReader.ReadString();
+                }
+                else if ("Event".Equals(xmlReader.Name))
+                {
+                    if (innerTopicConfiguration)
                     {
-                        currentFr.Name = this.ParseFilterName(xmlReader.ReadString());
-                    }
-                    else if ("Value".Equals(xmlReader.Value))
-                    {
-                        currentFr.Value = xmlReader.ReadString();
-                    }
-                    else if ("Topic".Equals(xmlReader.Name))
-                    {
-                        currentTc.Topic = xmlReader.ReadString();
-                    }
-                    else if ("FunctionGraph".Equals(xmlReader.Name))
-                    {
-                        currentFc.FunctionGraph = xmlReader.ReadString();
-                    }
-                    else if ("Event".Equals(xmlReader.Name))
-                    {
-                        if (innerTopicConfiguration)
+                        var temp = this.ParseEventTypeEnum(xmlReader.ReadString());
+                        if (temp.HasValue)
                         {
-                            EventTypeEnum? temp = this.ParseEventTypeEnum(xmlReader.ReadString());
-                            if (temp.HasValue)
-                            {
-                                currentTc.Events.Add(temp.Value);
-                            }
-                        }else if (innerFunctionGraphConfiguration)
+                            currentTc.Events.Add(temp.Value);
+                        }
+                    }else if (innerFunctionGraphConfiguration)
+                    {
+                        var temp = this.ParseEventTypeEnum(xmlReader.ReadString());
+                        if (temp.HasValue)
                         {
-                            EventTypeEnum? temp = this.ParseEventTypeEnum(xmlReader.ReadString());
-                            if (temp.HasValue)
-                            {
-                                currentFc.Events.Add(temp.Value);
-                            }
+                            currentFc.Events.Add(temp.Value);
                         }
                     }
                 }
             }
+
             return response;
         }
 
         public DeleteObjectResponse ParseDeleteObjectResponse(HttpResponse httpResponse)
         {
-            DeleteObjectResponse response = new DeleteObjectResponse();
+            var response = new DeleteObjectResponse();
 
             if (httpResponse.Headers.ContainsKey(this.iheaders.VersionIdHeader()))
             {
@@ -1179,68 +1162,66 @@ namespace OBS.Internal
 
         public DeleteObjectsResponse ParseDeleteObjectsResponse(HttpResponse httpResponse)
         {
-            DeleteObjectsResponse response = new DeleteObjectsResponse();
-            using (XmlReader xmlReader = XmlReader.Create(httpResponse.Content))
+            var           response     = new DeleteObjectsResponse();
+            using var     xmlReader    = XmlReader.Create(httpResponse.Content);
+            DeletedObject currentObj   = null;
+            DeleteError   currentErr   = null;
+            var           innerDeleted = false;
+            var           innerError   = false;
+            while (xmlReader.Read())
             {
-                DeletedObject currentObj = null;
-                DeleteError currentErr = null;
-                bool innerDeleted = false;
-                bool innerError = false;
-                while (xmlReader.Read())
+                if ("Deleted".Equals(xmlReader.Name))
                 {
-                    if ("Deleted".Equals(xmlReader.Name))
+                    if (xmlReader.IsStartElement())
                     {
-                        if (xmlReader.IsStartElement())
-                        {
-                            currentObj = new DeletedObject();
-                            response.DeletedObjects.Add(currentObj);
-                        }
-                        innerDeleted = xmlReader.IsStartElement();
+                        currentObj = new DeletedObject();
+                        response.DeletedObjects.Add(currentObj);
                     }
-                    else if ("Error".Equals(xmlReader.Name))
+                    innerDeleted = xmlReader.IsStartElement();
+                }
+                else if ("Error".Equals(xmlReader.Name))
+                {
+                    if (xmlReader.IsStartElement())
                     {
-                        if (xmlReader.IsStartElement())
-                        {
-                            currentErr = new DeleteError();
-                            response.DeleteErrors.Add(currentErr);
-                        }
-                        innerError = xmlReader.IsStartElement();
+                        currentErr = new DeleteError();
+                        response.DeleteErrors.Add(currentErr);
                     }
-                    else if ("Key".Equals(xmlReader.Name))
+                    innerError = xmlReader.IsStartElement();
+                }
+                else if ("Key".Equals(xmlReader.Name))
+                {
+                    if (innerDeleted)
                     {
-                        if (innerDeleted)
-                        {
-                            currentObj.ObjectKey = xmlReader.ReadString();
-                        }
-                        else if (innerError)
-                        {
-                            currentErr.ObjectKey = xmlReader.ReadString();
-                        }
+                        currentObj.ObjectKey = xmlReader.ReadString();
+                    }
+                    else if (innerError)
+                    {
+                        currentErr.ObjectKey = xmlReader.ReadString();
+                    }
 
-                    }else if ("VersionId".Equals(xmlReader.Name))
+                }else if ("VersionId".Equals(xmlReader.Name))
+                {
+                    if (innerDeleted)
                     {
-                        if (innerDeleted)
-                        {
-                            currentObj.VersionId = xmlReader.ReadString();
-                        }
-                        else if (innerError)
-                        {
-                            currentErr.VersionId = xmlReader.ReadString();
-                        }
+                        currentObj.VersionId = xmlReader.ReadString();
                     }
-                    else if ("Code".Equals(xmlReader.Name))
+                    else if (innerError)
                     {
-                        currentErr.Code = xmlReader.ReadString();
-                    }else if ("Message".Equals(xmlReader.Name))
-                    {
-                        currentErr.Message = xmlReader.ReadString();
-                    }else if ("DeleteMarker".Equals(xmlReader.Name))
-                    {
-                        currentObj.DeleteMarker = Convert.ToBoolean(xmlReader.ReadString());
-                    }else if ("DeleteMarkerVersionId".Equals(xmlReader.Name))
-                    {
-                        currentObj.DeleteMarkerVersionId = xmlReader.ReadString();
+                        currentErr.VersionId = xmlReader.ReadString();
                     }
+                }
+                else if ("Code".Equals(xmlReader.Name))
+                {
+                    currentErr.Code = xmlReader.ReadString();
+                }else if ("Message".Equals(xmlReader.Name))
+                {
+                    currentErr.Message = xmlReader.ReadString();
+                }else if ("DeleteMarker".Equals(xmlReader.Name))
+                {
+                    currentObj.DeleteMarker = Convert.ToBoolean(xmlReader.ReadString());
+                }else if ("DeleteMarkerVersionId".Equals(xmlReader.Name))
+                {
+                    currentObj.DeleteMarkerVersionId = xmlReader.ReadString();
                 }
             }
 
@@ -1249,104 +1230,103 @@ namespace OBS.Internal
 
         public ListPartsResponse ParseListPartsResponse(HttpResponse httpResponse)
         {
-            ListPartsResponse response = new ListPartsResponse();
-            using (XmlReader xmlReader = XmlReader.Create(httpResponse.Content))
+            var        response       = new ListPartsResponse();
+            using var  xmlReader      = XmlReader.Create(httpResponse.Content);
+            PartDetail currentPart    = null;
+            var        innerInitiator = false;
+            var        innerOwner     = false;
+            while (xmlReader.Read())
             {
-                PartDetail currentPart = null;
-                bool innerInitiator = false;
-                bool innerOwner = false;
-                while (xmlReader.Read())
+                if ("Bucket".Equals(xmlReader.Name))
                 {
-                    if ("Bucket".Equals(xmlReader.Name))
+                    response.BucketName = xmlReader.ReadString();
+                } else if ("Key".Equals(xmlReader.Name))
+                {
+                    response.ObjectKey = xmlReader.ReadString();
+                } else if ("UploadId".Equals(xmlReader.Name))
+                {
+                    response.UploadId = xmlReader.ReadString();
+                }else if ("Initiator".Equals(xmlReader.Name))
+                {
+                    if (xmlReader.IsStartElement())
                     {
-                        response.BucketName = xmlReader.ReadString();
-                    } else if ("Key".Equals(xmlReader.Name))
-                    {
-                        response.ObjectKey = xmlReader.ReadString();
-                    } else if ("UploadId".Equals(xmlReader.Name))
-                    {
-                        response.UploadId = xmlReader.ReadString();
-                    }else if ("Initiator".Equals(xmlReader.Name))
-                    {
-                        if (xmlReader.IsStartElement())
-                        {
-                            response.Initiator = new Initiator();
-                        }
-                        innerInitiator = xmlReader.IsStartElement();
+                        response.Initiator = new Initiator();
                     }
-                    else if ("Owner".Equals(xmlReader.Name))
+                    innerInitiator = xmlReader.IsStartElement();
+                }
+                else if ("Owner".Equals(xmlReader.Name))
+                {
+                    if (xmlReader.IsStartElement())
                     {
-                        if (xmlReader.IsStartElement())
-                        {
-                            response.Owner = new Owner();
-                        }
-                        innerOwner = xmlReader.IsStartElement();
+                        response.Owner = new Owner();
                     }
-                    else if ("ID".Equals(xmlReader.Name))
+                    innerOwner = xmlReader.IsStartElement();
+                }
+                else if ("ID".Equals(xmlReader.Name))
+                {
+                    if (innerInitiator)
                     {
-                        if (innerInitiator)
-                        {
-                            response.Initiator.Id = xmlReader.ReadString();
-                        }else if (innerOwner)
-                        {
-                            response.Owner.Id = xmlReader.ReadString();
-                        }
-                    }
-                    else if ("DisplayName".Equals(xmlReader.Name))
+                        response.Initiator.Id = xmlReader.ReadString();
+                    }else if (innerOwner)
                     {
-                        if (innerInitiator)
-                        {
-                            response.Initiator.DisplayName = xmlReader.ReadString();
-                        }
-                        else if (innerOwner)
-                        {
-                            response.Owner.DisplayName = xmlReader.ReadString();
-                        }
-                    }
-                    else if ("StorageClass".Equals(xmlReader.Name))
-                    {
-                        response.StorageClass = this.ParseStorageClass(xmlReader.ReadString());
-                    } else if ("PartNumberMarker".Equals(xmlReader.Name))
-                    {
-                        response.PartNumberMarker = CommonUtil.ParseToInt32(xmlReader.ReadString());
-                    } else if ("NextPartNumberMarker".Equals(xmlReader.Name))
-                    {
-                        response.NextPartNumberMarker = CommonUtil.ParseToInt32(xmlReader.ReadString());
-                    } else if ("MaxParts".Equals(xmlReader.Name))
-                    {
-                        response.MaxParts = CommonUtil.ParseToInt32(xmlReader.ReadString());
-                    } else if ("IsTruncated".Equals(xmlReader.Name))
-                    {
-                        response.IsTruncated = Convert.ToBoolean(xmlReader.ReadString());
-                    } else if ("Part".Equals(xmlReader.Name))
-                    {
-                        if (xmlReader.IsStartElement())
-                        {
-                            currentPart = new PartDetail();
-                            response.Parts.Add(currentPart);
-                        }
-                    } else if ("PartNumber".Equals(xmlReader.Name))
-                    {
-                        currentPart.PartNumber = Convert.ToInt32(xmlReader.ReadString());
-                    }else if ("LastModified".Equals(xmlReader.Name))
-                    {
-                        currentPart.LastModified = CommonUtil.ParseToDateTime(xmlReader.ReadString());
-                    }else if ("ETag".Equals(xmlReader.Name))
-                    {
-                        currentPart.ETag = xmlReader.ReadString();
-                    }else if ("Size".Equals(xmlReader.Name))
-                    {
-                        currentPart.Size = Convert.ToInt64(xmlReader.ReadString());
+                        response.Owner.Id = xmlReader.ReadString();
                     }
                 }
+                else if ("DisplayName".Equals(xmlReader.Name))
+                {
+                    if (innerInitiator)
+                    {
+                        response.Initiator.DisplayName = xmlReader.ReadString();
+                    }
+                    else if (innerOwner)
+                    {
+                        response.Owner.DisplayName = xmlReader.ReadString();
+                    }
+                }
+                else if ("StorageClass".Equals(xmlReader.Name))
+                {
+                    response.StorageClass = this.ParseStorageClass(xmlReader.ReadString());
+                } else if ("PartNumberMarker".Equals(xmlReader.Name))
+                {
+                    response.PartNumberMarker = CommonUtil.ParseToInt32(xmlReader.ReadString());
+                } else if ("NextPartNumberMarker".Equals(xmlReader.Name))
+                {
+                    response.NextPartNumberMarker = CommonUtil.ParseToInt32(xmlReader.ReadString());
+                } else if ("MaxParts".Equals(xmlReader.Name))
+                {
+                    response.MaxParts = CommonUtil.ParseToInt32(xmlReader.ReadString());
+                } else if ("IsTruncated".Equals(xmlReader.Name))
+                {
+                    response.IsTruncated = Convert.ToBoolean(xmlReader.ReadString());
+                } else if ("Part".Equals(xmlReader.Name))
+                {
+                    if (xmlReader.IsStartElement())
+                    {
+                        currentPart = new PartDetail();
+                        response.Parts.Add(currentPart);
+                    }
+                } else if ("PartNumber".Equals(xmlReader.Name))
+                {
+                    currentPart.PartNumber = Convert.ToInt32(xmlReader.ReadString());
+                }else if ("LastModified".Equals(xmlReader.Name))
+                {
+                    currentPart.LastModified = CommonUtil.ParseToDateTime(xmlReader.ReadString());
+                }else if ("ETag".Equals(xmlReader.Name))
+                {
+                    currentPart.ETag = xmlReader.ReadString();
+                }else if ("Size".Equals(xmlReader.Name))
+                {
+                    currentPart.Size = Convert.ToInt64(xmlReader.ReadString());
+                }
             }
+
             return response;
         }
 
         public CompleteMultipartUploadResponse ParseCompleteMultipartUploadResponse(HttpResponse httpResponse)
         {
-            CompleteMultipartUploadResponse response = new CompleteMultipartUploadResponse();
-            using (XmlReader xmlReader = XmlReader.Create(httpResponse.Content))
+            var response = new CompleteMultipartUploadResponse();
+            using (var xmlReader = XmlReader.Create(httpResponse.Content))
             {
                 while (xmlReader.Read())
                 {
@@ -1378,102 +1358,100 @@ namespace OBS.Internal
 
         private AccessControlList ParseAccessControlList(HttpResponse httpResponse)
         {
-            using (XmlReader xmlReader = XmlReader.Create(httpResponse.Content))
+            using var xmlReader    = XmlReader.Create(httpResponse.Content);
+            var       acl          = new AccessControlList();
+            var       innerOwner   = false;
+            Grant     currentGrant = null;
+            while (xmlReader.Read())
             {
-                AccessControlList acl = new AccessControlList();
-                bool innerOwner = false;
-                Grant currentGrant = null;
-                while (xmlReader.Read())
+                if ("Owner".Equals(xmlReader.Name))
                 {
-                    if ("Owner".Equals(xmlReader.Name))
+                    if (xmlReader.IsStartElement())
                     {
-                        if (xmlReader.IsStartElement())
-                        {
-                            acl.Owner = new Owner();
-                        }
-                        innerOwner = xmlReader.IsStartElement();
+                        acl.Owner = new Owner();
                     }
-                    else if ("ID".Equals(xmlReader.Name))
+                    innerOwner = xmlReader.IsStartElement();
+                }
+                else if ("ID".Equals(xmlReader.Name))
+                {
+                    if (innerOwner)
                     {
-                        if (innerOwner)
-                        {
-                            acl.Owner.Id = xmlReader.ReadString();
-                        }
-                        else
-                        {
-                            CanonicalGrantee grantee = currentGrant.Grantee as CanonicalGrantee;
-                            if (grantee != null)
-                            {
-                                grantee.Id = xmlReader.ReadString();
-                            }
-                        }
+                        acl.Owner.Id = xmlReader.ReadString();
                     }
-                    else if ("DisplayName".Equals(xmlReader.Name))
+                    else
                     {
-                        if (innerOwner)
-                        {
-                            acl.Owner.DisplayName = xmlReader.ReadString();
-                        }
-                        else
-                        {
-                            CanonicalGrantee grantee = currentGrant.Grantee as CanonicalGrantee;
-                            if (grantee != null)
-                            {
-                                grantee.DisplayName = xmlReader.ReadString();
-                            }
-                        }
-                    }
-                    else if ("Grant".Equals(xmlReader.Name))
-                    {
-                        if (xmlReader.IsStartElement())
-                        {
-                            currentGrant = new Grant();
-                            acl.Grants.Add(currentGrant);
-                        }
-                    }
-                    else if ("Grantee".Equals(xmlReader.Name))
-                    {
-                        if (xmlReader.IsStartElement())
-                        {
-                            Grantee grantee;
-                            if (xmlReader.GetAttribute("xsi:type").Equals("CanonicalUser"))
-                            {
-                                grantee = new CanonicalGrantee();
-                            }
-                            else
-                            {
-                                grantee = new GroupGrantee();
-                            }
-                            currentGrant.Grantee = grantee;
-                        }
-                    }
-                    else if ("URI".Equals(xmlReader.Name))
-                    {
-                        GroupGrantee grantee = currentGrant.Grantee as GroupGrantee;
+                        var grantee = currentGrant.Grantee as CanonicalGrantee;
                         if (grantee != null)
                         {
-                            grantee.GroupGranteeType = this.ParseGroupGrantee(xmlReader.ReadString());
+                            grantee.Id = xmlReader.ReadString();
                         }
                     }
-                    else if ("Permission".Equals(xmlReader.Name))
+                }
+                else if ("DisplayName".Equals(xmlReader.Name))
+                {
+                    if (innerOwner)
                     {
-                        currentGrant.Permission = this.ParsePermission(xmlReader.ReadString());
+                        acl.Owner.DisplayName = xmlReader.ReadString();
+                    }
+                    else
+                    {
+                        var grantee = currentGrant.Grantee as CanonicalGrantee;
+                        if (grantee != null)
+                        {
+                            grantee.DisplayName = xmlReader.ReadString();
+                        }
                     }
                 }
-                return acl;
+                else if ("Grant".Equals(xmlReader.Name))
+                {
+                    if (xmlReader.IsStartElement())
+                    {
+                        currentGrant = new Grant();
+                        acl.Grants.Add(currentGrant);
+                    }
+                }
+                else if ("Grantee".Equals(xmlReader.Name))
+                {
+                    if (xmlReader.IsStartElement())
+                    {
+                        Grantee grantee;
+                        if (xmlReader.GetAttribute("xsi:type").Equals("CanonicalUser"))
+                        {
+                            grantee = new CanonicalGrantee();
+                        }
+                        else
+                        {
+                            grantee = new GroupGrantee();
+                        }
+                        currentGrant.Grantee = grantee;
+                    }
+                }
+                else if ("URI".Equals(xmlReader.Name))
+                {
+                    var grantee = currentGrant.Grantee as GroupGrantee;
+                    if (grantee != null)
+                    {
+                        grantee.GroupGranteeType = this.ParseGroupGrantee(xmlReader.ReadString());
+                    }
+                }
+                else if ("Permission".Equals(xmlReader.Name))
+                {
+                    currentGrant.Permission = this.ParsePermission(xmlReader.ReadString());
+                }
             }
+            return acl;
         }
 
         public virtual GetObjectAclResponse ParseGetObjectAclResponse(HttpResponse httpResponse)
         {
-            GetObjectAclResponse response = new GetObjectAclResponse();
+            var response = new GetObjectAclResponse();
             response.AccessControlList = this.ParseAccessControlList(httpResponse);
             return response;
         }
 
         public PutObjectResponse ParsePutObjectResponse(HttpResponse httpResponse)
         {
-            PutObjectResponse response = new PutObjectResponse();
+            var response = new PutObjectResponse();
 
             if (httpResponse.Headers.ContainsKey(this.iheaders.VersionIdHeader()))
             {
@@ -1497,7 +1475,7 @@ namespace OBS.Internal
 
         public CopyObjectResponse ParseCopyObjectResponse(HttpResponse httpResponse)
         {
-            CopyObjectResponse response = new CopyObjectResponse();
+            var response = new CopyObjectResponse();
             if (httpResponse.Headers.ContainsKey(this.iheaders.VersionIdHeader()))
             {
                 response.VersionId = httpResponse.Headers[this.iheaders.VersionIdHeader()];
@@ -1513,17 +1491,15 @@ namespace OBS.Internal
                 response.SourceVersionId = httpResponse.Headers[this.iheaders.CopySourceVersionIdHeader()];
             }
 
-            using (XmlReader xmlReader = XmlReader.Create(httpResponse.Content))
+            using var xmlReader = XmlReader.Create(httpResponse.Content);
+            while (xmlReader.Read())
             {
-                while (xmlReader.Read())
+                if ("LastModified".Equals(xmlReader.Name))
                 {
-                    if ("LastModified".Equals(xmlReader.Name))
-                    {
-                        response.LastModified = CommonUtil.ParseToDateTime(xmlReader.ReadString());
-                    }else if ("ETag".Equals(xmlReader.Name))
-                    {
-                        response.ETag = xmlReader.ReadString();
-                    }
+                    response.LastModified = CommonUtil.ParseToDateTime(xmlReader.ReadString());
+                }else if ("ETag".Equals(xmlReader.Name))
+                {
+                    response.ETag = xmlReader.ReadString();
                 }
             }
 
@@ -1532,43 +1508,40 @@ namespace OBS.Internal
 
         public InitiateMultipartUploadResponse ParseInitiateMultipartUploadResponse(HttpResponse httpResponse)
         {
-            InitiateMultipartUploadResponse response = new InitiateMultipartUploadResponse();
-            using (XmlReader xmlReader = XmlReader.Create(httpResponse.Content))
+            var       response  = new InitiateMultipartUploadResponse();
+            using var xmlReader = XmlReader.Create(httpResponse.Content);
+            while (xmlReader.Read())
             {
-                while (xmlReader.Read())
+                if ("Bucket".Equals(xmlReader.Name))
                 {
-                    if ("Bucket".Equals(xmlReader.Name))
-                    {
-                        response.BucketName = xmlReader.ReadString(); 
-                    }
-                    else if ("Key".Equals(xmlReader.Name))
-                    {
-                        response.ObjectKey = xmlReader.ReadString();
-                    }
-                    else if ("UploadId".Equals(xmlReader.Name))
-                    {
-                        response.UploadId = xmlReader.ReadString();
-                    }
+                    response.BucketName = xmlReader.ReadString(); 
+                }
+                else if ("Key".Equals(xmlReader.Name))
+                {
+                    response.ObjectKey = xmlReader.ReadString();
+                }
+                else if ("UploadId".Equals(xmlReader.Name))
+                {
+                    response.UploadId = xmlReader.ReadString();
                 }
             }
+
             return response;
         }
 
         public CopyPartResponse ParseCopyPartResponse(HttpResponse httpResponse)
         {
-            CopyPartResponse response = new CopyPartResponse();
-            using (XmlReader xmlReader = XmlReader.Create(httpResponse.Content))
+            var       response  = new CopyPartResponse();
+            using var xmlReader = XmlReader.Create(httpResponse.Content);
+            while (xmlReader.Read())
             {
-                while (xmlReader.Read())
+                if ("LastModified".Equals(xmlReader.Name))
                 {
-                    if ("LastModified".Equals(xmlReader.Name))
-                    {
-                        response.LastModified = CommonUtil.ParseToDateTime(xmlReader.ReadString());
-                    }
-                    else if ("ETag".Equals(xmlReader.Name))
-                    {
-                        response.ETag = xmlReader.ReadString();
-                    }
+                    response.LastModified = CommonUtil.ParseToDateTime(xmlReader.ReadString());
+                }
+                else if ("ETag".Equals(xmlReader.Name))
+                {
+                    response.ETag = xmlReader.ReadString();
                 }
             }
 
@@ -1577,7 +1550,7 @@ namespace OBS.Internal
 
         public UploadPartResponse ParseUploadPartResponse(HttpResponse httpResponse)
         {
-            UploadPartResponse response = new UploadPartResponse();
+            var response = new UploadPartResponse();
             if (httpResponse.Headers.ContainsKey(Constants.CommonHeaders.ETag))
             {
                 response.ETag = httpResponse.Headers[Constants.CommonHeaders.ETag];
@@ -1587,56 +1560,55 @@ namespace OBS.Internal
 
         public GetBucketReplicationResponse ParseGetBucketReplicationResponse(HttpResponse httpResponse)
         {
-            GetBucketReplicationResponse response = new GetBucketReplicationResponse();
-            using (XmlReader xmlReader = XmlReader.Create(httpResponse.Content))
+            var             response    = new GetBucketReplicationResponse();
+            using var       xmlReader   = XmlReader.Create(httpResponse.Content);
+            ReplicationRule currentRule = null;
+            while (xmlReader.Read())
             {
-                ReplicationRule currentRule = null;
-                while (xmlReader.Read())
+                if ("ReplicationConfiguration".Equals(xmlReader.Name))
                 {
-                    if ("ReplicationConfiguration".Equals(xmlReader.Name))
+                    if (xmlReader.IsStartElement())
                     {
-                        if (xmlReader.IsStartElement())
-                        {
-                            response.Configuration = new ReplicationConfiguration();
-                        }
-                    }
-                    else if ("Agency".Equals(xmlReader.Name))
-                    {
-                        response.Configuration.Agency = xmlReader.ReadString();
-                    }
-                    else if ("Rule".Equals(xmlReader.Name))
-                    {
-                        if (xmlReader.IsStartElement())
-                        {
-                            currentRule = new ReplicationRule();
-                            response.Configuration.Rules.Add(currentRule);
-                        }
-                    }else if ("ID".Equals(xmlReader.Name))
-                    {
-                        currentRule.Id = xmlReader.ReadString();
-                    }
-                    else if ("Prefix".Equals(xmlReader.Name))
-                    {
-                        currentRule.Prefix = xmlReader.ReadString();
-                    }
-                    else if ("Status".Equals(xmlReader.Name))
-                    {
-                        RuleStatusEnum? temp = this.ParseRuleStatus(xmlReader.ReadString());
-                        if (temp.HasValue)
-                        {
-                            currentRule.Status = temp.Value;
-                        }
-                    }
-                    else if ("Bucket".Equals(xmlReader.Name))
-                    {
-                        currentRule.TargetBucketName = xmlReader.ReadString();
-                    }
-                    else if ("StorageClass".Equals(xmlReader.Name))
-                    {
-                        currentRule.TargetStorageClass = this.ParseStorageClass(xmlReader.ReadString());
+                        response.Configuration = new ReplicationConfiguration();
                     }
                 }
+                else if ("Agency".Equals(xmlReader.Name))
+                {
+                    response.Configuration.Agency = xmlReader.ReadString();
+                }
+                else if ("Rule".Equals(xmlReader.Name))
+                {
+                    if (xmlReader.IsStartElement())
+                    {
+                        currentRule = new ReplicationRule();
+                        response.Configuration.Rules.Add(currentRule);
+                    }
+                }else if ("ID".Equals(xmlReader.Name))
+                {
+                    currentRule.Id = xmlReader.ReadString();
+                }
+                else if ("Prefix".Equals(xmlReader.Name))
+                {
+                    currentRule.Prefix = xmlReader.ReadString();
+                }
+                else if ("Status".Equals(xmlReader.Name))
+                {
+                    var temp = this.ParseRuleStatus(xmlReader.ReadString());
+                    if (temp.HasValue)
+                    {
+                        currentRule.Status = temp.Value;
+                    }
+                }
+                else if ("Bucket".Equals(xmlReader.Name))
+                {
+                    currentRule.TargetBucketName = xmlReader.ReadString();
+                }
+                else if ("StorageClass".Equals(xmlReader.Name))
+                {
+                    currentRule.TargetStorageClass = this.ParseStorageClass(xmlReader.ReadString());
+                }
             }
+
             return response;
         }
 
@@ -1689,10 +1661,10 @@ namespace OBS.Internal
             if (httpResponse.Headers.ContainsKey(this.iheaders.RestoreHeader()))
             {
                 response.RestoreStatus = new RestoreStatus();
-                string restore = httpResponse.Headers[this.iheaders.RestoreHeader()];
+                var restore = httpResponse.Headers[this.iheaders.RestoreHeader()];
                 if (restore.Contains("expiry-date"))
                 {
-                    Match m = Regex.Match(restore, @"ongoing-request=""(?<ongoing>.+)"",\s*expiry-date=""(?<date>.+)""");
+                    var m = Regex.Match(restore, @"ongoing-request=""(?<ongoing>.+)"",\s*expiry-date=""(?<date>.+)""");
                     if (m.Success)
                     {
                         response.RestoreStatus.Restored = !Convert.ToBoolean(m.Groups["ongoing"].Value);
@@ -1701,7 +1673,7 @@ namespace OBS.Internal
                 }
                 else
                 {
-                    Match m = Regex.Match(restore, @"ongoing-request=""(?<ongoing>.+)""");
+                    var m = Regex.Match(restore, @"ongoing-request=""(?<ongoing>.+)""");
                     if (m.Success)
                     {
                         response.RestoreStatus.Restored = !Convert.ToBoolean(m.Groups["ongoing"].Value);
@@ -1711,13 +1683,15 @@ namespace OBS.Internal
 
             if (httpResponse.Headers.ContainsKey(this.iheaders.ExpirationHeader()))
             {
-                string expiration = httpResponse.Headers[this.iheaders.ExpirationHeader()];
-                Match m = Regex.Match(expiration, @"expiry-date=""(?<date>.+)"",\s*rule-id=""(?<id>.+)""");
+                var expiration = httpResponse.Headers[this.iheaders.ExpirationHeader()];
+                var m = Regex.Match(expiration, @"expiry-date=""(?<date>.+)"",\s*rule-id=""(?<id>.+)""");
                 if (m.Success)
                 {
-                    response.ExpirationDetail = new ExpirationDetail();
-                    response.ExpirationDetail.RuleId = m.Groups["id"].Value;
-                    response.ExpirationDetail.ExpiryDate = CommonUtil.ParseToDateTime(m.Groups["date"].Value, Constants.RFC822DateFormat, Constants.ISO8601DateFormat);
+                    response.ExpirationDetail            = new ExpirationDetail
+                    {
+                        RuleId     = m.Groups["id"].Value,
+                        ExpiryDate = CommonUtil.ParseToDateTime(m.Groups["date"].Value, Constants.RFC822DateFormat, Constants.ISO8601DateFormat)
+                    };
                 }
             }
 
@@ -1734,14 +1708,14 @@ namespace OBS.Internal
 
         public GetObjectMetadataResponse ParseGetObjectMetadataResponse(HttpResponse httpResponse)
         {
-            GetObjectMetadataResponse response = new GetObjectMetadataResponse();
+            var response = new GetObjectMetadataResponse();
             this.ParseGetObjectMetadataResponse(httpResponse, response);
             return response;
         }
 
         public GetObjectResponse ParseGetObjectResponse(HttpResponse httpResponse)
         {
-            GetObjectResponse response = new GetObjectResponse();
+            var response = new GetObjectResponse();
             this.ParseGetObjectMetadataResponse(httpResponse, response);
             response.OutputStream = httpResponse.Content;
             return response;
@@ -1749,7 +1723,7 @@ namespace OBS.Internal
 
         public AppendObjectResponse ParseAppendObjectResponse(HttpResponse httpResponse)
         {
-            AppendObjectResponse response = new AppendObjectResponse();
+            var response = new AppendObjectResponse();
             if (httpResponse.Headers.ContainsKey(this.iheaders.StorageClassHeader()))
             {
                 response.StorageClass = this.ParseStorageClass(httpResponse.Headers[this.iheaders.StorageClassHeader()]);

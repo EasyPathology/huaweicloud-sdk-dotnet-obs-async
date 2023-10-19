@@ -78,7 +78,7 @@ namespace OBS
         /// <param name="endpoint">OBS endpoint</param>
         public ObsClient(string accessKeyId, string secretAccessKey, string securityToken, string endpoint)
         {
-            ObsConfig obsConfig = new ObsConfig()
+            var obsConfig = new ObsConfig()
             {
                 Endpoint = endpoint
             };
@@ -123,7 +123,7 @@ namespace OBS
                 throw new ObsException(Constants.InvalidEndpointMessage, ErrorType.Sender, Constants.InvalidEndpoint, "");
             }
 
-            SecurityProvider sp = new SecurityProvider
+            var sp = new SecurityProvider
             {
                 Ak    = accessKeyId,
                 Sk    = secretAccessKey,
@@ -153,7 +153,7 @@ namespace OBS
 
             if (LoggerMgr.IsWarnEnabled)
             {
-                StringBuilder sb = new StringBuilder();
+                var sb = new StringBuilder();
                 sb.Append("[OBS SDK Version=")
                     .Append(Constants.ObsSdkVersion)
                     .Append("];[")
@@ -175,7 +175,7 @@ namespace OBS
         /// <param name="securityToken">Security token</param>
         public void Refresh(string accessKeyId, string secretAccessKey, string securityToken)
         {
-            SecurityProvider sp = new SecurityProvider
+            var sp = new SecurityProvider
             {
                 Ak    = accessKeyId,
                 Sk    = secretAccessKey,
@@ -192,14 +192,14 @@ namespace OBS
         internal AuthTypeEnum? NegotiateAuthType(string bucketName, bool async)
         {
             AuthTypeEnum?        authType = AuthTypeEnum.V2;
-            GetApiVersionRequest request  = new GetApiVersionRequest
+            var request  = new GetApiVersionRequest
             {
                 BucketName = bucketName
             };
             try
             {
 
-                GetApiVersionResponse response = async ? this.GetApiVersionAsync(request) : this.GetApiVersion(request);
+                var response = async ? this.GetApiVersionAsync(request) : this.GetApiVersion(request);
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
                     if ((response.Headers.ContainsKey(Constants.ObsApiHeader)
@@ -212,7 +212,7 @@ namespace OBS
             }
             catch (ObsException ex)
             {
-                int statusCode = Convert.ToInt32(ex.StatusCode);
+                var statusCode = Convert.ToInt32(ex.StatusCode);
                 if (statusCode <= 0 || statusCode == 404 || statusCode >= 500)
                 {
                     throw ex;
@@ -220,7 +220,7 @@ namespace OBS
 
                 if (LoggerMgr.IsInfoEnabled)
                 {
-                    string msg = string.IsNullOrEmpty(bucketName) ? "The target server doesnot support OBS protocol, use S3 protocol" : string.Format("The target server doesnot support OBS protocol, use S3 protocol, Bucket:{0}", bucketName);
+                    var msg = string.IsNullOrEmpty(bucketName) ? "The target server doesnot support OBS protocol, use S3 protocol" : string.Format("The target server doesnot support OBS protocol, use S3 protocol, Bucket:{0}", bucketName);
                     LoggerMgr.Info(msg, ex);
                 }
             }
@@ -235,7 +235,7 @@ namespace OBS
                 throw new ObsException(Constants.NullRequestMessage, ErrorType.Sender, Constants.NullRequest, "");
             }
 
-            HttpContext context = new HttpContext(this.sp, this.ObsConfig);
+            var context = new HttpContext(this.sp, this.ObsConfig);
 
             if (request is GetApiVersionRequest)
             {
@@ -243,7 +243,7 @@ namespace OBS
             }
             else
             {
-                ObsBucketWebServiceRequest _request = request as ObsBucketWebServiceRequest;
+                var _request = request as ObsBucketWebServiceRequest;
                 if (_request != null && string.IsNullOrEmpty(_request.BucketName))
                 {
                     throw new ObsException(Constants.InvalidBucketNameMessage, ErrorType.Sender, Constants.InvalidBucketName, "");
@@ -301,9 +301,9 @@ namespace OBS
 
         private HttpRequest PrepareHttpRequest<T>(T request, HttpContext context) where T : ObsWebServiceRequest
         {
-            IConvertor iconvertor = this.GetIConvertor(context);
-            MethodInfo info = CommonUtil.GetTransMethodInfo(request.GetType(), iconvertor);
-            HttpRequest httpRequest = info.Invoke(iconvertor, new object[] { request }) as HttpRequest;
+            var iconvertor = this.GetIConvertor(context);
+            var info = CommonUtil.GetTransMethodInfo(request.GetType(), iconvertor);
+            var httpRequest = info.Invoke(iconvertor, new object[] { request }) as HttpRequest;
             if (httpRequest == null)
             {
                 throw new ObsException(string.Format("Cannot trans request:{0} to HttpRequest", request.GetType()), ErrorType.Sender, "Trans error", "");
@@ -319,16 +319,16 @@ namespace OBS
         {
             K response;
             httpResponse.RequestUrl = httpRequest.GetUrlWithoutQuerys();
-            IParser iparser = this.GetIParser(context);
-            Type responseType = typeof(K);
-            MethodInfo info = CommonUtil.GetParseMethodInfo(responseType, iparser);
+            var iparser = this.GetIParser(context);
+            var responseType = typeof(K);
+            var info = CommonUtil.GetParseMethodInfo(responseType, iparser);
             if (info != null)
             {
                 response = info.Invoke(iparser, new object[] { httpResponse }) as K;
             }
             else
             {
-                ConstructorInfo cinfo = responseType.GetConstructor(new Type[] { });
+                var cinfo = responseType.GetConstructor(new Type[] { });
                 response = cinfo.Invoke(null) as K;
             }
             if (response == null)
@@ -346,13 +346,13 @@ namespace OBS
             where K : ObsWebServiceResponse
         {
 
-            HttpContext context = this.BeforeRequest(request, doValidateDelegate, false);
-            DateTime reqTime = DateTime.Now;
+            var context = this.BeforeRequest(request, doValidateDelegate, false);
+            var reqTime = DateTime.Now;
             HttpRequest httpRequest = null;
             try
             {
                 httpRequest = this.PrepareHttpRequest(request, context);
-                HttpResponse httpResponse = this.httpClient.PerformRequest(httpRequest, context);
+                var httpResponse = this.httpClient.PerformRequest(httpRequest, context);
                 return PrepareResponse<T, K>(request, context, httpRequest, httpResponse);
             }
             catch (ObsException ex)
