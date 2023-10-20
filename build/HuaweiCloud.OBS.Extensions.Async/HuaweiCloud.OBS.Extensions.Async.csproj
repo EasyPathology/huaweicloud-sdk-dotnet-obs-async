@@ -27,7 +27,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\HuaweiCloud.OBS.Extensions.Async.SourceGenerators\HuaweiCloud.OBS.Extensions.Async.SourceGenerators.csproj" ReferenceOutputAssembly="false" />
+        <ProjectReference OutputItemType="Analyzer" Include="..\HuaweiCloud.OBS.Extensions.Async.SourceGenerators\HuaweiCloud.OBS.Extensions.Async.SourceGenerators.csproj" ReferenceOutputAssembly="false" />
     </ItemGroup>
     
     <ItemGroup Label="Package">
