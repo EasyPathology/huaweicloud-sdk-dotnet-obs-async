@@ -48,16 +48,19 @@ public class AsyncExtensionGenerator : IIncrementalGenerator
                """;
     }
 
-    private const string Task = "global::System.Threading.Tasks.Task";
+    private const string OBS                  = "global::OBS";
+    private const string Task                 = "global::System.Threading.Tasks.Task";
     private const string TaskCompletionSource = "global::System.Threading.Tasks.TaskCompletionSource";
-    private const string CancellationToken = "global::System.Threading.CancellationToken";
+    private const string CancellationToken    = "global::System.Threading.CancellationToken";
+    private const string ObsClient            = $"{OBS}.ObsClient";
+    private const string Model                = $"{OBS}.Model";
     
     private static string GenerateMethod(string name, string? response)
     {
-        var arg = $"{name}Request";
+        var arg = $"{Model}.{name}Request";
         var ret = response ?? $"{name}Response";
         return $$"""
-                     public static {{Task}}<{{ret}}> {{name}}Async(this ObsClient client,
+                     public static {{Task}}<{{ret}}> {{name}}Async(this {{ObsClient}} client,
                         {{arg}} request,
                         object state,
                         {{CancellationToken}}? token = null)
