@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.Build.NoTargets/2.0.1" DefaultTargets="Pack">
 
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
@@ -12,16 +12,16 @@
         <RootNamespace>HuaweiCloud.OBS.Extensions.Async</RootNamespace>
         <PackageId>HuaweiCloud.OBS.Extensions.Async</PackageId>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <Version>3.22.3</Version>
+        <Version>3.22.3.1</Version>
         <Title>HuaweiCloud.OBS.Extensions.Async</Title>
         <Authors>Feast</Authors>
         <Description>Auto generate async/await code extension for ObsClient</Description>
         <Copyright>(c) Feast. All rights reserved.</Copyright>
         <PackageProjectUrl>https://github.com/feast107/huaweicloud-sdk-dotnet-obs-async</PackageProjectUrl>
         <RepositoryUrl>https://github.com/feast107/huaweicloud-sdk-dotnet-obs-async.git</RepositoryUrl>
-        <AssemblyVersion>3.22.3</AssemblyVersion>
-        <FileVersion>0.0.1</FileVersion>
-        <PackageReleaseNotes>Initial version of HuaweiCloud OBS Extension</PackageReleaseNotes>
+        <AssemblyVersion>3.22.3.1</AssemblyVersion>
+        <FileVersion>1.0.0</FileVersion>
+        <PackageReleaseNotes>Remove lib reference to avoid extra assembly</PackageReleaseNotes>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <NeutralLanguage>zh</NeutralLanguage>
     </PropertyGroup>

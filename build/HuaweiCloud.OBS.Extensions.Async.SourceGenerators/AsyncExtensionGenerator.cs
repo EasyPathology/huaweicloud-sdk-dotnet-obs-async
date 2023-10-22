@@ -65,7 +65,7 @@ public class AsyncExtensionGenerator : IIncrementalGenerator
                         object state,
                         {{CancellationToken}}? token = null)
                     {       
-                        var source = new {{TaskCompletionSource}}<{{ret}}>();
+                        var source = new {{TaskCompletionSource}}<{{ret}}>(state);
                         var ar     = client.Begin{{name}}(request, ar => { source.SetResult(client.End{{name}}(ar)); }, state);
                         token?.Register(() =>
                         {
