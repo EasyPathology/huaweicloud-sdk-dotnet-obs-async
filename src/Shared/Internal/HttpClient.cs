@@ -435,6 +435,7 @@ namespace OBS.Internal
             return webRequest;
         }
 
+        [Obsolete("This method is obsolete, please directly use Add(string, string).",true)]
         private static MethodInfo GetAddHeaderInternal()
         {
             if (_addHeaderInternal == null)
@@ -463,8 +464,8 @@ namespace OBS.Internal
             webRequest.AllowAutoRedirect = false;
 
 
-#if donetcore
-            foreach (KeyValuePair<string, string> header in request.Headers)
+#if !NETFRAMEWORK
+            foreach (var header in request.Headers)
             {
                 if (header.Key.Equals(Constants.CommonHeaders.ContentLength, StringComparison.OrdinalIgnoreCase))
                 {
@@ -482,13 +483,15 @@ namespace OBS.Internal
             {
                 //ignore
             }
-            foreach (KeyValuePair<string, string> header in request.Headers)
+            foreach (var header in request.Headers)
             {
                 if (header.Key.Equals(Constants.CommonHeaders.ContentLength, StringComparison.OrdinalIgnoreCase))
                 {
                     continue;
                 }
-                GetAddHeaderInternal().Invoke(webRequest.Headers, new object[] { header.Key, header.Value });
+                request.Headers.Add(header);
+                //Directly use Add instead
+                //GetAddHeaderInternal().Invoke(webRequest.Headers, new object[] { header.Key, header.Value });
             }
 #endif
             webRequest.UserAgent = Constants.SdkUserAgent;

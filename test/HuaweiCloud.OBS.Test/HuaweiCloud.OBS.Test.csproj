@@ -22,7 +22,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\build\HuaweiCloud.OBS.Standard\HuaweiCloud.OBS.Standard.csproj" />
+      <ProjectReference Include="..\..\build\HuaweiCloud.OBS\HuaweiCloud.OBS.csproj" />
     </ItemGroup>
 
 </Project>
