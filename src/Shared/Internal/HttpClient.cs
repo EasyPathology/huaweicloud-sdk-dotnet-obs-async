@@ -403,9 +403,9 @@ namespace OBS.Internal
 
     internal static class HttpWebRequestFactory
     {
-        private static readonly object _lock = new object();
-        private static volatile MethodInfo _addHeaderInternal;
-        private static string AddHeaderInternalMethodName = "AddInternal";
+        private static readonly object      _lock = new object();
+        private static volatile MethodInfo? _addHeaderInternal;
+        private static          string      AddHeaderInternalMethodName = "AddInternal";
 
 
         public static bool ValidateCertificate(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors errors)
@@ -436,17 +436,15 @@ namespace OBS.Internal
         }
 
         [Obsolete("This method is obsolete, please directly use Add(string, string).",true)]
-        private static MethodInfo GetAddHeaderInternal()
+        private static MethodInfo? GetAddHeaderInternal()
         {
-            if (_addHeaderInternal == null)
+            if (_addHeaderInternal != null) return _addHeaderInternal;
+            lock (_lock)
             {
-                lock (_lock)
+                if (_addHeaderInternal == null)
                 {
-                    if (_addHeaderInternal == null)
-                    {
-                        _addHeaderInternal = typeof(WebHeaderCollection).GetMethod(AddHeaderInternalMethodName, BindingFlags.NonPublic | BindingFlags.Instance,
-                            null, new Type[] { typeof(string), typeof(string) }, null);
-                    }
+                    _addHeaderInternal = typeof(WebHeaderCollection).GetMethod(AddHeaderInternalMethodName, BindingFlags.NonPublic | BindingFlags.Instance,
+                        null, new Type[] { typeof(string), typeof(string) }, null);
                 }
             }
 
