@@ -62,7 +62,7 @@ public class AsyncExtensionGenerator : IIncrementalGenerator
         return $$"""
                      public static {{Task}}<{{ret}}> {{name}}Async(this {{ObsClient}} client,
                         {{arg}} request,
-                        object state,
+                        object state = default,
                         {{CancellationToken}}? token = null)
                     {       
                         var source = new {{TaskCompletionSource}}<{{ret}}>(state);
