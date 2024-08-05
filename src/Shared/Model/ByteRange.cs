@@ -33,8 +33,8 @@ namespace OBS.Model
         /// <param name="end">End position</param>
         public ByteRange(long start, long end)
         {
-            this.Start = start;
-            this.End = end;
+            Start = start;
+            End = end;
         }
 
         /// <summary>

@@ -34,9 +34,9 @@ namespace OBS.Model
             get
             {
 
-                return this.grants ?? (this.grants = new List<Grant>());
+                return grants ?? (grants = new List<Grant>());
             }
-            set { this.grants = value; }
+            set { grants = value; }
         }
 
 
@@ -89,7 +89,7 @@ namespace OBS.Model
             }
             foreach (var grant in removeList)
             {
-                this.Grants.Remove(grant);
+                Grants.Remove(grant);
             }
         }
     }

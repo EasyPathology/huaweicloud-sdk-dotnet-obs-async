@@ -37,11 +37,11 @@ namespace OBS.Model
             get
             {
 
-                return this.metadataCollection ?? (this.metadataCollection = new MetadataCollection());
+                return metadataCollection ?? (metadataCollection = new MetadataCollection());
             }
             internal set
             {
-                this.metadataCollection = value;
+                metadataCollection = value;
             }
         }
 
@@ -201,7 +201,7 @@ namespace OBS.Model
         /// Optional parameter
         /// </para>
         /// </remarks>
-        public SseHeader SseHeader
+        public SseHeader? SseHeader
         {
             get;
             set;

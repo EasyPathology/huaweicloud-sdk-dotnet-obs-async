@@ -55,7 +55,7 @@ namespace OBS
         /// <param name="obsConfig">Configuration parameters of ObsClient</param>
         public ObsClient(string accessKeyId, string secretAccessKey, string securityToken, ObsConfig obsConfig)
         {
-            this.init(accessKeyId, secretAccessKey, securityToken, obsConfig);
+            init(accessKeyId, secretAccessKey, securityToken, obsConfig);
         }
 
         /// <summary>
@@ -82,7 +82,7 @@ namespace OBS
             {
                 Endpoint = endpoint
             };
-            this.init(accessKeyId, secretAccessKey, securityToken, obsConfig);
+            init(accessKeyId, secretAccessKey, securityToken, obsConfig);
         }
 
         internal ObsConfig ObsConfig
@@ -97,9 +97,9 @@ namespace OBS
             {
                 case AuthTypeEnum.V2:
                 case AuthTypeEnum.V4:
-                    return V2Parser.GetInstance(this.httpClient.GetIHeaders(context));
+                    return V2Parser.GetInstance(httpClient.GetIHeaders(context));
                 default:
-                    return ObsParser.GetInstance(this.httpClient.GetIHeaders(context));
+                    return ObsParser.GetInstance(httpClient.GetIHeaders(context));
             }
         }
 
@@ -109,9 +109,9 @@ namespace OBS
             {
                 case AuthTypeEnum.V2:
                 case AuthTypeEnum.V4:
-                    return V2Convertor.GetInstance(this.httpClient.GetIHeaders(context));
+                    return V2Convertor.GetInstance(httpClient.GetIHeaders(context));
                 default:
-                    return ObsConvertor.GetInstance(this.httpClient.GetIHeaders(context));
+                    return ObsConvertor.GetInstance(httpClient.GetIHeaders(context));
             }
         }
 
@@ -131,21 +131,21 @@ namespace OBS
             };
 
             this.sp = sp;
-            this.ObsConfig = obsConfig;
-            this.httpClient = new HttpClient(this.ObsConfig);
+            ObsConfig = obsConfig;
+            httpClient = new HttpClient(ObsConfig);
 
-            if (this.ObsConfig.PathStyle)
+            if (ObsConfig.PathStyle)
             {
-                this.ObsConfig.AuthTypeNegotiation = false;
-                if (this.ObsConfig.AuthType == AuthTypeEnum.OBS)
+                ObsConfig.AuthTypeNegotiation = false;
+                if (ObsConfig.AuthType == AuthTypeEnum.OBS)
                 {
-                    this.ObsConfig.AuthType = AuthTypeEnum.V2;
+                    ObsConfig.AuthType = AuthTypeEnum.V2;
                 }
             }
 
-            if (this.ObsConfig.AuthTypeNegotiation)
+            if (ObsConfig.AuthTypeNegotiation)
             {
-                this.locksHolder = new LocksHolder();
+                locksHolder = new LocksHolder();
                 authTypeCache = new AuthTypeCache();
             }
 
@@ -186,7 +186,7 @@ namespace OBS
 
         internal GetApiVersionResponse GetApiVersion(GetApiVersionRequest request)
         {
-            return this.DoRequest<GetApiVersionRequest, GetApiVersionResponse>(request);
+            return DoRequest<GetApiVersionRequest, GetApiVersionResponse>(request);
         }
 
         internal AuthTypeEnum? NegotiateAuthType(string bucketName, bool async)
@@ -199,7 +199,7 @@ namespace OBS
             try
             {
 
-                var response = async ? this.GetApiVersionAsync(request) : this.GetApiVersion(request);
+                var response = async ? GetApiVersionAsync(request) : GetApiVersion(request);
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
                     if ((response.Headers.ContainsKey(Constants.ObsApiHeader)
@@ -235,7 +235,7 @@ namespace OBS
                 throw new ObsException(Constants.NullRequestMessage, ErrorType.Sender, Constants.NullRequest, "");
             }
 
-            var context = new HttpContext(this.sp, this.ObsConfig);
+            var context = new HttpContext(sp, ObsConfig);
 
             if (request is GetApiVersionRequest)
             {
@@ -248,30 +248,30 @@ namespace OBS
                 {
                     throw new ObsException(Constants.InvalidBucketNameMessage, ErrorType.Sender, Constants.InvalidBucketName, "");
                 }
-                if (this.ObsConfig.AuthTypeNegotiation)
+                if (ObsConfig.AuthTypeNegotiation)
                 {
                     AuthTypeEnum? authType;
                     if (_request == null)
                     {
                         //list buckets
-                        authType = this.NegotiateAuthType(null, async);
+                        authType = NegotiateAuthType(null, async);
                     }
                     else
                     {
-                        if ((authType = this.authTypeCache.GetAuthType(_request.BucketName)) == null)
+                        if ((authType = authTypeCache.GetAuthType(_request.BucketName)) == null)
                         {
-                            lock (this.locksHolder.GetLock(_request.BucketName))
+                            lock (locksHolder.GetLock(_request.BucketName))
                             {
-                                if ((authType = this.authTypeCache.GetAuthType(_request.BucketName)) == null)
+                                if ((authType = authTypeCache.GetAuthType(_request.BucketName)) == null)
                                 {
                                     if (request is CreateBucketRequest)
                                     {
-                                        authType = this.NegotiateAuthType(null, async);
+                                        authType = NegotiateAuthType(null, async);
                                     }
                                     else
                                     {
-                                        authType = this.NegotiateAuthType(_request.BucketName, async);
-                                        this.authTypeCache.RefreshAuthType(_request.BucketName, authType.Value);
+                                        authType = NegotiateAuthType(_request.BucketName, async);
+                                        authTypeCache.RefreshAuthType(_request.BucketName, authType.Value);
                                         if (LoggerMgr.IsInfoEnabled)
                                         {
                                             LoggerMgr.Info(string.Format("Refresh auth type {0} for bucket {1}", authType, _request.BucketName));
@@ -301,15 +301,15 @@ namespace OBS
 
         private HttpRequest PrepareHttpRequest<T>(T request, HttpContext context) where T : ObsWebServiceRequest
         {
-            var iconvertor = this.GetIConvertor(context);
+            var iconvertor = GetIConvertor(context);
             var info = CommonUtil.GetTransMethodInfo(request.GetType(), iconvertor);
             var httpRequest = info.Invoke(iconvertor, new object[] { request }) as HttpRequest;
             if (httpRequest == null)
             {
                 throw new ObsException(string.Format("Cannot trans request:{0} to HttpRequest", request.GetType()), ErrorType.Sender, "Trans error", "");
             }
-            httpRequest.Endpoint = this.ObsConfig.Endpoint;
-            httpRequest.PathStyle = this.ObsConfig.PathStyle;
+            httpRequest.Endpoint = ObsConfig.Endpoint;
+            httpRequest.PathStyle = ObsConfig.PathStyle;
             return httpRequest;
         }
 
@@ -318,8 +318,8 @@ namespace OBS
             where K : ObsWebServiceResponse
         {
             K response;
-            httpResponse.RequestUrl = httpRequest.GetUrlWithoutQuerys();
-            var iparser = this.GetIParser(context);
+            httpResponse.RequestUrl = httpRequest.GetUrlWithoutQueries();
+            var iparser = GetIParser(context);
             var responseType = typeof(K);
             var info = CommonUtil.GetParseMethodInfo(responseType, iparser);
             if (info != null)
@@ -335,7 +335,7 @@ namespace OBS
             {
                 throw new ObsException(string.Format("Cannot parse HttpResponse to {0}", responseType), ErrorType.Sender, "Parse error", "");
             }
-            CommonParser.ParseObsWebServiceResponse(httpResponse, response, this.httpClient.GetIHeaders(context));
+            CommonParser.ParseObsWebServiceResponse(httpResponse, response, httpClient.GetIHeaders(context));
             response.HandleObsWebServiceRequest(request);
             response.OriginalResponse = httpResponse;
             return response;
@@ -346,31 +346,30 @@ namespace OBS
             where K : ObsWebServiceResponse
         {
 
-            var context = this.BeforeRequest(request, doValidateDelegate, false);
+            var context = BeforeRequest(request, doValidateDelegate, false);
             var reqTime = DateTime.Now;
             HttpRequest httpRequest = null;
             try
             {
-                httpRequest = this.PrepareHttpRequest(request, context);
-                var httpResponse = this.httpClient.PerformRequest(httpRequest, context);
+                httpRequest = PrepareHttpRequest(request, context);
+                var httpResponse = httpClient.PerformRequest(httpRequest, context);
                 return PrepareResponse<T, K>(request, context, httpRequest, httpResponse);
             }
             catch (ObsException ex)
             {
                 if ("CreateBucket".Equals(request.GetAction())
-                    && ex.StatusCode == HttpStatusCode.BadRequest
-                    && "Unsupported Authorization Type".Equals(ex.ErrorMessage)
-                    && this.ObsConfig.AuthTypeNegotiation
+                    && ex is { StatusCode: HttpStatusCode.BadRequest, ErrorMessage: "Unsupported Authorization Type" }
+                    && ObsConfig.AuthTypeNegotiation
                     && context.AuthType == AuthTypeEnum.OBS)
                 {
                     try
                     {
-                        if (httpRequest.Content != null && httpRequest.Content.CanSeek)
+                        if (httpRequest.Content is { CanSeek: true })
                         {
                             httpRequest.Content.Seek(0, SeekOrigin.Begin);
                         }
                         context.AuthType = AuthTypeEnum.V2;
-                        return PrepareResponse<T, K>(request, context, httpRequest, this.httpClient.PerformRequest(httpRequest, context));
+                        return PrepareResponse<T, K>(request, context, httpRequest, httpClient.PerformRequest(httpRequest, context));
                     }
                     catch (ObsException _ex)
                     {
@@ -427,7 +426,7 @@ namespace OBS
             where T : ObsWebServiceRequest
             where K : ObsWebServiceResponse
         {
-            return this.DoRequest<T, K>(request, null);
+            return DoRequest<T, K>(request, null);
         }
     }
 }

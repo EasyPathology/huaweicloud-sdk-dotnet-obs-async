@@ -34,36 +34,36 @@ namespace OBS.Internal
 
         public ObsAsyncResult(AsyncCallback callback, object state)
         {
-            this._callback = callback;
-            this._state = state;
-            this._event = new ManualResetEvent(false);
+            _callback = callback;
+            _state = state;
+            _event = new ManualResetEvent(false);
         }
 
         public bool IsCompleted
         {
-            get { return this._isCompleted; }
+            get { return _isCompleted; }
         }
 
         public WaitHandle AsyncWaitHandle
         {
             get
             {
-                if (this._isCompleted)
+                if (_isCompleted)
                 {
-                    this._event.Set();
+                    _event.Set();
                 }
-                return this._event;
+                return _event;
             }
         }
 
         public AsyncCallback AsyncCallback
         {
-            get { return this._callback; }
+            get { return _callback; }
         }
 
         public object AsyncState
         {
-            get { return this._state; }
+            get { return _state; }
         }
 
         public bool CompletedSynchronously
@@ -74,71 +74,71 @@ namespace OBS.Internal
 
         public V Get()
         {
-            if (!this._isCompleted)
+            if (!_isCompleted)
             {
-                this._event.WaitOne();
+                _event.WaitOne();
             }
 
-            if (this._exception != null)
+            if (_exception != null)
             {
-                throw this._exception;
+                throw _exception;
             }
-            return this._result;
+            return _result;
         }
 
         public virtual V Get(int millisecondsTimeout)
         {
-            if (!this._isCompleted)
+            if (!_isCompleted)
             {
-                if (!this._event.WaitOne(millisecondsTimeout))
+                if (!_event.WaitOne(millisecondsTimeout))
                 {
                     throw new TimeoutException();
                 }
             }
 
-            if (this._exception != null)
+            if (_exception != null)
             {
-                throw this._exception;
+                throw _exception;
             }
-            return this._result;
+            return _result;
         }
 
         public virtual void Reset(AsyncCallback callback)
         {
-            if (this._disposed)
+            if (_disposed)
             {
                 throw new ObjectDisposedException("IAsyncResult is disposed");
             }
-            this._isCompleted = false;
-            this._event.Reset();
-            this._result = default(V);
-            this._exception = null;
+            _isCompleted = false;
+            _event.Reset();
+            _result = default(V);
+            _exception = null;
             if(callback != null)
             {
-                this._callback = callback;
+                _callback = callback;
             }
         }
 
         private void Notify()
         {
-            this._isCompleted = true;
+            _isCompleted = true;
             if (!_disposed)
             {
-                this._event.Set();
+                _event.Set();
             }
-            this._callback?.Invoke(this);
+            _callback?.Invoke(this);
         }
 
         public void Set(V result)
         {
-            this._result = result;
-            this.Notify();
+            _result = result;
+            Notify();
         }
 
         public void Set(Exception ex)
         {
-            this._exception = ex;
-            this.Notify();
+            _exception = ex;
+            Notify();
         }
 
         protected virtual void Dispose(bool disposing)
@@ -146,9 +146,9 @@ namespace OBS.Internal
             if (!_disposed)
             {
                 _disposed = true;
-                if (disposing && this._event != null)
+                if (disposing && _event != null)
                 {
-                    this._event.Close();
+                    _event.Close();
                 }
             }
         }

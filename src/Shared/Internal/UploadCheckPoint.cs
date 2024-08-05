@@ -97,7 +97,7 @@ namespace OBS.Internal
         {
             UploadCheckPoint temp = null;
 
-            var serializer = new XmlSerializer(this.GetType());
+            var serializer = new XmlSerializer(GetType());
 
             using (var fs = new XmlTextReader(checkPointFile))
             {
@@ -112,14 +112,14 @@ namespace OBS.Internal
         /// <param name="temp"></param>
         public void Assign(UploadCheckPoint temp)
         {
-            this.BucketName = temp.BucketName;
-            this.ObjectKey = temp.ObjectKey;
-            this.UploadFile = temp.UploadFile;
-            this.UploadId = temp.UploadId;
-            this.Md5 = temp.Md5;
-            this.FileStatus = temp.FileStatus;
-            this.UploadParts = temp.UploadParts;
-            this.PartEtags = temp.PartEtags;
+            BucketName = temp.BucketName;
+            ObjectKey = temp.ObjectKey;
+            UploadFile = temp.UploadFile;
+            UploadId = temp.UploadId;
+            Md5 = temp.Md5;
+            FileStatus = temp.FileStatus;
+            UploadParts = temp.UploadParts;
+            PartEtags = temp.PartEtags;
         }
 
         /// <summary>
@@ -128,8 +128,8 @@ namespace OBS.Internal
         /// 多个线程都需要调用该方法，需保证线程安全性
         public void Record(string checkPointFile)
         {
-            this.Md5 = ComputeHash.HashCode<UploadCheckPoint>(this);
-            var serializer = new XmlSerializer(this.GetType());
+            Md5 = ComputeHash.HashCode<UploadCheckPoint>(this);
+            var serializer = new XmlSerializer(GetType());
 
             using var fs = new XmlTextWriter(checkPointFile, Encoding.UTF8);
             fs.Formatting = Formatting.Indented;
@@ -146,23 +146,23 @@ namespace OBS.Internal
         /// <returns></returns>
         public bool IsValid(string uploadFile, Stream uploadStream, bool enableCheckSum, ResumableUploadTypeEnum uploadType)
         {
-            if (this.Md5 != ComputeHash.HashCode<UploadCheckPoint>(this))
+            if (Md5 != ComputeHash.HashCode<UploadCheckPoint>(this))
                 return false;
 
             if (uploadType == ResumableUploadTypeEnum.UploadFile)
             {
                 var upload = new FileInfo(uploadFile);
-                if (this.FileStatus.Size != upload.Length || this.FileStatus.LastModified != upload.LastWriteTime)
+                if (FileStatus.Size != upload.Length || FileStatus.LastModified != upload.LastWriteTime)
                     return false;
             }
-            else if(this.FileStatus.Size != uploadStream.Length - uploadStream.Position)
+            else if(FileStatus.Size != uploadStream.Length - uploadStream.Position)
             {
                 return false;
             }
 
             if (enableCheckSum)
             {
-                if (this.FileStatus.CheckSum != null)
+                if (FileStatus.CheckSum != null)
                 {
                     try
                     {
@@ -170,16 +170,14 @@ namespace OBS.Internal
                         {
                             using var fileStream = new FileStream(uploadFile, FileMode.Open);
                             //校验CheckSum值--UploadFile文件的一致性
-                            return this.FileStatus.CheckSum.Equals(CommonUtil.Base64Md5(fileStream));
+                            return FileStatus.CheckSum.Equals(CommonUtil.Base64Md5(fileStream));
                         }
-                        else
-                        {
-                            //校验CheckSum值--UploadStream流的一致性
-                            var originPosition = uploadStream.Position;
-                            var flag =  this.FileStatus.CheckSum.Equals(CommonUtil.Base64Md5(uploadStream));
-                            uploadStream.Seek(originPosition, SeekOrigin.Begin);
-                            return flag;
-                        }
+
+                        //校验CheckSum值--UploadStream流的一致性
+                        var originPosition = uploadStream.Position;
+                        var flag           =  FileStatus.CheckSum.Equals(CommonUtil.Base64Md5(uploadStream));
+                        uploadStream.Seek(originPosition, SeekOrigin.Begin);
+                        return flag;
                     }
                     catch (Exception ex)
                     {

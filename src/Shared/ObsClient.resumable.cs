@@ -228,7 +228,7 @@ namespace OBS
                 foreach (var result in partResultsUpload)
                 {
 
-                    if (result.IsFailed && result.Exception != null)
+                    if (result is { IsFailed: true, Exception: not null })
                     {
 
                         if (!resumableUploadRequest.EnableCheckpoint)
@@ -303,7 +303,7 @@ namespace OBS
                 else
                 {
 
-                    if (ex.StatusCode >= HttpStatusCode.BadRequest && ex.StatusCode < HttpStatusCode.InternalServerError)
+                    if (ex.StatusCode is >= HttpStatusCode.BadRequest and < HttpStatusCode.InternalServerError)
                     {
                         AbortMultipartUpload(uploadCheckPoint);
 
@@ -611,7 +611,7 @@ namespace OBS
             catch (ObsException ex)
             {
 
-                if (ex.StatusCode >= HttpStatusCode.BadRequest && ex.StatusCode < HttpStatusCode.InternalServerError)
+                if (ex.StatusCode is >= HttpStatusCode.BadRequest and < HttpStatusCode.InternalServerError)
                 {
                     uploadCheckPoint.IsUploadAbort = true;
                 }
@@ -797,7 +797,7 @@ namespace OBS
                     ObjectKey = uploadCheckPoint.ObjectKey,
                     UploadId = uploadCheckPoint.UploadId,
                 };
-                this.AbortMultipartUpload(abortRequest);
+                AbortMultipartUpload(abortRequest);
             }
             catch (ObsException ex)
             {
@@ -911,7 +911,7 @@ namespace OBS
                         catch (ObsException ex)
                         {
                             var statusCode = Convert.ToInt32(ex.StatusCode);
-                            if (statusCode >= 400 && statusCode < 500)
+                            if (statusCode is >= 400 and < 500)
                             {
                                 fileVerifyFlag = false;
                                 obsException = ex;
@@ -967,7 +967,7 @@ namespace OBS
                 foreach (var result in partResultsDowns)
                 {
 
-                    if (result.IsFailed && result.Exception != null)
+                    if (result is { IsFailed: true, Exception: not null })
                     {
 
                         if (!downloadFileRequest.EnableCheckpoint)
@@ -1029,7 +1029,7 @@ namespace OBS
             }
 
 
-            return response == null ? this.GetObjectMetadata(downloadFileRequest, downloadCheckPoint) : response;
+            return response == null ? GetObjectMetadata(downloadFileRequest, downloadCheckPoint) : response;
         }
 
         private GetObjectMetadataResponse GetObjectMetadata(DownloadFileRequest downloadFileRequest, DownloadCheckPoint downloadCheckPoint)
@@ -1041,7 +1041,7 @@ namespace OBS
                 VersionId  = downloadCheckPoint.VersionId,
                 SseCHeader = downloadFileRequest.SseCHeader
             };
-            return this.GetObjectMetadata(request);
+            return GetObjectMetadata(request);
         }
 
         /// <summary>
@@ -1055,7 +1055,7 @@ namespace OBS
             downloadCheckPoint.ObjectKey = downloadFileRequest.ObjectKey;
             downloadCheckPoint.VersionId = downloadFileRequest.VersionId;
             downloadCheckPoint.DownloadFile = downloadFileRequest.DownloadFile;
-            var response = this.GetObjectMetadata(downloadFileRequest, downloadCheckPoint);
+            var response = GetObjectMetadata(downloadFileRequest, downloadCheckPoint);
             downloadCheckPoint.ObjectStatus = new ObjectStatus()
             {
                 Size = response.ContentLength,
@@ -1208,14 +1208,14 @@ namespace OBS
                     };
 
 
-                    var getObjectResponse = this.GetObject(getObjectRequest);
+                    var getObjectResponse = GetObject(getObjectRequest);
 
                     if (getObjectResponse.OutputStream == null || getObjectResponse.ContentLength == 0)
                     {
                         throw new ObsException("response body is null");
                     }
 
-                    if (getObjectResponse.OutputStream != null && getObjectResponse.ContentLength > 0)
+                    if (getObjectResponse is { OutputStream: not null, ContentLength: > 0 })
                     {
                         Stream content = null;
                         try
@@ -1297,7 +1297,7 @@ namespace OBS
                     LoggerMgr.Error(string.Format("DownloadPartExcute exception code: {0}, with message: {1}", ex.ErrorCode, ex.Message), ex);
                 }
 
-                if (ex.StatusCode >= HttpStatusCode.BadRequest && ex.StatusCode < HttpStatusCode.InternalServerError)
+                if (ex.StatusCode is >= HttpStatusCode.BadRequest and < HttpStatusCode.InternalServerError)
                 {
                     downloadCheckPoint.IsDownloadAbort = true;
                 }

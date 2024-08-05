@@ -176,23 +176,23 @@ namespace OBS.Internal
             var response = new GetBucketMetadataResponse();
 
             string storageClass;
-            httpResponse.Headers.TryGetValue(this.iheaders.DefaultStorageClassHeader(), out storageClass);
+            httpResponse.Headers.TryGetValue(iheaders.DefaultStorageClassHeader(), out storageClass);
 
-            response.StorageClass = this.ParseStorageClass(storageClass);
+            response.StorageClass = ParseStorageClass(storageClass);
 
-            if (httpResponse.Headers.ContainsKey(this.iheaders.ServerVersionHeader()))
+            if (httpResponse.Headers.ContainsKey(iheaders.ServerVersionHeader()))
             {
-                response.ObsVersion = httpResponse.Headers[this.iheaders.ServerVersionHeader()];
+                response.ObsVersion = httpResponse.Headers[iheaders.ServerVersionHeader()];
             }
 
-            if (httpResponse.Headers.ContainsKey(this.iheaders.BucketRegionHeader()))
+            if (httpResponse.Headers.ContainsKey(iheaders.BucketRegionHeader()))
             {
-                response.Location = httpResponse.Headers[this.iheaders.BucketRegionHeader()];
+                response.Location = httpResponse.Headers[iheaders.BucketRegionHeader()];
             }
 
-            if (httpResponse.Headers.ContainsKey(this.iheaders.AzRedundancyHeader()))
+            if (httpResponse.Headers.ContainsKey(iheaders.AzRedundancyHeader()))
             {
-                var value = httpResponse.Headers[this.iheaders.AzRedundancyHeader()];
+                var value = httpResponse.Headers[iheaders.AzRedundancyHeader()];
                 if (Constants.ThreeAz.Equals(value))
                 {
                     response.AvailableZone = AvailableZoneEnum.MultiAz;
@@ -210,7 +210,7 @@ namespace OBS.Internal
             using var xmlReader = XmlReader.Create(httpResponse.Content);
             while (xmlReader.Read())
             {
-                if (xmlReader.Name.Equals(this.BucketLocationTag))
+                if (xmlReader.Name.Equals(BucketLocationTag))
                 {
                     response.Location = xmlReader.ReadString();
                 }
@@ -246,9 +246,9 @@ namespace OBS.Internal
         {
             var response = new ListObjectsResponse();
 
-            if (httpResponse.Headers.ContainsKey(this.iheaders.BucketRegionHeader()))
+            if (httpResponse.Headers.ContainsKey(iheaders.BucketRegionHeader()))
             {
-                response.Location = httpResponse.Headers[this.iheaders.BucketRegionHeader()];
+                response.Location = httpResponse.Headers[iheaders.BucketRegionHeader()];
             }
 
             using var xmlReader           = XmlReader.Create(httpResponse.Content);
@@ -337,7 +337,7 @@ namespace OBS.Internal
                 }
                 else if ("StorageClass".Equals(xmlReader.Name))
                 {
-                    currentObject.StorageClass = this.ParseStorageClass(xmlReader.ReadString());
+                    currentObject.StorageClass = ParseStorageClass(xmlReader.ReadString());
                 }
                 else if ("CommonPrefixes".Equals(xmlReader.Name))
                 {
@@ -352,9 +352,9 @@ namespace OBS.Internal
         {
             var response = new ListVersionsResponse();
 
-            if (httpResponse.Headers.ContainsKey(this.iheaders.BucketRegionHeader()))
+            if (httpResponse.Headers.ContainsKey(iheaders.BucketRegionHeader()))
             {
-                response.Location = httpResponse.Headers[this.iheaders.BucketRegionHeader()];
+                response.Location = httpResponse.Headers[iheaders.BucketRegionHeader()];
             }
 
             using var        xmlReader           = XmlReader.Create(httpResponse.Content);
@@ -470,7 +470,7 @@ namespace OBS.Internal
                 }
                 else if ("StorageClass".Equals(xmlReader.Name))
                 {
-                    currentObject.StorageClass = this.ParseStorageClass(xmlReader.ReadString());
+                    currentObject.StorageClass = ParseStorageClass(xmlReader.ReadString());
                 }
                 else if ("CommonPrefixes".Equals(xmlReader.Name))
                 {
@@ -499,7 +499,7 @@ namespace OBS.Internal
         public virtual GetBucketAclResponse ParseGetBucketAclResponse(HttpResponse httpResponse)
         {
             var response = new GetBucketAclResponse();
-            response.AccessControlList = this.ParseAccessControlList(httpResponse);
+            response.AccessControlList = ParseAccessControlList(httpResponse);
             return response;
         }
 
@@ -608,7 +608,7 @@ namespace OBS.Internal
                 }
                 else if ("StorageClass".Equals(xmlReader.Name))
                 {
-                    currentUpload.StorageClass = this.ParseStorageClass(xmlReader.ReadString());
+                    currentUpload.StorageClass = ParseStorageClass(xmlReader.ReadString());
                 }
                 else if ("Prefix".Equals(xmlReader.Name))
                 {
@@ -690,12 +690,12 @@ namespace OBS.Internal
                     var grantee = currentGrant.Grantee as GroupGrantee;
                     if (grantee != null)
                     {
-                        grantee.GroupGranteeType = this.ParseGroupGrantee(xmlReader.ReadString());
+                        grantee.GroupGranteeType = ParseGroupGrantee(xmlReader.ReadString());
                     }
                 }
                 else if ("Permission".Equals(xmlReader.Name))
                 {
-                    currentGrant.Permission = this.ParsePermission(xmlReader.ReadString());
+                    currentGrant.Permission = ParsePermission(xmlReader.ReadString());
                 }
             }
 
@@ -735,7 +735,7 @@ namespace OBS.Internal
                 }
                 else if ("AllowedMethod".Equals(xmlReader.Name))
                 {
-                    var temp = this.ParseHttpVerb(xmlReader.ReadString());
+                    var temp = ParseHttpVerb(xmlReader.ReadString());
                     if (temp.HasValue)
                     {
                         currentCorsRule.AllowedMethods.Add(temp.Value);
@@ -800,7 +800,7 @@ namespace OBS.Internal
                 }
                 else if ("Status".Equals(xmlReader.Name))
                 {
-                    var temp = this.ParseRuleStatus(xmlReader.ReadString());
+                    var temp = ParseRuleStatus(xmlReader.ReadString());
                     if (temp.HasValue)
                     {
                         currentRule.Status = temp.Value;
@@ -878,11 +878,11 @@ namespace OBS.Internal
                 {
                     if (innerTransition)
                     {
-                        currentTransition.StorageClass = this.ParseStorageClass(xmlReader.ReadString());
+                        currentTransition.StorageClass = ParseStorageClass(xmlReader.ReadString());
                     }
                     else if (innerNoncurrentVersionTransition)
                     {
-                        currentNoncurrentVersionTransition.StorageClass = this.ParseStorageClass(xmlReader.ReadString());
+                        currentNoncurrentVersionTransition.StorageClass = ParseStorageClass(xmlReader.ReadString());
                     }
                 }
 
@@ -931,11 +931,11 @@ namespace OBS.Internal
                 {
                     if (innerRedirectAllRequestsTo)
                     {
-                        response.Configuration.RedirectAllRequestsTo.Protocol = this.ParseProtocol(xmlReader.ReadString());
+                        response.Configuration.RedirectAllRequestsTo.Protocol = ParseProtocol(xmlReader.ReadString());
                     }
                     else
                     {
-                        currentRoutingRule.Redirect.Protocol = this.ParseProtocol(xmlReader.ReadString());
+                        currentRoutingRule.Redirect.Protocol = ParseProtocol(xmlReader.ReadString());
                     }
                 }
                 else if ("Suffix".Equals(xmlReader.Name))
@@ -1008,7 +1008,7 @@ namespace OBS.Internal
                 }
                 else if ("Status".Equals(xmlReader.Name))
                 {
-                    response.Configuration.Status = this.ParseVersionStatusEnum(xmlReader.ReadString());
+                    response.Configuration.Status = ParseVersionStatusEnum(xmlReader.ReadString());
                 }
             }
 
@@ -1107,7 +1107,7 @@ namespace OBS.Internal
                 }
                 else if ("Name".Equals(xmlReader.Name))
                 {
-                    currentFr.Name = this.ParseFilterName(xmlReader.ReadString());
+                    currentFr.Name = ParseFilterName(xmlReader.ReadString());
                 }
                 else if ("Value".Equals(xmlReader.Value))
                 {
@@ -1125,14 +1125,14 @@ namespace OBS.Internal
                 {
                     if (innerTopicConfiguration)
                     {
-                        var temp = this.ParseEventTypeEnum(xmlReader.ReadString());
+                        var temp = ParseEventTypeEnum(xmlReader.ReadString());
                         if (temp.HasValue)
                         {
                             currentTc.Events.Add(temp.Value);
                         }
                     }else if (innerFunctionGraphConfiguration)
                     {
-                        var temp = this.ParseEventTypeEnum(xmlReader.ReadString());
+                        var temp = ParseEventTypeEnum(xmlReader.ReadString());
                         if (temp.HasValue)
                         {
                             currentFc.Events.Add(temp.Value);
@@ -1148,14 +1148,14 @@ namespace OBS.Internal
         {
             var response = new DeleteObjectResponse();
 
-            if (httpResponse.Headers.ContainsKey(this.iheaders.VersionIdHeader()))
+            if (httpResponse.Headers.ContainsKey(iheaders.VersionIdHeader()))
             {
-                response.VersionId = httpResponse.Headers[this.iheaders.VersionIdHeader()];
+                response.VersionId = httpResponse.Headers[iheaders.VersionIdHeader()];
             }
 
-            if (httpResponse.Headers.ContainsKey(this.iheaders.DeleteMarkerHeader()))
+            if (httpResponse.Headers.ContainsKey(iheaders.DeleteMarkerHeader()))
             {
-                response.DeleteMarker = Convert.ToBoolean(httpResponse.Headers[this.iheaders.DeleteMarkerHeader()]);
+                response.DeleteMarker = Convert.ToBoolean(httpResponse.Headers[iheaders.DeleteMarkerHeader()]);
             }
             return response;
         }
@@ -1285,7 +1285,7 @@ namespace OBS.Internal
                 }
                 else if ("StorageClass".Equals(xmlReader.Name))
                 {
-                    response.StorageClass = this.ParseStorageClass(xmlReader.ReadString());
+                    response.StorageClass = ParseStorageClass(xmlReader.ReadString());
                 } else if ("PartNumberMarker".Equals(xmlReader.Name))
                 {
                     response.PartNumberMarker = CommonUtil.ParseToInt32(xmlReader.ReadString());
@@ -1346,9 +1346,9 @@ namespace OBS.Internal
                 }
             }
 
-            if (httpResponse.Headers.ContainsKey(this.iheaders.VersionIdHeader()))
+            if (httpResponse.Headers.ContainsKey(iheaders.VersionIdHeader()))
             {
-                response.VersionId = httpResponse.Headers[this.iheaders.VersionIdHeader()];
+                response.VersionId = httpResponse.Headers[iheaders.VersionIdHeader()];
             }
 
             response.ObjectUrl = httpResponse.RequestUrl;
@@ -1431,12 +1431,12 @@ namespace OBS.Internal
                     var grantee = currentGrant.Grantee as GroupGrantee;
                     if (grantee != null)
                     {
-                        grantee.GroupGranteeType = this.ParseGroupGrantee(xmlReader.ReadString());
+                        grantee.GroupGranteeType = ParseGroupGrantee(xmlReader.ReadString());
                     }
                 }
                 else if ("Permission".Equals(xmlReader.Name))
                 {
-                    currentGrant.Permission = this.ParsePermission(xmlReader.ReadString());
+                    currentGrant.Permission = ParsePermission(xmlReader.ReadString());
                 }
             }
             return acl;
@@ -1445,7 +1445,7 @@ namespace OBS.Internal
         public virtual GetObjectAclResponse ParseGetObjectAclResponse(HttpResponse httpResponse)
         {
             var response = new GetObjectAclResponse();
-            response.AccessControlList = this.ParseAccessControlList(httpResponse);
+            response.AccessControlList = ParseAccessControlList(httpResponse);
             return response;
         }
 
@@ -1453,14 +1453,14 @@ namespace OBS.Internal
         {
             var response = new PutObjectResponse();
 
-            if (httpResponse.Headers.ContainsKey(this.iheaders.VersionIdHeader()))
+            if (httpResponse.Headers.ContainsKey(iheaders.VersionIdHeader()))
             {
-                response.VersionId = httpResponse.Headers[this.iheaders.VersionIdHeader()];
+                response.VersionId = httpResponse.Headers[iheaders.VersionIdHeader()];
             }
 
-            if (httpResponse.Headers.ContainsKey(this.iheaders.StorageClassHeader()))
+            if (httpResponse.Headers.ContainsKey(iheaders.StorageClassHeader()))
             {
-                response.StorageClass = this.ParseStorageClass(httpResponse.Headers[this.iheaders.StorageClassHeader()]);
+                response.StorageClass = ParseStorageClass(httpResponse.Headers[iheaders.StorageClassHeader()]);
             }
 
             if (httpResponse.Headers.ContainsKey(Constants.CommonHeaders.ETag))
@@ -1476,19 +1476,19 @@ namespace OBS.Internal
         public CopyObjectResponse ParseCopyObjectResponse(HttpResponse httpResponse)
         {
             var response = new CopyObjectResponse();
-            if (httpResponse.Headers.ContainsKey(this.iheaders.VersionIdHeader()))
+            if (httpResponse.Headers.ContainsKey(iheaders.VersionIdHeader()))
             {
-                response.VersionId = httpResponse.Headers[this.iheaders.VersionIdHeader()];
+                response.VersionId = httpResponse.Headers[iheaders.VersionIdHeader()];
             }
 
-            if (httpResponse.Headers.ContainsKey(this.iheaders.StorageClassHeader()))
+            if (httpResponse.Headers.ContainsKey(iheaders.StorageClassHeader()))
             {
-                response.StorageClass = this.ParseStorageClass(httpResponse.Headers[this.iheaders.StorageClassHeader()]);
+                response.StorageClass = ParseStorageClass(httpResponse.Headers[iheaders.StorageClassHeader()]);
             }
 
-            if (httpResponse.Headers.ContainsKey(this.iheaders.CopySourceVersionIdHeader()))
+            if (httpResponse.Headers.ContainsKey(iheaders.CopySourceVersionIdHeader()))
             {
-                response.SourceVersionId = httpResponse.Headers[this.iheaders.CopySourceVersionIdHeader()];
+                response.SourceVersionId = httpResponse.Headers[iheaders.CopySourceVersionIdHeader()];
             }
 
             using var xmlReader = XmlReader.Create(httpResponse.Content);
@@ -1593,7 +1593,7 @@ namespace OBS.Internal
                 }
                 else if ("Status".Equals(xmlReader.Name))
                 {
-                    var temp = this.ParseRuleStatus(xmlReader.ReadString());
+                    var temp = ParseRuleStatus(xmlReader.ReadString());
                     if (temp.HasValue)
                     {
                         currentRule.Status = temp.Value;
@@ -1605,7 +1605,7 @@ namespace OBS.Internal
                 }
                 else if ("StorageClass".Equals(xmlReader.Name))
                 {
-                    currentRule.TargetStorageClass = this.ParseStorageClass(xmlReader.ReadString());
+                    currentRule.TargetStorageClass = ParseStorageClass(xmlReader.ReadString());
                 }
             }
 
@@ -1628,13 +1628,13 @@ namespace OBS.Internal
             {
                 response.ContentType = httpResponse.Headers[Constants.CommonHeaders.ContentType];
             }
-            if (httpResponse.Headers.ContainsKey(this.iheaders.VersionIdHeader()))
+            if (httpResponse.Headers.ContainsKey(iheaders.VersionIdHeader()))
             {
-                response.VersionId = httpResponse.Headers[this.iheaders.VersionIdHeader()];
+                response.VersionId = httpResponse.Headers[iheaders.VersionIdHeader()];
             }
-            if (httpResponse.Headers.ContainsKey(this.iheaders.WebsiteRedirectLocationHeader()))
+            if (httpResponse.Headers.ContainsKey(iheaders.WebsiteRedirectLocationHeader()))
             {
-                response.WebsiteRedirectLocation = httpResponse.Headers[this.iheaders.WebsiteRedirectLocationHeader()];
+                response.WebsiteRedirectLocation = httpResponse.Headers[iheaders.WebsiteRedirectLocationHeader()];
             }
 
             if (httpResponse.Headers.ContainsKey(Constants.CommonHeaders.LastModified))
@@ -1642,26 +1642,26 @@ namespace OBS.Internal
                 response.LastModified = CommonUtil.ParseToDateTime(httpResponse.Headers[Constants.CommonHeaders.LastModified], Constants.RFC822DateFormat, Constants.ISO8601DateFormat);
             }
 
-            if (httpResponse.Headers.ContainsKey(this.iheaders.StorageClassHeader()))
+            if (httpResponse.Headers.ContainsKey(iheaders.StorageClassHeader()))
             {
-                response.StorageClass = this.ParseStorageClass(httpResponse.Headers[this.iheaders.StorageClassHeader()]);
+                response.StorageClass = ParseStorageClass(httpResponse.Headers[iheaders.StorageClassHeader()]);
             }
-            if (httpResponse.Headers.ContainsKey(this.iheaders.DeleteMarkerHeader()))
+            if (httpResponse.Headers.ContainsKey(iheaders.DeleteMarkerHeader()))
             {
-                response.DeleteMarker = Convert.ToBoolean(httpResponse.Headers[this.iheaders.DeleteMarkerHeader()]);
+                response.DeleteMarker = Convert.ToBoolean(httpResponse.Headers[iheaders.DeleteMarkerHeader()]);
             }
 
             foreach (KeyValuePair<string,string> entry in httpResponse.Headers)
             {
-                if (entry.Key != null && entry.Key.StartsWith(this.iheaders.HeaderMetaPrefix()))
+                if (entry.Key != null && entry.Key.StartsWith(iheaders.HeaderMetaPrefix()))
                 {
-                    response.Metadata.Add(entry.Key.Substring(this.iheaders.HeaderMetaPrefix().Length), entry.Value);
+                    response.Metadata.Add(entry.Key.Substring(iheaders.HeaderMetaPrefix().Length), entry.Value);
                 }
             }
-            if (httpResponse.Headers.ContainsKey(this.iheaders.RestoreHeader()))
+            if (httpResponse.Headers.ContainsKey(iheaders.RestoreHeader()))
             {
                 response.RestoreStatus = new RestoreStatus();
-                var restore = httpResponse.Headers[this.iheaders.RestoreHeader()];
+                var restore = httpResponse.Headers[iheaders.RestoreHeader()];
                 if (restore.Contains("expiry-date"))
                 {
                     var m = Regex.Match(restore, @"ongoing-request=""(?<ongoing>.+)"",\s*expiry-date=""(?<date>.+)""");
@@ -1681,9 +1681,9 @@ namespace OBS.Internal
                 }
             }
 
-            if (httpResponse.Headers.ContainsKey(this.iheaders.ExpirationHeader()))
+            if (httpResponse.Headers.ContainsKey(iheaders.ExpirationHeader()))
             {
-                var expiration = httpResponse.Headers[this.iheaders.ExpirationHeader()];
+                var expiration = httpResponse.Headers[iheaders.ExpirationHeader()];
                 var m = Regex.Match(expiration, @"expiry-date=""(?<date>.+)"",\s*rule-id=""(?<id>.+)""");
                 if (m.Success)
                 {
@@ -1695,28 +1695,28 @@ namespace OBS.Internal
                 }
             }
 
-            if (httpResponse.Headers.ContainsKey(this.iheaders.ObjectTypeHeader()))
+            if (httpResponse.Headers.ContainsKey(iheaders.ObjectTypeHeader()))
             {
-                response.Appendable = "Appendable".Equals(httpResponse.Headers[this.iheaders.ObjectTypeHeader()]);
+                response.Appendable = "Appendable".Equals(httpResponse.Headers[iheaders.ObjectTypeHeader()]);
             }
 
-            if (httpResponse.Headers.ContainsKey(this.iheaders.NextPositionHeader()))
+            if (httpResponse.Headers.ContainsKey(iheaders.NextPositionHeader()))
             {
-                response.NextPosition = Convert.ToInt64(httpResponse.Headers[this.iheaders.NextPositionHeader()]);
+                response.NextPosition = Convert.ToInt64(httpResponse.Headers[iheaders.NextPositionHeader()]);
             }
         }
 
         public GetObjectMetadataResponse ParseGetObjectMetadataResponse(HttpResponse httpResponse)
         {
             var response = new GetObjectMetadataResponse();
-            this.ParseGetObjectMetadataResponse(httpResponse, response);
+            ParseGetObjectMetadataResponse(httpResponse, response);
             return response;
         }
 
         public GetObjectResponse ParseGetObjectResponse(HttpResponse httpResponse)
         {
             var response = new GetObjectResponse();
-            this.ParseGetObjectMetadataResponse(httpResponse, response);
+            ParseGetObjectMetadataResponse(httpResponse, response);
             response.OutputStream = httpResponse.Content;
             return response;
         }
@@ -1724,9 +1724,9 @@ namespace OBS.Internal
         public AppendObjectResponse ParseAppendObjectResponse(HttpResponse httpResponse)
         {
             var response = new AppendObjectResponse();
-            if (httpResponse.Headers.ContainsKey(this.iheaders.StorageClassHeader()))
+            if (httpResponse.Headers.ContainsKey(iheaders.StorageClassHeader()))
             {
-                response.StorageClass = this.ParseStorageClass(httpResponse.Headers[this.iheaders.StorageClassHeader()]);
+                response.StorageClass = ParseStorageClass(httpResponse.Headers[iheaders.StorageClassHeader()]);
             }
 
             if (httpResponse.Headers.ContainsKey(Constants.CommonHeaders.ETag))
@@ -1734,9 +1734,9 @@ namespace OBS.Internal
                 response.ETag = httpResponse.Headers[Constants.CommonHeaders.ETag];
             }
 
-            if (httpResponse.Headers.ContainsKey(this.iheaders.NextPositionHeader()))
+            if (httpResponse.Headers.ContainsKey(iheaders.NextPositionHeader()))
             {
-                response.NextPosition = Convert.ToInt64(httpResponse.Headers[this.iheaders.NextPositionHeader()]);
+                response.NextPosition = Convert.ToInt64(httpResponse.Headers[iheaders.NextPositionHeader()]);
             }
 
             response.ObjectUrl = httpResponse.RequestUrl;

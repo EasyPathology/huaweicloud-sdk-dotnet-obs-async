@@ -102,11 +102,11 @@ namespace OBS.Model
         {
             get
             {
-                return this.headers ?? (this.headers = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase));
+                return headers ?? (headers = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase));
             }
             internal set
             {
-                this.headers = value;
+                headers = value;
             }
         }
 
@@ -124,11 +124,11 @@ namespace OBS.Model
             get
             {
               
-                return this.metadataCollection ?? (this.metadataCollection = new MetadataCollection());
+                return metadataCollection ?? (metadataCollection = new MetadataCollection());
             }
             internal set
             {
-                this.metadataCollection = value;
+                metadataCollection = value;
             }
         }
 
@@ -154,15 +154,15 @@ namespace OBS.Model
         /// Optional parameter
         /// </para>
         /// </remarks>
-        public IDictionary<String, String> Parameters
+        public IDictionary<string, string> Parameters
         {
             get {
      
-                return this.parameters ?? (this.parameters = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase));
+                return parameters ?? (parameters = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase));
             }
             set
             {
-                this.parameters = value;
+                parameters = value;
             }
         }
 

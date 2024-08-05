@@ -33,7 +33,7 @@ namespace OBS.Internal
 
         public string AclHeader()
         {
-            return this.HeaderPrefix() + "acl";
+            return HeaderPrefix() + "acl";
         }
 
         public string AzRedundancyHeader()
@@ -43,67 +43,67 @@ namespace OBS.Internal
 
         public string BucketRegionHeader()
         {
-            return this.HeaderPrefix() + "bucket-region";
+            return HeaderPrefix() + "bucket-region";
         }
 
         public string ContentSha256Header()
         {
-            return this.HeaderPrefix() + "content-sha256";
+            return HeaderPrefix() + "content-sha256";
         }
 
         public string CopySourceHeader()
         {
-            return this.HeaderPrefix() + "copy-source";
+            return HeaderPrefix() + "copy-source";
         }
 
         public string CopySourceIfMatchHeader()
         {
-            return this.HeaderPrefix() + "copy-source-if-match";
+            return HeaderPrefix() + "copy-source-if-match";
         }
 
         public string CopySourceIfModifiedSinceHeader()
         {
-            return this.HeaderPrefix() + "copy-source-if-modified-since";
+            return HeaderPrefix() + "copy-source-if-modified-since";
         }
 
         public string CopySourceIfNoneMatchHeader()
         {
-            return this.HeaderPrefix() + "copy-source-if-none-match";
+            return HeaderPrefix() + "copy-source-if-none-match";
         }
 
         public string CopySourceIfUnmodifiedSinceHeader()
         {
-            return this.HeaderPrefix() + "copy-source-if-unmodified-since";
+            return HeaderPrefix() + "copy-source-if-unmodified-since";
         }
 
         public string CopySourceRangeHeader()
         {
-            return this.HeaderPrefix() + "copy-source-range";
+            return HeaderPrefix() + "copy-source-range";
         }
 
         public string CopySourceSseCHeader()
         {
-            return this.HeaderPrefix() + "copy-source-server-side-encryption-customer-algorithm";
+            return HeaderPrefix() + "copy-source-server-side-encryption-customer-algorithm";
         }
 
         public string CopySourceSseCKeyHeader()
         {
-            return this.HeaderPrefix() + "copy-source-server-side-encryption-customer-key";
+            return HeaderPrefix() + "copy-source-server-side-encryption-customer-key";
         }
 
         public string CopySourceSseCKeyMd5Header()
         {
-            return this.HeaderPrefix() + "copy-source-server-side-encryption-customer-key-MD5";
+            return HeaderPrefix() + "copy-source-server-side-encryption-customer-key-MD5";
         }
 
         public string CopySourceVersionIdHeader()
         {
-            return this.HeaderPrefix() + "copy-source-version-id";
+            return HeaderPrefix() + "copy-source-version-id";
         }
 
         public string DateHeader()
         {
-            return this.HeaderPrefix() + "date";
+            return HeaderPrefix() + "date";
         }
 
         public string DefaultStorageClassHeader()
@@ -113,12 +113,12 @@ namespace OBS.Internal
 
         public string DeleteMarkerHeader()
         {
-            return this.HeaderPrefix() + "delete-marker";
+            return HeaderPrefix() + "delete-marker";
         }
 
         public string ExpirationHeader()
         {
-            return this.HeaderPrefix() + "expiration";
+            return HeaderPrefix() + "expiration";
         }
 
         public string ExpiresHeader()
@@ -133,12 +133,12 @@ namespace OBS.Internal
 
         public string GrantFullControlHeader()
         {
-            return this.HeaderPrefix() + "grant-full-control";
+            return HeaderPrefix() + "grant-full-control";
         }
 
         public string GrantReadAcpHeader()
         {
-            return this.HeaderPrefix() + "grant-read-acp";
+            return HeaderPrefix() + "grant-read-acp";
         }
 
         public string GrantReadDeliveredHeader()
@@ -148,17 +148,17 @@ namespace OBS.Internal
 
         public string GrantReadHeader()
         {
-            return this.HeaderPrefix() + "grant-read";
+            return HeaderPrefix() + "grant-read";
         }
 
         public string GrantWriteAcpHeader()
         {
-            return this.HeaderPrefix() + "grant-write-acp";
+            return HeaderPrefix() + "grant-write-acp";
         }
 
         public string GrantWriteHeader()
         {
-            return this.HeaderPrefix() + "grant-write";
+            return HeaderPrefix() + "grant-write";
         }
 
         public string HeaderMetaPrefix()
@@ -173,12 +173,12 @@ namespace OBS.Internal
 
         public string LocationHeader()
         {
-            return this.HeaderPrefix() + "location";
+            return HeaderPrefix() + "location";
         }
 
         public string MetadataDirectiveHeader()
         {
-            return this.HeaderPrefix() + "metadata-directive";
+            return HeaderPrefix() + "metadata-directive";
         }
 
         public string NextPositionHeader()
@@ -193,22 +193,22 @@ namespace OBS.Internal
 
         public string RequestId2Header()
         {
-            return this.HeaderPrefix() + "id-2";
+            return HeaderPrefix() + "id-2";
         }
 
         public string RequestIdHeader()
         {
-            return this.HeaderPrefix() + "request-id";
+            return HeaderPrefix() + "request-id";
         }
 
         public string RestoreHeader()
         {
-            return this.HeaderPrefix() + "restore";
+            return HeaderPrefix() + "restore";
         }
 
         public string SecurityTokenHeader()
         {
-            return this.HeaderPrefix() + "security-token";
+            return HeaderPrefix() + "security-token";
         }
 
         public string ServerVersionHeader()
@@ -218,32 +218,32 @@ namespace OBS.Internal
 
         public string SseCHeader()
         {
-            return this.HeaderPrefix() + "server-side-encryption-customer-algorithm";
+            return HeaderPrefix() + "server-side-encryption-customer-algorithm";
         }
 
         public string SseCKeyHeader()
         {
-            return this.HeaderPrefix() + "server-side-encryption-customer-key";
+            return HeaderPrefix() + "server-side-encryption-customer-key";
         }
 
         public string SseCKeyMd5Header()
         {
-            return this.HeaderPrefix() + "server-side-encryption-customer-key-MD5";
+            return HeaderPrefix() + "server-side-encryption-customer-key-MD5";
         }
 
         public string SseKmsHeader()
         {
-            return this.HeaderPrefix() + "server-side-encryption";
+            return HeaderPrefix() + "server-side-encryption";
         }
 
         public string SseKmsKeyHeader()
         {
-            return this.HeaderPrefix() + "server-side-encryption-aws-kms-key-id";
+            return HeaderPrefix() + "server-side-encryption-aws-kms-key-id";
         }
 
         public string StorageClassHeader()
         {
-            return this.HeaderPrefix() + "storage-class";
+            return HeaderPrefix() + "storage-class";
         }
 
         public string SuccessRedirectLocationHeader()
@@ -253,12 +253,12 @@ namespace OBS.Internal
 
         public string VersionIdHeader()
         {
-            return this.HeaderPrefix() + "version-id";
+            return HeaderPrefix() + "version-id";
         }
 
         public string WebsiteRedirectLocationHeader()
         {
-            return this.HeaderPrefix() + "website-redirect-location";
+            return HeaderPrefix() + "website-redirect-location";
         }
 
         

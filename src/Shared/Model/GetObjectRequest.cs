@@ -54,11 +54,11 @@ namespace OBS.Model
         {
             get
             {
-                return this._metric <= 0 ? (ProgressType == ProgressTypeEnum.ByBytes ? Constants.DefaultProgressUpdateInterval : 1) : this._metric;
+                return _metric <= 0 ? (ProgressType == ProgressTypeEnum.ByBytes ? Constants.DefaultProgressUpdateInterval : 1) : _metric;
             }
             set
             {
-                this._metric = value;
+                _metric = value;
             }
         }
 

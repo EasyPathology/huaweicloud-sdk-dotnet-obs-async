@@ -53,7 +53,7 @@ namespace OBS.Model
         public UploadFileRequest(string uploadFile,string bucketName, string objectKey) 
             : this(bucketName, objectKey)
         {
-            this.UploadFile = uploadFile;
+            UploadFile = uploadFile;
         }
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace OBS.Model
         public UploadFileRequest(string bucketName, string objectKey, string uploadFile, long partSize)
             :this(uploadFile, bucketName, objectKey)
         {
-            this.UploadPartSize = partSize;
+            UploadPartSize = partSize;
         }
 
         /// <summary>
@@ -98,11 +98,11 @@ namespace OBS.Model
                 bool enableCheckpoint, string checkpointFile)
             : this(bucketName, objectKey)
         { 
-            this.UploadPartSize = partSize;
-            this.UploadFile = uploadFile;
-            this.EnableCheckpoint = enableCheckpoint;
-            this.CheckpointFile = checkpointFile;
-            this.TaskNum = taskNum;
+            UploadPartSize = partSize;
+            UploadFile = uploadFile;
+            EnableCheckpoint = enableCheckpoint;
+            CheckpointFile = checkpointFile;
+            TaskNum = taskNum;
         }
 
         /// <summary>
@@ -120,7 +120,7 @@ namespace OBS.Model
                 bool enableCheckpoint, string checkpointFile, bool enableCheckSum)
             : this(bucketName, objectKey, uploadFile, partSize, taskNum, enableCheckpoint, checkpointFile)
         {   
-            this.EnableCheckSum = enableCheckSum;
+            EnableCheckSum = enableCheckSum;
         }
 
         /// <summary>
@@ -147,13 +147,13 @@ namespace OBS.Model
         /// </remarks>
         public int TaskNum
         {
-            get { return this.taskNum; }
+            get { return taskNum; }
             set
             {
                 if (value < 1)
-                    this.taskNum = 1;
+                    taskNum = 1;
                 else
-                    this.taskNum = value;
+                    taskNum = value;
             }
         }
 

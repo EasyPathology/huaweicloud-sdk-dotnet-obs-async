@@ -79,7 +79,7 @@ namespace OBS.Internal
 
         protected virtual string TransObjectCannedAcl(CannedAclEnum cannedAcl)
         {
-            return this.TransBucketCannedAcl(cannedAcl);
+            return TransBucketCannedAcl(cannedAcl);
         }
 
         protected virtual string BucketLocationTag
@@ -124,23 +124,23 @@ namespace OBS.Internal
 
         protected void TransContent(HttpRequest httpRequest, TransContentDelegate transContentDelegate)
         {
-            this.TransContent(httpRequest, transContentDelegate, false);
+            TransContent(httpRequest, transContentDelegate, false);
         }
 
         protected void TransSseCHeader(HttpRequest httpRequest, SseCHeader ssec)
         {
             if (ssec != null)
             {
-                CommonUtil.AddHeader(httpRequest, this.iheaders.SseCHeader(), this.TransSseCAlgorithmEnum(ssec.Algorithm));
+                CommonUtil.AddHeader(httpRequest, iheaders.SseCHeader(), TransSseCAlgorithmEnum(ssec.Algorithm));
                 if (ssec.Key != null)
                 {
-                    CommonUtil.AddHeader(httpRequest, this.iheaders.SseCKeyHeader(), Convert.ToBase64String(ssec.Key));
-                    CommonUtil.AddHeader(httpRequest, this.iheaders.SseCKeyMd5Header(), CommonUtil.Base64Md5(ssec.Key));
+                    CommonUtil.AddHeader(httpRequest, iheaders.SseCKeyHeader(), Convert.ToBase64String(ssec.Key));
+                    CommonUtil.AddHeader(httpRequest, iheaders.SseCKeyMd5Header(), CommonUtil.Base64Md5(ssec.Key));
                 }
                 else if (!string.IsNullOrEmpty(ssec.KeyBase64))
                 {
-                    CommonUtil.AddHeader(httpRequest, this.iheaders.SseCKeyHeader(), ssec.KeyBase64);
-                    CommonUtil.AddHeader(httpRequest, this.iheaders.SseCKeyMd5Header(), CommonUtil.Base64Md5(Convert.FromBase64String(ssec.KeyBase64)));
+                    CommonUtil.AddHeader(httpRequest, iheaders.SseCKeyHeader(), ssec.KeyBase64);
+                    CommonUtil.AddHeader(httpRequest, iheaders.SseCKeyMd5Header(), CommonUtil.Base64Md5(Convert.FromBase64String(ssec.KeyBase64)));
                 }
             }
         }
@@ -149,16 +149,16 @@ namespace OBS.Internal
         {
             if (ssec != null)
             {
-                CommonUtil.AddHeader(httpRequest, this.iheaders.CopySourceSseCHeader(), this.TransSseCAlgorithmEnum(ssec.Algorithm));
+                CommonUtil.AddHeader(httpRequest, iheaders.CopySourceSseCHeader(), TransSseCAlgorithmEnum(ssec.Algorithm));
                 if (ssec.Key != null)
                 {
-                    CommonUtil.AddHeader(httpRequest, this.iheaders.CopySourceSseCKeyHeader(), Convert.ToBase64String(ssec.Key));
-                    CommonUtil.AddHeader(httpRequest, this.iheaders.CopySourceSseCKeyMd5Header(), CommonUtil.Base64Md5(ssec.Key));
+                    CommonUtil.AddHeader(httpRequest, iheaders.CopySourceSseCKeyHeader(), Convert.ToBase64String(ssec.Key));
+                    CommonUtil.AddHeader(httpRequest, iheaders.CopySourceSseCKeyMd5Header(), CommonUtil.Base64Md5(ssec.Key));
                 }
                 else if (!string.IsNullOrEmpty(ssec.KeyBase64))
                 {
-                    CommonUtil.AddHeader(httpRequest, this.iheaders.CopySourceSseCKeyHeader(), ssec.KeyBase64);
-                    CommonUtil.AddHeader(httpRequest, this.iheaders.CopySourceSseCKeyMd5Header(), CommonUtil.Base64Md5(Convert.FromBase64String(ssec.KeyBase64)));
+                    CommonUtil.AddHeader(httpRequest, iheaders.CopySourceSseCKeyHeader(), ssec.KeyBase64);
+                    CommonUtil.AddHeader(httpRequest, iheaders.CopySourceSseCKeyMd5Header(), CommonUtil.Base64Md5(Convert.FromBase64String(ssec.KeyBase64)));
                 }
             }
 
@@ -170,7 +170,7 @@ namespace OBS.Internal
             httpRequest.Method = HttpVerb.GET;
             if (request.IsQueryLocation)
             {
-                CommonUtil.AddHeader(httpRequest, this.iheaders.LocationHeader(), "true");
+                CommonUtil.AddHeader(httpRequest, iheaders.LocationHeader(), "true");
             }
             return httpRequest;
         }
@@ -183,37 +183,37 @@ namespace OBS.Internal
 
             if (request.CannedAcl.HasValue)
             {
-                CommonUtil.AddHeader(httpRequest, this.iheaders.AclHeader(), this.TransBucketCannedAcl(request.CannedAcl.Value));
+                CommonUtil.AddHeader(httpRequest, iheaders.AclHeader(), TransBucketCannedAcl(request.CannedAcl.Value));
             }
             if (request.StorageClass.HasValue)
             {
-                CommonUtil.AddHeader(httpRequest, this.iheaders.DefaultStorageClassHeader(), this.TransStorageClass(request.StorageClass.Value));
+                CommonUtil.AddHeader(httpRequest, iheaders.DefaultStorageClassHeader(), TransStorageClass(request.StorageClass.Value));
             }
 
             if (request.AvailableZone.HasValue)
             {
-                CommonUtil.AddHeader(httpRequest, this.iheaders.AzRedundancyHeader(), EnumAdaptor.GetStringValue(request.AvailableZone.Value));
+                CommonUtil.AddHeader(httpRequest, iheaders.AzRedundancyHeader(), EnumAdaptor.GetStringValue(request.AvailableZone.Value));
             }
 
 
-            foreach (KeyValuePair<ExtensionBucketPermissionEnum, IList<string>> map in request.ExtensionPermissionMap)
+            foreach (var map in request.ExtensionPermissionMap)
             {
                 string header = null;
                 switch (map.Key)
                 {
-                    case ExtensionBucketPermissionEnum.GrantFullControl: header = this.iheaders.GrantFullControlHeader(); break;
-                    case ExtensionBucketPermissionEnum.GrantFullControlDelivered: header = this.iheaders.GrantFullControlDeliveredHeader(); break;
-                    case ExtensionBucketPermissionEnum.GrantRead: header = this.iheaders.GrantReadHeader(); break;
-                    case ExtensionBucketPermissionEnum.GrantReadAcp: header = this.iheaders.GrantReadAcpHeader(); break;
-                    case ExtensionBucketPermissionEnum.GrantReadDelivered: header = this.iheaders.GrantReadDeliveredHeader(); break;
-                    case ExtensionBucketPermissionEnum.GrantWrite: header = this.iheaders.GrantWriteHeader(); break;
-                    case ExtensionBucketPermissionEnum.GrantWriteAcp: header = this.iheaders.GrantWriteAcpHeader(); break;
+                    case ExtensionBucketPermissionEnum.GrantFullControl: header = iheaders.GrantFullControlHeader(); break;
+                    case ExtensionBucketPermissionEnum.GrantFullControlDelivered: header = iheaders.GrantFullControlDeliveredHeader(); break;
+                    case ExtensionBucketPermissionEnum.GrantRead: header = iheaders.GrantReadHeader(); break;
+                    case ExtensionBucketPermissionEnum.GrantReadAcp: header = iheaders.GrantReadAcpHeader(); break;
+                    case ExtensionBucketPermissionEnum.GrantReadDelivered: header = iheaders.GrantReadDeliveredHeader(); break;
+                    case ExtensionBucketPermissionEnum.GrantWrite: header = iheaders.GrantWriteHeader(); break;
+                    case ExtensionBucketPermissionEnum.GrantWriteAcp: header = iheaders.GrantWriteAcpHeader(); break;
                     default: break;
                 }
 
-                if (!string.IsNullOrEmpty(header) && map.Value != null && map.Value.Count > 0)
+                if (!string.IsNullOrEmpty(header) && map.Value is { Count: > 0 })
                 {
-                    string[] values = new string[map.Value.Count];
+                    var values = new string[map.Value.Count];
                     for (var i = 0; i < map.Value.Count; i++)
                     {
                         values[i] = "id=" + map.Value[i];
@@ -226,10 +226,10 @@ namespace OBS.Internal
 
             if (!string.IsNullOrEmpty(request.Location))
             {
-                this.TransContent(httpRequest, delegate (XmlWriter xmlWriter)
+                TransContent(httpRequest, delegate (XmlWriter xmlWriter)
                 {
                     xmlWriter.WriteStartElement("CreateBucketConfiguration");
-                    xmlWriter.WriteElementString(this.BucketLocationTag, request.Location);
+                    xmlWriter.WriteElementString(BucketLocationTag, request.Location);
                     xmlWriter.WriteEndElement();
                 });
             }
@@ -280,13 +280,13 @@ namespace OBS.Internal
             httpRequest.Method = HttpVerb.PUT;
             httpRequest.BucketName = request.BucketName;
 
-            httpRequest.Params.Add(this.BucketStoragePolicyParam, null);
+            httpRequest.Params.Add(BucketStoragePolicyParam, null);
 
             if (request.StorageClass.HasValue)
             {
-                this.TransContent(httpRequest, delegate (XmlWriter xmlWriter)
+                TransContent(httpRequest, delegate (XmlWriter xmlWriter)
                 {
-                    this.TransSetBucketStoragePolicyContent(xmlWriter, request.StorageClass.Value);
+                    TransSetBucketStoragePolicyContent(xmlWriter, request.StorageClass.Value);
                 });
             }
             return httpRequest;
@@ -305,7 +305,7 @@ namespace OBS.Internal
             var httpRequest = new HttpRequest();
             httpRequest.Method = HttpVerb.GET;
             httpRequest.BucketName = request.BucketName;
-            httpRequest.Params.Add(this.BucketStoragePolicyParam, null);
+            httpRequest.Params.Add(BucketStoragePolicyParam, null);
 
             return httpRequest;
         }
@@ -407,7 +407,7 @@ namespace OBS.Internal
             httpRequest.Params.Add(EnumAdaptor.GetStringValue(SubResourceEnum.Quota), null);
             httpRequest.BucketName = request.BucketName;
 
-            this.TransContent(httpRequest, delegate (XmlWriter xmlWriter)
+            TransContent(httpRequest, delegate (XmlWriter xmlWriter)
             {
                 xmlWriter.WriteStartElement("Quota");
                 xmlWriter.WriteElementString("StorageQuota", request.StorageQuota.ToString());
@@ -431,7 +431,7 @@ namespace OBS.Internal
             xmlWriter.WriteStartElement(startElementName);
             foreach (var grant in grants)
             {
-                if (grant.Grantee != null && grant.Permission.HasValue)
+                if (grant is { Grantee: not null, Permission: not null })
                 {
                     xmlWriter.WriteStartElement("Grant");
                     xmlWriter.WriteStartElement("Grantee");
@@ -465,7 +465,7 @@ namespace OBS.Internal
 
         protected virtual void TransAccessControlList(HttpRequest httpRequest, AccessControlList acl, bool isBucket)
         {
-            this.TransContent(httpRequest, delegate (XmlWriter xmlWriter)
+            TransContent(httpRequest, delegate (XmlWriter xmlWriter)
             {
                 xmlWriter.WriteStartElement("AccessControlPolicy");
                 if (acl.Owner != null && !string.IsNullOrEmpty(acl.Owner.Id))
@@ -480,7 +480,7 @@ namespace OBS.Internal
                 }
                 if (acl.Grants.Count > 0)
                 {
-                    this.TransGrants(xmlWriter, acl.Grants, "AccessControlList");
+                    TransGrants(xmlWriter, acl.Grants, "AccessControlList");
                 }
                 xmlWriter.WriteEndElement();
             });
@@ -494,11 +494,11 @@ namespace OBS.Internal
             httpRequest.BucketName = request.BucketName;
             if (request.CannedAcl.HasValue)
             {
-                CommonUtil.AddHeader(httpRequest, this.iheaders.AclHeader(), TransBucketCannedAcl(request.CannedAcl.Value));
+                CommonUtil.AddHeader(httpRequest, iheaders.AclHeader(), TransBucketCannedAcl(request.CannedAcl.Value));
             }
             else if (request.AccessControlList != null)
             {
-                this.TransAccessControlList(httpRequest, request.AccessControlList, true);
+                TransAccessControlList(httpRequest, request.AccessControlList, true);
             }
             return httpRequest;
         }
@@ -546,7 +546,7 @@ namespace OBS.Internal
 
         protected virtual void TransLoggingConfiguration(HttpRequest httpRequest, LoggingConfiguration configuration)
         {
-            this.TransContent(httpRequest, delegate (XmlWriter xmlWriter)
+            TransContent(httpRequest, delegate (XmlWriter xmlWriter)
             {
                 xmlWriter.WriteStartElement("BucketLoggingStatus");
 
@@ -565,7 +565,7 @@ namespace OBS.Internal
 
                     if (configuration.Grants.Count > 0)
                     {
-                        this.TransGrants(xmlWriter, configuration.Grants, "TargetGrants");
+                        TransGrants(xmlWriter, configuration.Grants, "TargetGrants");
                     }
 
                     xmlWriter.WriteEndElement();
@@ -581,7 +581,7 @@ namespace OBS.Internal
             httpRequest.Method = HttpVerb.PUT;
             httpRequest.Params.Add(EnumAdaptor.GetStringValue(SubResourceEnum.Logging), null);
 
-            this.TransLoggingConfiguration(httpRequest, request.Configuration);
+            TransLoggingConfiguration(httpRequest, request.Configuration);
             return httpRequest;
         }
 
@@ -642,7 +642,7 @@ namespace OBS.Internal
             httpRequest.Method = HttpVerb.PUT;
             httpRequest.Params.Add(EnumAdaptor.GetStringValue(SubResourceEnum.Cors), null);
 
-            this.TransContent(httpRequest, delegate (XmlWriter xmlWriter)
+            TransContent(httpRequest, delegate (XmlWriter xmlWriter)
             {
                 xmlWriter.WriteStartElement("CORSConfiguration");
                 if (request.Configuration != null)
@@ -725,7 +725,7 @@ namespace OBS.Internal
             httpRequest.Method = HttpVerb.PUT;
             httpRequest.Params.Add(EnumAdaptor.GetStringValue(SubResourceEnum.Lifecyle), null);
 
-            this.TransContent(httpRequest, delegate (XmlWriter xmlWriter)
+            TransContent(httpRequest, delegate (XmlWriter xmlWriter)
             {
                 xmlWriter.WriteStartElement("LifecycleConfiguration");
 
@@ -783,7 +783,7 @@ namespace OBS.Internal
 
                                 if (transition.StorageClass.HasValue)
                                 {
-                                    xmlWriter.WriteElementString("StorageClass", this.TransStorageClass(transition.StorageClass.Value));
+                                    xmlWriter.WriteElementString("StorageClass", TransStorageClass(transition.StorageClass.Value));
                                 }
 
                                 xmlWriter.WriteEndElement();
@@ -799,7 +799,7 @@ namespace OBS.Internal
 
                                 if (noncurrentVersionTransition.StorageClass.HasValue)
                                 {
-                                    xmlWriter.WriteElementString("StorageClass", this.TransStorageClass(noncurrentVersionTransition.StorageClass.Value));
+                                    xmlWriter.WriteElementString("StorageClass", TransStorageClass(noncurrentVersionTransition.StorageClass.Value));
                                 }
 
                                 xmlWriter.WriteEndElement();
@@ -841,7 +841,7 @@ namespace OBS.Internal
             httpRequest.Method = HttpVerb.PUT;
             httpRequest.Params.Add(EnumAdaptor.GetStringValue(SubResourceEnum.Website), null);
 
-            this.TransContent(httpRequest, delegate (XmlWriter xmlWriter)
+            TransContent(httpRequest, delegate (XmlWriter xmlWriter)
             {
                 xmlWriter.WriteStartElement("WebsiteConfiguration");
 
@@ -979,10 +979,10 @@ namespace OBS.Internal
             httpRequest.Method = HttpVerb.PUT;
             httpRequest.Params.Add(EnumAdaptor.GetStringValue(SubResourceEnum.Versioning), null);
 
-            this.TransContent(httpRequest, delegate (XmlWriter xmlWriter)
+            TransContent(httpRequest, delegate (XmlWriter xmlWriter)
             {
                 xmlWriter.WriteStartElement("VersioningConfiguration");
-                if (request.Configuration != null && request.Configuration.Status.HasValue)
+                if (request.Configuration is { Status: not null })
                 {
                     xmlWriter.WriteElementString("Status", request.Configuration.Status.Value.ToString());
                 }
@@ -1008,7 +1008,7 @@ namespace OBS.Internal
             httpRequest.Method = HttpVerb.PUT;
             httpRequest.Params.Add(EnumAdaptor.GetStringValue(SubResourceEnum.Tagging), null);
 
-            this.TransContent(httpRequest, delegate (XmlWriter xmlWriter)
+            TransContent(httpRequest, delegate (XmlWriter xmlWriter)
             {
                 xmlWriter.WriteStartElement("Tagging");
 
@@ -1055,7 +1055,7 @@ namespace OBS.Internal
         private void WriteFilterRules(XmlWriter xmlWriter, List<FilterRule> filterRules)
         {
             xmlWriter.WriteStartElement("Filter");
-            xmlWriter.WriteStartElement(this.FilterContainerTag);
+            xmlWriter.WriteStartElement(FilterContainerTag);
             foreach (var rule in filterRules)
             {
                 if (rule != null)
@@ -1085,7 +1085,7 @@ namespace OBS.Internal
             httpRequest.Method = HttpVerb.PUT;
             httpRequest.Params.Add(EnumAdaptor.GetStringValue(SubResourceEnum.Notification), null);
 
-            this.TransContent(httpRequest, delegate (XmlWriter xmlWriter)
+            TransContent(httpRequest, delegate (XmlWriter xmlWriter)
             {   
                 xmlWriter.WriteStartElement("NotificationConfiguration");
                 if (request.Configuration != null)
@@ -1103,7 +1103,7 @@ namespace OBS.Internal
 
                             if (tc.FilterRules.Count > 0)
                             {
-                                this.WriteFilterRules(xmlWriter, tc.FilterRules);
+                                WriteFilterRules(xmlWriter, tc.FilterRules);
                             }
 
                             if (!string.IsNullOrEmpty(tc.Topic))
@@ -1113,7 +1113,7 @@ namespace OBS.Internal
 
                             foreach (var e in tc.Events)
                             {
-                                xmlWriter.WriteElementString("Event", this.TransEventType(e));
+                                xmlWriter.WriteElementString("Event", TransEventType(e));
                             }
 
                             xmlWriter.WriteEndElement();
@@ -1132,7 +1132,7 @@ namespace OBS.Internal
 
                             if (fc.FilterRules.Count > 0)
                             {
-                                this.WriteFilterRules(xmlWriter, fc.FilterRules);
+                                WriteFilterRules(xmlWriter, fc.FilterRules);
                             }
 
                             if (!string.IsNullOrEmpty(fc.FunctionGraph))
@@ -1142,7 +1142,7 @@ namespace OBS.Internal
 
                             foreach (var e in fc.Events)
                             {
-                                xmlWriter.WriteElementString("Event", this.TransEventType(e));
+                                xmlWriter.WriteElementString("Event", TransEventType(e));
                             }
 
                             xmlWriter.WriteEndElement();
@@ -1193,7 +1193,7 @@ namespace OBS.Internal
             httpRequest.Method = HttpVerb.POST;
             httpRequest.Params.Add(EnumAdaptor.GetStringValue(SubResourceEnum.Delete), null);
 
-            this.TransContent(httpRequest, delegate (XmlWriter xmlWriter)
+            TransContent(httpRequest, delegate (XmlWriter xmlWriter)
             {
                 xmlWriter.WriteStartElement("Delete");
                 if (request.Quiet.HasValue)
@@ -1252,12 +1252,12 @@ namespace OBS.Internal
                 httpRequest.Params.Add(Constants.ObsRequestParams.VersionId, request.VersionId);
             }
 
-            this.TransContent(httpRequest, delegate (XmlWriter xmlWriter)
+            TransContent(httpRequest, delegate (XmlWriter xmlWriter)
             {
                 xmlWriter.WriteStartElement("RestoreRequest");
                 xmlWriter.WriteElementString("Days", request.Days.ToString());
 
-                this.TransTier(request.Tier, xmlWriter);
+                TransTier(request.Tier, xmlWriter);
 
                 xmlWriter.WriteEndElement();
             }, true);
@@ -1294,7 +1294,7 @@ namespace OBS.Internal
             httpRequest.Params.Add(Constants.ObsRequestParams.UploadId, request.UploadId);
 
 
-            List<PartETag> temp = request.PartETags as List<PartETag>;
+            var temp = request.PartETags as List<PartETag>;
 
             if (temp == null)
             {
@@ -1310,7 +1310,7 @@ namespace OBS.Internal
                 return part1.PartNumber.CompareTo(part2.PartNumber);
             });
 
-            this.TransContent(httpRequest, delegate (XmlWriter xmlWriter)
+            TransContent(httpRequest, delegate (XmlWriter xmlWriter)
             {
                 xmlWriter.WriteStartElement("CompleteMultipartUpload");
                 foreach (var part in temp)
@@ -1343,11 +1343,11 @@ namespace OBS.Internal
 
             if (request.CannedAcl.HasValue)
             {
-                CommonUtil.AddHeader(httpRequest, this.iheaders.AclHeader(), TransObjectCannedAcl(request.CannedAcl.Value));
+                CommonUtil.AddHeader(httpRequest, iheaders.AclHeader(), TransObjectCannedAcl(request.CannedAcl.Value));
             }
             else if (request.AccessControlList != null)
             {
-                this.TransAccessControlList(httpRequest, request.AccessControlList, false);
+                TransAccessControlList(httpRequest, request.AccessControlList, false);
             }
 
             return httpRequest;
@@ -1375,86 +1375,92 @@ namespace OBS.Internal
 
             if (!string.IsNullOrEmpty(request.WebsiteRedirectLocation))
             {
-                CommonUtil.AddHeader(httpRequest, this.iheaders.WebsiteRedirectLocationHeader(), request.WebsiteRedirectLocation);
+                CommonUtil.AddHeader(httpRequest, iheaders.WebsiteRedirectLocationHeader(), request.WebsiteRedirectLocation);
             }
             if (!string.IsNullOrEmpty(request.SuccessRedirectLocation))
             {
-                CommonUtil.AddHeader(httpRequest, this.iheaders.SuccessRedirectLocationHeader(), request.SuccessRedirectLocation);
+                CommonUtil.AddHeader(httpRequest, iheaders.SuccessRedirectLocationHeader(), request.SuccessRedirectLocation);
             }
             if (request.StorageClass.HasValue)
             {
-                CommonUtil.AddHeader(httpRequest, this.iheaders.StorageClassHeader(), this.TransStorageClass(request.StorageClass.Value));
+                CommonUtil.AddHeader(httpRequest, iheaders.StorageClassHeader(), TransStorageClass(request.StorageClass.Value));
             }
             if (request.CannedAcl.HasValue)
             {
-                CommonUtil.AddHeader(httpRequest, this.iheaders.AclHeader(), this.TransObjectCannedAcl(request.CannedAcl.Value));
+                CommonUtil.AddHeader(httpRequest, iheaders.AclHeader(), TransObjectCannedAcl(request.CannedAcl.Value));
             }
 
 
-            foreach (KeyValuePair<ExtensionObjectPermissionEnum, IList<string>> map in request.ExtensionPermissionMap)
+            foreach (var map in request.ExtensionPermissionMap)
             {
                 string header = null;
                 switch (map.Key)
                 {
-                    case ExtensionObjectPermissionEnum.GrantFullControl: header = this.iheaders.GrantFullControlHeader(); break;
-                    case ExtensionObjectPermissionEnum.GrantRead: header = this.iheaders.GrantReadHeader(); break;
-                    case ExtensionObjectPermissionEnum.GrantReadAcp: header = this.iheaders.GrantReadAcpHeader(); break;
-                    case ExtensionObjectPermissionEnum.GrantWriteAcp: header = this.iheaders.GrantWriteAcpHeader(); break;
-                    default: break;
+                    case ExtensionObjectPermissionEnum.GrantFullControl:
+                        header = iheaders.GrantFullControlHeader();
+                        break;
+                    case ExtensionObjectPermissionEnum.GrantRead:
+                        header = iheaders.GrantReadHeader();
+                        break;
+                    case ExtensionObjectPermissionEnum.GrantReadAcp:
+                        header = iheaders.GrantReadAcpHeader();
+                        break;
+                    case ExtensionObjectPermissionEnum.GrantWriteAcp:
+                        header = iheaders.GrantWriteAcpHeader();
+                        break;
                 }
-                if (!string.IsNullOrEmpty(header) && map.Value != null && map.Value.Count > 0)
+
+                if (string.IsNullOrEmpty(header) || map.Value is not { Count: > 0 }) continue;
+                var values = new string[map.Value.Count];
+                for (var i = 0; i < map.Value.Count; i++)
                 {
-                    string[] values = new string[map.Value.Count];
-                    for (var i = 0; i < map.Value.Count; i++)
-                    {
-                        values[i] = "id=" + map.Value[i];
-                    }
-                    CommonUtil.AddHeader(httpRequest, header, string.Join(",", values));
+                    values[i] = "id=" + map.Value[i];
                 }
+                CommonUtil.AddHeader(httpRequest, header!, string.Join(",", values));
             }
 
-            foreach (KeyValuePair<string,string> entry in request.Metadata.KeyValuePairs)
+            foreach (var entry in request.Metadata.KeyValuePairs)
             {
                 if (string.IsNullOrEmpty(entry.Key))
                 {
                     continue;
                 }
-                var _key = entry.Key;
-                if (!entry.Key.StartsWith(this.iheaders.HeaderMetaPrefix(), StringComparison.OrdinalIgnoreCase) && !entry.Key.StartsWith(Constants.ObsHeaderMetaPrefix, StringComparison.OrdinalIgnoreCase))
+                var key = entry.Key;
+                if (!entry.Key.StartsWith(iheaders.HeaderMetaPrefix(), StringComparison.OrdinalIgnoreCase) && !entry.Key.StartsWith(Constants.ObsHeaderMetaPrefix, StringComparison.OrdinalIgnoreCase))
                 {
-                    _key = this.iheaders.HeaderMetaPrefix() + _key;
+                    key = iheaders.HeaderMetaPrefix() + key;
                 }
-                CommonUtil.AddHeader(httpRequest, _key, entry.Value);
+                CommonUtil.AddHeader(httpRequest, key, entry.Value);
             }
 
-            if (request.SseHeader != null)
+            if (request.SseHeader == null) return;
+            switch (request.SseHeader)
             {
-                var ssec = request.SseHeader as SseCHeader;
-                if (ssec != null)
+                case SseCHeader ssec:
                 {
-                    CommonUtil.AddHeader(httpRequest, this.iheaders.SseCHeader(), this.TransSseCAlgorithmEnum(ssec.Algorithm));
+                    CommonUtil.AddHeader(httpRequest, iheaders.SseCHeader(), TransSseCAlgorithmEnum(ssec.Algorithm));
                     if (ssec.Key != null)
                     {
-                        CommonUtil.AddHeader(httpRequest, this.iheaders.SseCKeyHeader(), Convert.ToBase64String(ssec.Key));
-                        CommonUtil.AddHeader(httpRequest, this.iheaders.SseCKeyMd5Header(), CommonUtil.Base64Md5(ssec.Key));
+                        CommonUtil.AddHeader(httpRequest, iheaders.SseCKeyHeader(), Convert.ToBase64String(ssec.Key));
+                        CommonUtil.AddHeader(httpRequest, iheaders.SseCKeyMd5Header(), CommonUtil.Base64Md5(ssec.Key));
                     }
                     else if (!string.IsNullOrEmpty(ssec.KeyBase64))
                     {
-                        CommonUtil.AddHeader(httpRequest, this.iheaders.SseCKeyHeader(), ssec.KeyBase64);
-                        CommonUtil.AddHeader(httpRequest, this.iheaders.SseCKeyMd5Header(), CommonUtil.Base64Md5(Convert.FromBase64String(ssec.KeyBase64)));
+                        CommonUtil.AddHeader(httpRequest, iheaders.SseCKeyHeader(), ssec.KeyBase64);
+                        CommonUtil.AddHeader(httpRequest, iheaders.SseCKeyMd5Header(), CommonUtil.Base64Md5(Convert.FromBase64String(ssec.KeyBase64)));
                     }
+
+                    break;
                 }
-                else
+                case SseKmsHeader sseKms:
                 {
-                    var sseKms = request.SseHeader as SseKmsHeader;
-                    if (sseKms != null)
+                    CommonUtil.AddHeader(httpRequest, iheaders.SseKmsHeader(), TransSseKmsAlgorithm(sseKms.Algorithm));
+                    if (!string.IsNullOrEmpty(sseKms.Key))
                     {
-                        CommonUtil.AddHeader(httpRequest, this.iheaders.SseKmsHeader(), this.TransSseKmsAlgorithm(sseKms.Algorithm));
-                        if (!string.IsNullOrEmpty(sseKms.Key))
-                        {
-                            CommonUtil.AddHeader(httpRequest, this.iheaders.SseKmsKeyHeader(), sseKms.Key);
-                        }
+                        CommonUtil.AddHeader(httpRequest, iheaders.SseKmsKeyHeader(), sseKms.Key);
                     }
+
+                    break;
                 }
             }
 
@@ -1464,7 +1470,7 @@ namespace OBS.Internal
         {
             var httpRequest = new HttpRequest();
 
-            this.TransPutObjectBasicRequest(request, httpRequest);
+            TransPutObjectBasicRequest(request, httpRequest);
 
             httpRequest.Method = HttpVerb.PUT;
             httpRequest.AutoClose = request.AutoClose;
@@ -1482,7 +1488,7 @@ namespace OBS.Internal
             if (request.InputStream != null)
             {
                 httpRequest.Content = request.InputStream;
-                if (request.ContentLength.HasValue && request.ContentLength.Value > 0)
+                if (request.ContentLength is > 0)
                 {
                     contentLength = request.ContentLength.Value;
                     CommonUtil.AddHeader(httpRequest, Constants.CommonHeaders.ContentLength, contentLength.ToString());
@@ -1564,7 +1570,7 @@ namespace OBS.Internal
             }
             if (request.Expires.HasValue)
             {
-                CommonUtil.AddHeader(httpRequest, this.iheaders.ExpiresHeader(), request.Expires.Value.ToString());
+                CommonUtil.AddHeader(httpRequest, iheaders.ExpiresHeader(), request.Expires.Value.ToString());
             }
 
 
@@ -1573,7 +1579,7 @@ namespace OBS.Internal
 
         public HttpRequest Trans(AppendObjectRequest request)
         {
-            var httpRequest = this.Trans(request as PutObjectRequest);
+            var httpRequest = Trans(request as PutObjectRequest);
             httpRequest.Method = HttpVerb.POST;
             httpRequest.Params.Add(EnumAdaptor.GetStringValue(SubResourceEnum.Append), null);
             httpRequest.Params.Add(Constants.ObsRequestParams.Position, request.Position.ToString());
@@ -1584,18 +1590,18 @@ namespace OBS.Internal
         {
             var httpRequest = new HttpRequest();
 
-            this.TransPutObjectBasicRequest(request, httpRequest);
+            TransPutObjectBasicRequest(request, httpRequest);
 
             httpRequest.Method = HttpVerb.PUT;
 
-            var copySource = string.Format("{0}/{1}", request.SourceBucketName, CommonUtil.UrlEncode(request.SourceObjectKey));
+            var copySource = $"{request.SourceBucketName}/{CommonUtil.UrlEncode(request.SourceObjectKey)}";
 
             if (!string.IsNullOrEmpty(request.SourceVersionId))
             {
                 copySource += "?versionId" + request.SourceVersionId;
             }
 
-            CommonUtil.AddHeader(httpRequest, this.iheaders.CopySourceHeader(), copySource);
+            CommonUtil.AddHeader(httpRequest, iheaders.CopySourceHeader(), copySource);
 
             if (!string.IsNullOrEmpty(request.ContentType))
             {
@@ -1607,28 +1613,28 @@ namespace OBS.Internal
                 CommonUtil.AddHeader(httpRequest, Constants.CommonHeaders.ContentDisposition, request.ContentDisposition);
             }
 
-            CommonUtil.AddHeader(httpRequest, this.iheaders.MetadataDirectiveHeader(), request.MetadataDirective.ToString().ToUpper());
+            CommonUtil.AddHeader(httpRequest, iheaders.MetadataDirectiveHeader(), request.MetadataDirective.ToString().ToUpper());
 
-            this.TransSourceSseCHeader(httpRequest, request.SourceSseCHeader);
+            TransSourceSseCHeader(httpRequest, request.SourceSseCHeader);
 
             if (!string.IsNullOrEmpty(request.IfMatch))
             {
-                CommonUtil.AddHeader(httpRequest, this.iheaders.CopySourceIfMatchHeader(), request.IfMatch);
+                CommonUtil.AddHeader(httpRequest, iheaders.CopySourceIfMatchHeader(), request.IfMatch);
             }
 
             if (!string.IsNullOrEmpty(request.IfNoneMatch))
             {
-                CommonUtil.AddHeader(httpRequest, this.iheaders.CopySourceIfNoneMatchHeader(), request.IfNoneMatch);
+                CommonUtil.AddHeader(httpRequest, iheaders.CopySourceIfNoneMatchHeader(), request.IfNoneMatch);
             }
 
             if (request.IfModifiedSince.HasValue)
             {
-                CommonUtil.AddHeader(httpRequest, this.iheaders.CopySourceIfModifiedSinceHeader(), request.IfModifiedSince.Value.ToString(Constants.RFC822DateFormat, Constants.CultureInfo));
+                CommonUtil.AddHeader(httpRequest, iheaders.CopySourceIfModifiedSinceHeader(), request.IfModifiedSince.Value.ToString(Constants.RFC822DateFormat, Constants.CultureInfo));
             }
 
             if (request.IfUnmodifiedSince.HasValue)
             {
-                CommonUtil.AddHeader(httpRequest, this.iheaders.CopySourceIfUnmodifiedSinceHeader(), request.IfUnmodifiedSince.Value.ToString(Constants.RFC822DateFormat, Constants.CultureInfo));
+                CommonUtil.AddHeader(httpRequest, iheaders.CopySourceIfUnmodifiedSinceHeader(), request.IfUnmodifiedSince.Value.ToString(Constants.RFC822DateFormat, Constants.CultureInfo));
             }
 
             return httpRequest;
@@ -1638,7 +1644,7 @@ namespace OBS.Internal
         {
             var httpRequest = new HttpRequest();
 
-            this.TransPutObjectBasicRequest(request, httpRequest);
+            TransPutObjectBasicRequest(request, httpRequest);
 
             httpRequest.Method = HttpVerb.POST;
             httpRequest.Params.Add(EnumAdaptor.GetStringValue(SubResourceEnum.Uploads), null);
@@ -1664,7 +1670,7 @@ namespace OBS.Internal
 
             if (request.Expires.HasValue)
             {
-                CommonUtil.AddHeader(httpRequest, this.iheaders.ExpiresHeader(), request.Expires.Value.ToString());
+                CommonUtil.AddHeader(httpRequest, iheaders.ExpiresHeader(), request.Expires.Value.ToString());
             }
 
             return httpRequest;
@@ -1682,23 +1688,24 @@ namespace OBS.Internal
             httpRequest.Params.Add(Constants.ObsRequestParams.UploadId, request.UploadId);
             httpRequest.Params.Add(Constants.ObsRequestParams.PartNumber, request.PartNumber.ToString());
 
-            var copySource = string.Format("{0}/{1}", request.SourceBucketName, CommonUtil.UrlEncode(request.SourceObjectKey));
+            var copySource = $"{request.SourceBucketName}/{CommonUtil.UrlEncode(request.SourceObjectKey)}";
 
             if (!string.IsNullOrEmpty(request.SourceVersionId))
             {
                 copySource += "?versionId" + request.SourceVersionId;
             }
 
-            CommonUtil.AddHeader(httpRequest, this.iheaders.CopySourceHeader(), copySource);
+            CommonUtil.AddHeader(httpRequest, iheaders.CopySourceHeader(), copySource);
 
-            if(request.ByteRange != null && request.ByteRange.Start >=0 && request.ByteRange.Start <= request.ByteRange.End)
+            if(request.ByteRange is { Start: >= 0 } && request.ByteRange.Start <= request.ByteRange.End)
             {
-                CommonUtil.AddHeader(httpRequest, this.iheaders.CopySourceRangeHeader(), string.Format("bytes={0}-{1}", request.ByteRange.Start, request.ByteRange.End));
+                CommonUtil.AddHeader(httpRequest, iheaders.CopySourceRangeHeader(),
+                    $"bytes={request.ByteRange.Start}-{request.ByteRange.End}");
             }
 
-            this.TransSourceSseCHeader(httpRequest, request.SourceSseCHeader);
+            TransSourceSseCHeader(httpRequest, request.SourceSseCHeader);
 
-            this.TransSseCHeader(httpRequest, request.DestinationSseCHeader);
+            TransSseCHeader(httpRequest, request.DestinationSseCHeader);
 
             return httpRequest;
         }
@@ -1714,7 +1721,7 @@ namespace OBS.Internal
             httpRequest.Params.Add(Constants.ObsRequestParams.UploadId, request.UploadId);
             httpRequest.Params.Add(Constants.ObsRequestParams.PartNumber, request.PartNumber.ToString());
 
-            this.TransSseCHeader(httpRequest, request.SseCHeader);
+            TransSseCHeader(httpRequest, request.SseCHeader);
 
             if (!string.IsNullOrEmpty(request.ContentMd5))
             {
@@ -1790,7 +1797,7 @@ namespace OBS.Internal
             httpRequest.BucketName = request.BucketName;
             httpRequest.Params.Add(EnumAdaptor.GetStringValue(SubResourceEnum.Replication), null);
 
-            this.TransContent(httpRequest, delegate (XmlWriter xmlWriter)
+            TransContent(httpRequest, delegate (XmlWriter xmlWriter)
             {
                 xmlWriter.WriteStartElement("ReplicationConfiguration");
                 if(request.Configuration != null)
@@ -1818,10 +1825,10 @@ namespace OBS.Internal
                             if (!string.IsNullOrEmpty(rule.TargetBucketName))
                             {
                                 xmlWriter.WriteStartElement("Destination");
-                                xmlWriter.WriteElementString("Bucket", this.TransDestinationBucket(rule.TargetBucketName));
+                                xmlWriter.WriteElementString("Bucket", TransDestinationBucket(rule.TargetBucketName));
                                 if (rule.TargetStorageClass.HasValue)
                                 {
-                                    xmlWriter.WriteElementString("StorageClass", this.TransStorageClass(rule.TargetStorageClass.Value));
+                                    xmlWriter.WriteElementString("StorageClass", TransStorageClass(rule.TargetStorageClass.Value));
                                 }
                                 xmlWriter.WriteEndElement();
                             }
@@ -1865,14 +1872,14 @@ namespace OBS.Internal
             {
                 httpRequest.Params.Add(Constants.ObsRequestParams.VersionId, request.VersionId);
             }
-            this.TransSseCHeader(httpRequest, request.SseCHeader);
+            TransSseCHeader(httpRequest, request.SseCHeader);
 
             return httpRequest;
         }
 
         public HttpRequest Trans(GetObjectRequest request)
         {
-            var httpRequest = this.Trans(request as GetObjectMetadataRequest);
+            var httpRequest = Trans(request as GetObjectMetadataRequest);
             httpRequest.Method = HttpVerb.GET;
 
             if (!string.IsNullOrEmpty(request.ImageProcess))
@@ -1931,9 +1938,10 @@ namespace OBS.Internal
             }
 
 
-            if (request.ByteRange != null && request.ByteRange.Start >= 0 && request.ByteRange.Start <= request.ByteRange.End)
+            if (request.ByteRange is { Start: >= 0 } && request.ByteRange.Start <= request.ByteRange.End)
             {
-                CommonUtil.AddHeader(httpRequest, Constants.CommonHeaders.Range, string.Format("bytes={0}-{1}", request.ByteRange.Start, request.ByteRange.End));
+                CommonUtil.AddHeader(httpRequest, Constants.CommonHeaders.Range,
+                    $"bytes={request.ByteRange.Start}-{request.ByteRange.End}");
             }
 
             return httpRequest;

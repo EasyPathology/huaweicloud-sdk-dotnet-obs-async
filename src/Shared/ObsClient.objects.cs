@@ -26,7 +26,7 @@ namespace OBS
         /// <returns> Response to an object upload request</returns>
         public PutObjectResponse PutObject(PutObjectRequest request)
         {
-            return this.DoRequest<PutObjectRequest, PutObjectResponse>(request, delegate ()
+            return DoRequest<PutObjectRequest, PutObjectResponse>(request, delegate ()
             {
                 if (request.ObjectKey == null)
                 {
@@ -42,7 +42,7 @@ namespace OBS
         /// <returns>Response to an appendable upload request</returns>
         public AppendObjectResponse AppendObject(AppendObjectRequest request)
         {
-            return this.DoRequest<AppendObjectRequest, AppendObjectResponse>(request, delegate ()
+            return DoRequest<AppendObjectRequest, AppendObjectResponse>(request, delegate ()
             {
                 if (request.ObjectKey == null)
                 {
@@ -59,7 +59,7 @@ namespace OBS
         /// <returns> Response to an object copy request</returns>
         public CopyObjectResponse CopyObject(CopyObjectRequest request)
         {
-            return this.DoRequest<CopyObjectRequest, CopyObjectResponse>(request, delegate ()
+            return DoRequest<CopyObjectRequest, CopyObjectResponse>(request, delegate ()
             {
                 if (request.ObjectKey == null)
                 {
@@ -84,7 +84,7 @@ namespace OBS
         /// <returns>Response to a part upload request</returns>
         public UploadPartResponse UploadPart(UploadPartRequest request)
         {
-            var response = this.DoRequest<UploadPartRequest, UploadPartResponse>(request, delegate ()
+            var response = DoRequest<UploadPartRequest, UploadPartResponse>(request, delegate ()
             {
                 if (request.ObjectKey == null)
                 {
@@ -114,7 +114,7 @@ namespace OBS
         /// <returns> Response to a part copy request</returns>
         public CopyPartResponse CopyPart(CopyPartRequest request)
         {
-            var response = this.DoRequest<CopyPartRequest, CopyPartResponse>(request, delegate ()
+            var response = DoRequest<CopyPartRequest, CopyPartResponse>(request, delegate ()
             {
                 if (request.ObjectKey == null)
                 {
@@ -150,7 +150,7 @@ namespace OBS
         /// <returns>Response to an object download request</returns>
         public GetObjectResponse GetObject(GetObjectRequest request)
         {
-            var response = this.DoRequest<GetObjectRequest, GetObjectResponse>(request, delegate ()
+            var response = DoRequest<GetObjectRequest, GetObjectResponse>(request, delegate ()
             {
                 if (request.ObjectKey == null)
                 {
@@ -169,7 +169,7 @@ namespace OBS
         /// <returns>Response to a request for obtaining object properties</returns>
         public GetObjectMetadataResponse GetObjectMetadata(GetObjectMetadataRequest request)
         {
-            var response = this.DoRequest<GetObjectMetadataRequest, GetObjectMetadataResponse>(request, delegate ()
+            var response = DoRequest<GetObjectMetadataRequest, GetObjectMetadataResponse>(request, delegate ()
             {
                 if (request.ObjectKey == null)
                 {
@@ -190,7 +190,7 @@ namespace OBS
 
         public InitiateMultipartUploadResponse InitiateMultipartUpload(InitiateMultipartUploadRequest request)
         {
-            return this.DoRequest<InitiateMultipartUploadRequest, InitiateMultipartUploadResponse>(request, delegate ()
+            return DoRequest<InitiateMultipartUploadRequest, InitiateMultipartUploadResponse>(request, delegate ()
             {
                 if (request.ObjectKey == null)
                 {
@@ -212,7 +212,7 @@ namespace OBS
                 BucketName = bucketName,
                 ObjectKey  = objectKey
             };
-            return this.GetObjectMetadata(request);
+            return GetObjectMetadata(request);
         }
 
 
@@ -231,7 +231,7 @@ namespace OBS
                 ObjectKey  = objectKey,
                 VersionId  = versionId
             };
-            return this.GetObjectMetadata(request);
+            return GetObjectMetadata(request);
         }
 
 
@@ -242,7 +242,7 @@ namespace OBS
         /// <returns>Response to the request for combining parts</returns>
         public CompleteMultipartUploadResponse CompleteMultipartUpload(CompleteMultipartUploadRequest request)
         {
-            return this.DoRequest<CompleteMultipartUploadRequest, CompleteMultipartUploadResponse>(request, delegate ()
+            return DoRequest<CompleteMultipartUploadRequest, CompleteMultipartUploadResponse>(request, delegate ()
             {
                 if (request.ObjectKey == null)
                 {
@@ -263,7 +263,7 @@ namespace OBS
         /// <returns>Response to the request for aborting a multipart upload</returns>
         public AbortMultipartUploadResponse AbortMultipartUpload(AbortMultipartUploadRequest request)
         {
-            return this.DoRequest<AbortMultipartUploadRequest, AbortMultipartUploadResponse>(request, delegate ()
+            return DoRequest<AbortMultipartUploadRequest, AbortMultipartUploadResponse>(request, delegate ()
             {
                 if (request.ObjectKey == null)
                 {
@@ -284,7 +284,7 @@ namespace OBS
         /// <returns>Response to a request for listing uploaded parts</returns>
         public ListPartsResponse ListParts(ListPartsRequest request)
         {
-            return this.DoRequest<ListPartsRequest, ListPartsResponse>(request, delegate ()
+            return DoRequest<ListPartsRequest, ListPartsResponse>(request, delegate ()
             {
                 if (request.ObjectKey == null)
                 {
@@ -304,7 +304,7 @@ namespace OBS
         /// <returns>Response to the object deletion request</returns>
         public DeleteObjectResponse DeleteObject(DeleteObjectRequest request)
         {
-            return this.DoRequest<DeleteObjectRequest, DeleteObjectResponse>(request, delegate ()
+            return DoRequest<DeleteObjectRequest, DeleteObjectResponse>(request, delegate ()
             {
                 if (request.ObjectKey == null)
                 {
@@ -321,7 +321,7 @@ namespace OBS
         /// <returns>Response to an object batch deletion request</returns>
         public DeleteObjectsResponse DeleteObjects(DeleteObjectsRequest request)
         {
-            return this.DoRequest<DeleteObjectsRequest, DeleteObjectsResponse>(request);
+            return DoRequest<DeleteObjectsRequest, DeleteObjectsResponse>(request);
         }
 
         /// <summary>
@@ -331,7 +331,7 @@ namespace OBS
         /// <returns>Response to a request for restoring an Archive object</returns>
         public RestoreObjectResponse RestoreObject(RestoreObjectRequest request)
         {
-            return this.DoRequest<RestoreObjectRequest, RestoreObjectResponse>(request, delegate ()
+            return DoRequest<RestoreObjectRequest, RestoreObjectResponse>(request, delegate ()
             {
                 if (request.ObjectKey == null)
                 {
@@ -347,7 +347,7 @@ namespace OBS
         /// <returns>Response to a request for obtaining an object ACL</returns>
         public GetObjectAclResponse GetObjectAcl(GetObjectAclRequest request)
         {
-            return this.DoRequest<GetObjectAclRequest, GetObjectAclResponse>(request, delegate ()
+            return DoRequest<GetObjectAclRequest, GetObjectAclResponse>(request, delegate ()
             {
                 if (request.ObjectKey == null)
                 {
@@ -364,7 +364,7 @@ namespace OBS
         /// <returns>Response to a request for configuring an object ACL</returns>
         public SetObjectAclResponse SetObjectAcl(SetObjectAclRequest request)
         {
-            return this.DoRequest<SetObjectAclRequest, SetObjectAclResponse>(request, delegate ()
+            return DoRequest<SetObjectAclRequest, SetObjectAclResponse>(request, delegate ()
             {
                 if (request.ObjectKey == null)
                 {
@@ -382,7 +382,7 @@ namespace OBS
         {
             try
             {
-                this.DoRequest<HeadObjectRequest, ObsWebServiceResponse>(request);
+                DoRequest<HeadObjectRequest, ObsWebServiceResponse>(request);
                 return true;
             }
             catch (ObsException e)

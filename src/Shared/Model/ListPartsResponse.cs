@@ -96,8 +96,8 @@ namespace OBS.Model
         {
             get {
                 
-                return this.parts ?? (this.parts = new List<PartDetail>()); }
-            internal set { this.parts = value; }
+                return parts ?? (parts = new List<PartDetail>()); }
+            internal set { parts = value; }
         }
 
         /// <summary>

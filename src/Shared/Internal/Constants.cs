@@ -138,7 +138,7 @@ namespace OBS.Internal
         public const string ObsApiHeader = "api";
         public const string ObsApiHeaderWithPrefix = ObsHeaderPrefix + ObsApiHeader;
 
-        public const string SdkUserAgent = "obs-sdk-.net/" + Constants.ObsSdkVersion;
+        public const string SdkUserAgent = "obs-sdk-.net/" + ObsSdkVersion;
 
         public const string NullRequest = "NullRequest";
         public const string NullRequestMessage = "request is null";

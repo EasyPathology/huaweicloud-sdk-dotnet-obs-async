@@ -27,21 +27,21 @@ namespace OBS
 
         internal GetApiVersionResponse GetApiVersionAsync(GetApiVersionRequest request)
         {
-            return this.EndDoRequest<GetApiVersionRequest, GetApiVersionResponse>(this.BeginDoRequest<GetApiVersionRequest>(request, null, null));
+            return EndDoRequest<GetApiVersionRequest, GetApiVersionResponse>(BeginDoRequest<GetApiVersionRequest>(request, null, null));
         }
 
         internal IAsyncResult BeginDoRequest<T>(T request, AsyncCallback callback, object state) where T : ObsWebServiceRequest
         {
-            return this.BeginDoRequest(request, null, callback, state);
+            return BeginDoRequest(request, null, callback, state);
         }
 
         internal IAsyncResult BeginDoRequest<T>(T request, DoValidateDelegate doValidateDelegate,
              AsyncCallback callback, object state) where T : ObsWebServiceRequest
         {
-            var context = this.BeforeRequest(request, doValidateDelegate, true);
+            var context = BeforeRequest(request, doValidateDelegate, true);
             try
             {
-                var result = this.httpClient.BeginPerformRequest(this.PrepareHttpRequest(request, context), context, callback, state);
+                var result = httpClient.BeginPerformRequest(PrepareHttpRequest(request, context), context, callback, state);
                 
                 result.AdditionalState = new object[] { request, context };
                 return result;
@@ -69,7 +69,7 @@ namespace OBS
              where T : ObsWebServiceRequest
             where K : ObsWebServiceResponse
         {
-            return this.EndDoRequest<T, K>(ar, true);
+            return EndDoRequest<T, K>(ar, true);
         }
         internal K EndDoRequest<T, K>(IAsyncResult ar, bool autoClose)
             where T : ObsWebServiceRequest
@@ -93,8 +93,8 @@ namespace OBS
             try
             {
                 
-                var httpResponse = this.httpClient.EndPerformRequest(result);
-                return this.PrepareResponse<T, K>(request, context, result.HttpRequest, httpResponse);
+                var httpResponse = httpClient.EndPerformRequest(result);
+                return PrepareResponse<T, K>(request, context, result.HttpRequest, httpResponse);
             }
             catch (ObsException ex)
             {

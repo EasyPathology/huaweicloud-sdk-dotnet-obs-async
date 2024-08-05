@@ -80,15 +80,15 @@ namespace OBS.Model
         /// Optional parameter
         /// </para>
         /// </remarks>
-        public IDictionary<String, String> FormParameters
+        public IDictionary<string, string> FormParameters
         {
             get {
      
-                return this.parameters ?? (this.parameters = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase));
+                return parameters ?? (parameters = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase));
             }
             set
             {
-                this.parameters = value;
+                parameters = value;
             }
         }
 

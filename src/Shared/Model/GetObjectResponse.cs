@@ -33,26 +33,26 @@ namespace OBS.Model
         {
             var request = req as GetObjectRequest;
 
-            if (request != null && request.DownloadProgress != null && this.OutputStream != null && this.ContentLength > 0)
+            if (request is { DownloadProgress: not null } && OutputStream != null && ContentLength > 0)
             {
-                var stream = new TransferStream(this.OutputStream);
+                var stream = new TransferStream(OutputStream);
 
                 TransferStreamManager mgr;
                 if (request.ProgressType == ProgressTypeEnum.ByBytes)
                 {
                     mgr = new TransferStreamByBytes(request.Sender, request.DownloadProgress,
-                    this.ContentLength, 0, request.ProgressInterval);
+                    ContentLength, 0, request.ProgressInterval);
                 }
                 else
                 {
                     mgr = new ThreadSafeTransferStreamBySeconds(request.Sender, request.DownloadProgress,
-                    this.ContentLength, 0, request.ProgressInterval);
+                    ContentLength, 0, request.ProgressInterval);
                     stream.CloseStream += mgr.TransferEnd;
                 }
                 stream.BytesReaded += mgr.BytesTransfered;
                 stream.StartRead += mgr.TransferStart;
                 stream.BytesReset += mgr.TransferReset;
-                this.OutputStream = stream;
+                OutputStream = stream;
             }
 
         }
@@ -64,15 +64,15 @@ namespace OBS.Model
         {
             get
             {
-                if (this._disposed)
+                if (_disposed)
                 {
                     throw new ObjectDisposedException(GetType().Name);
                 }
-                return this._outputStream;
+                return _outputStream;
             }
             internal set
             {
-                this._outputStream = value;
+                _outputStream = value;
             }
         }
 
@@ -82,7 +82,7 @@ namespace OBS.Model
         /// <param name="filePath">File path</param>
         public void WriteResponseStreamToFile(string filePath)
         {
-            this.WriteResponseStreamToFile(filePath, false);
+            WriteResponseStreamToFile(filePath, false);
         }
 
         /// <summary>
@@ -94,7 +94,7 @@ namespace OBS.Model
         {
             try
             {
-                filePath = System.IO.Path.GetFullPath(filePath);
+                filePath = Path.GetFullPath(filePath);
                 var fi = new FileInfo(filePath);
                 Directory.CreateDirectory(fi.DirectoryName);
 
@@ -108,15 +108,15 @@ namespace OBS.Model
                 long         current        = 0;
                 var          buffer         = new byte[Constants.DefaultBufferSize];
                 var          bytesRead      = 0;
-                while ((bytesRead = this.OutputStream.Read(buffer, 0, buffer.Length)) > 0)
+                while ((bytesRead = OutputStream.Read(buffer, 0, buffer.Length)) > 0)
                 {
                     downloadStream.Write(buffer, 0, bytesRead);
                     current += bytesRead;
 
                 }
-                if (current != this.ContentLength)
+                if (current != ContentLength)
                 {
-                    throw new ObsException(string.Format("The total bytes read {0} from response stream is not equal to the Content-Length {1}", current, this.ContentLength), ErrorType.Receiver, null);
+                    throw new ObsException(string.Format("The total bytes read {0} from response stream is not equal to the Content-Length {1}", current, ContentLength), ErrorType.Receiver, null);
                 }
             }
             catch (ObsException ex)

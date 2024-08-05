@@ -27,11 +27,11 @@ namespace OBS.Model
         {
             get
             {
-                return this.queryLocation;
+                return queryLocation;
             }
             set
             {
-                this.queryLocation = value;
+                queryLocation = value;
             }
         }
 

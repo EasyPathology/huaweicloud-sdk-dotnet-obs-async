@@ -28,7 +28,7 @@ namespace OBS.Internal.Auth
         private const string ServiceKey = "s3";
         private const string RequestKey = "aws4_request";
         internal const string Algorithm = "AWS4-HMAC-SHA256";
-        internal static readonly string ScopeSuffix = string.Format("/{0}/{1}/{2}", RegionKey, ServiceKey, RequestKey);
+        internal static readonly string ScopeSuffix = $"/{RegionKey}/{ServiceKey}/{RequestKey}";
 
 
         private V4Signer()
@@ -43,7 +43,7 @@ namespace OBS.Internal.Auth
 
         protected override void _DoAuth(HttpRequest request, HttpContext context, IHeaders iheaders)
         {
-            IDictionary<string, string> ret = this.GetSignature(request, context, iheaders);
+            IDictionary<string, string> ret = GetSignature(request, context, iheaders);
 
             var auth = new StringBuilder(Algorithm).Append(" ")
                 .Append("Credential=").Append(context.SecurityProvider.Ak).Append("/").Append(ret["ShortDate"])
@@ -230,10 +230,10 @@ namespace OBS.Internal.Auth
                 tempDict.Add(entry.Key.Trim().ToLower(), entry.Value);
             }
 
-            List<string> signedHeadersList = V4Signer.GetSignedHeaderList(tempDict);
-            var signedHeaders = V4Signer.GetSignedHeaders(signedHeadersList);
+            List<string> signedHeadersList = GetSignedHeaderList(tempDict);
+            var signedHeaders = GetSignedHeaders(signedHeadersList);
 
-            IDictionary<string, string> dateDict = V4Signer.GetLongDateAndShortDate(request, iheaders);
+            IDictionary<string, string> dateDict = GetLongDateAndShortDate(request, iheaders);
 
             var signature = GetTemporarySignature(request, context, iheaders, dateDict, signedHeaders, tempDict, signedHeadersList, ContentSha256);
 

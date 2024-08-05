@@ -94,7 +94,7 @@ namespace OBS.Internal
 
         public static void RenameHeaders(HttpRequest request, string headerPrefix, string headerMetaPrefix)
         {
-            IDictionary<String, String> headers = new Dictionary<String, String>(StringComparer.OrdinalIgnoreCase);
+            IDictionary<string, string> headers = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
             foreach (KeyValuePair<string, string> header in request.Headers)
             {
@@ -120,9 +120,9 @@ namespace OBS.Internal
                 {
                     if(key.StartsWith(headerMetaPrefix, StringComparison.OrdinalIgnoreCase))
                     {
-                        key = CommonUtil.UrlEncode(key, true);
+                        key = UrlEncode(key, true);
                     }
-                    headers.Add(key, CommonUtil.UrlEncode(value, true));
+                    headers.Add(key, UrlEncode(value, true));
                 }
             }
 
@@ -147,7 +147,7 @@ namespace OBS.Internal
             dest.Flush();
             if (LoggerMgr.IsInfoEnabled)
             {
-                LoggerMgr.Info(string.Format("Write http request stream end, cost {0} ms", (DateTime.Now.Ticks - reqTime.Ticks) / 10000));
+                LoggerMgr.Info($"Write http request stream end, cost {(DateTime.Now.Ticks - reqTime.Ticks) / 10000} ms");
             }
         }
 
@@ -210,13 +210,13 @@ namespace OBS.Internal
             if (LoggerMgr.IsInfoEnabled)
             {
 
-                LoggerMgr.Info(string.Format("Write http request stream end, cost {0} ms", (DateTime.Now.Ticks - reqTime.Ticks) / 10000));
+                LoggerMgr.Info($"Write http request stream end, cost {(DateTime.Now.Ticks - reqTime.Ticks) / 10000} ms");
             }
 
             return alreadyRead;
         }
 
-        public static string ConvertHeadersToString(IDictionary<String, String> headers)
+        public static string ConvertHeadersToString(IDictionary<string, string> headers)
         {
             var headerString = new StringBuilder();
             headerString.Append("{");
@@ -304,7 +304,7 @@ namespace OBS.Internal
         public static string ConvertParamsToCanonicalQueryString(List<KeyValuePair<string, string>> kvlist)
         {
             var queryString = new StringBuilder();
-            if (kvlist != null && kvlist.Count > 0)
+            if (kvlist is { Count: > 0 })
             {
                 var cnt = kvlist.Count;
                 var index = 0;
@@ -324,7 +324,7 @@ namespace OBS.Internal
         public static string ConvertParamsToString(IDictionary<string, string> parameters)
         {
             var queryString = new StringBuilder();
-            if (parameters != null && parameters.Count > 0)
+            if (parameters is { Count: > 0 })
             {
 
                 var isFirst = true;
@@ -372,10 +372,8 @@ namespace OBS.Internal
                 }
                 return sb.ToString();
             }
-            else
-            {
-                return UrlEncode(uriToEncode, Constants.DefaultEncoding);
-            }
+
+            return UrlEncode(uriToEncode, Constants.DefaultEncoding);
         }
 
         public static string UrlEncode(string uriToEncode)
@@ -444,7 +442,7 @@ namespace OBS.Internal
             {
                 if (LoggerMgr.IsWarnEnabled)
                 {
-                    LoggerMgr.Warn(string.Format("Parse {0} to Int32 failed", value), ex);
+                    LoggerMgr.Warn($"Parse {value} to Int32 failed", ex);
                 }
                 return null;
             }
@@ -460,7 +458,7 @@ namespace OBS.Internal
             {
                 if (LoggerMgr.IsWarnEnabled)
                 {
-                    LoggerMgr.Warn(string.Format("Parse {0} to Int64 failed", value), ex);
+                    LoggerMgr.Warn($"Parse {value} to Int64 failed", ex);
                 }
                 return null;
             }
@@ -482,7 +480,7 @@ namespace OBS.Internal
                 {
                     if (LoggerMgr.IsWarnEnabled)
                     {
-                        LoggerMgr.Warn(string.Format("Parse {0} to DateTime failed", value), ex);
+                        LoggerMgr.Warn($"Parse {value} to DateTime failed", ex);
                     }
                     return null;
                 }

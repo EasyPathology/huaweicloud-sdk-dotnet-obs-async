@@ -59,38 +59,38 @@ namespace OBS
         {
             set
             {
-                this._endpoint = value;
+                _endpoint = value;
 
-                if (string.IsNullOrEmpty(this._endpoint))
+                if (string.IsNullOrEmpty(_endpoint))
                 {
                     throw new ObsException("Endpoint is null", ErrorType.Sender, null);
                 }
 
-                this._endpoint = this._endpoint.Trim();
+                _endpoint = _endpoint.Trim();
 
-                if (!this._endpoint.StartsWith("http://") && !this._endpoint.StartsWith("https://"))
+                if (!_endpoint.StartsWith("http://") && !_endpoint.StartsWith("https://"))
                 {
-                    this._endpoint = "https://" + this._endpoint;
+                    _endpoint = "https://" + _endpoint;
                 }
                 int index;
-                while ((index = this._endpoint.LastIndexOf("/")) == this._endpoint.Length - 1)
+                while ((index = _endpoint.LastIndexOf("/")) == _endpoint.Length - 1)
                 {
-                    this._endpoint = this._endpoint.Substring(0, index);
+                    _endpoint = _endpoint.Substring(0, index);
                 }
 
-                if (CommonUtil.IsIP(this._endpoint))
+                if (CommonUtil.IsIP(_endpoint))
                 {
-                    this.PathStyle = true;
+                    PathStyle = true;
                 }
                 else
                 {
-                    this.PathStyle = false;
+                    PathStyle = false;
                 }
             }
 
             get
             {
-                return this._endpoint;
+                return _endpoint;
             }
         }
 

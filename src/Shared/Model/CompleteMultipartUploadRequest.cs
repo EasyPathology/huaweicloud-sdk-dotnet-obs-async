@@ -55,9 +55,9 @@ namespace OBS.Model
         {
             get
             {
-                return this.partETags ?? (this.partETags = new List<PartETag>());
+                return partETags ?? (partETags = new List<PartETag>());
             }
-            set { this.partETags = value; }
+            set { partETags = value; }
         }
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace OBS.Model
         {
             foreach (var part in partETags)
             {
-                this.PartETags.Add(part);
+                PartETags.Add(part);
             }
         }
 
@@ -80,7 +80,7 @@ namespace OBS.Model
         {
             foreach (var part in partETags)
             {
-                this.PartETags.Add(part);
+                PartETags.Add(part);
             }
         }
 
@@ -92,7 +92,7 @@ namespace OBS.Model
         {
             foreach (var response in responses)
             {
-                this.PartETags.Add(new  PartETag(response.PartNumber, response.ETag));
+                PartETags.Add(new  PartETag(response.PartNumber, response.ETag));
             }
         }
 
@@ -104,7 +104,7 @@ namespace OBS.Model
         {
             foreach (var response in responses)
             {
-                this.PartETags.Add(new PartETag(response.PartNumber, response.ETag));
+                PartETags.Add(new PartETag(response.PartNumber, response.ETag));
             }
         }
 
@@ -116,7 +116,7 @@ namespace OBS.Model
         {
             foreach (var response in responses)
             {
-                this.PartETags.Add(new PartETag(response.PartNumber, response.ETag));
+                PartETags.Add(new PartETag(response.PartNumber, response.ETag));
             }
         }
 
@@ -128,7 +128,7 @@ namespace OBS.Model
         {
             foreach (var response in responses)
             {
-                this.PartETags.Add(new PartETag(response.PartNumber, response.ETag));
+                PartETags.Add(new PartETag(response.PartNumber, response.ETag));
             }
         }
 

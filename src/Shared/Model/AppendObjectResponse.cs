@@ -42,7 +42,7 @@ namespace OBS.Model
             }
             internal set
             {
-                this._nextPosition = value;
+                _nextPosition = value;
             }
         }
 

@@ -11,6 +11,7 @@
 // CONDITIONS OF ANY KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations under the License.
 //----------------------------------------------------------------------------------*/
+
 using OBS.Internal.Auth;
 using System;
 using System.Collections.Generic;
@@ -20,53 +21,26 @@ namespace OBS.Internal
 {
     internal class HttpContext
     {
-
         private readonly IList<HttpResponseHandler> _handlers = new List<HttpResponseHandler>();
+
         public HttpContext(SecurityProvider sp, ObsConfig obsConfig)
         {
-            this.SecurityProvider = sp;
-            this.ObsConfig = obsConfig;
+            SecurityProvider = sp;
+            ObsConfig        = obsConfig;
         }
 
-        public string RedirectLocation
-        {
-            get;
-            set;
-        }
+        public string RedirectLocation { get; set; }
 
-        public ObsConfig ObsConfig
-        {
-            get;
-            set;
-        }
+        public ObsConfig ObsConfig { get; set; }
 
-        public SecurityProvider SecurityProvider
-        {
-            get;
-            set;
-        }
+        public SecurityProvider SecurityProvider { get; set; }
 
-        public bool SkipAuth
-        {
-            get;
-            set;
-        }
+        public bool SkipAuth { get; set; }
 
-        public AuthTypeEnum? AuthType
-        {
-            get;
-            set;
-        }
+        public AuthTypeEnum? AuthType { get; set; }
 
-        public IList<HttpResponseHandler> Handlers
-        {
-            get { return _handlers; }
-        }
+        public IList<HttpResponseHandler> Handlers => _handlers;
 
-        public AuthTypeEnum ChooseAuthType
-        {
-            get { return this.AuthType.HasValue ? this.AuthType.Value : this.ObsConfig.AuthType; }
-        }
-
+        public AuthTypeEnum ChooseAuthType => AuthType ?? ObsConfig.AuthType;
     }
 }

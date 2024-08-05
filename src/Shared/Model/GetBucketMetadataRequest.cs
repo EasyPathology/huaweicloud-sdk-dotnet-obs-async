@@ -48,8 +48,8 @@ namespace OBS.Model
         /// </remarks>
         public IList<string> AccessControlRequestHeaders
         {
-            get { return this.accessControlRequestHeaders ?? (this.accessControlRequestHeaders = new List<string>()); }
-            set { this.accessControlRequestHeaders = value; }
+            get { return accessControlRequestHeaders ?? (accessControlRequestHeaders = new List<string>()); }
+            set { accessControlRequestHeaders = value; }
         }
 
         internal override string GetAction()

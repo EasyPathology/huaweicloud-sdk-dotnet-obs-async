@@ -34,9 +34,9 @@ namespace OBS.Model
         { 
             get
             {
-                return this._events ?? (this._events = new List<EventTypeEnum>());
+                return _events ?? (_events = new List<EventTypeEnum>());
             }
-            set { this._events = value; } 
+            set { _events = value; } 
         }
         
        
@@ -45,9 +45,9 @@ namespace OBS.Model
         {
             get
             {
-                return this._filterRules ?? (this._filterRules = new List<FilterRule>());
+                return _filterRules ?? (_filterRules = new List<FilterRule>());
             }
-            set { this._filterRules = value; }
+            set { _filterRules = value; }
         }
     }
 }

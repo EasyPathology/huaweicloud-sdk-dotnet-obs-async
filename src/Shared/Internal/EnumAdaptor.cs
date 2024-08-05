@@ -363,11 +363,11 @@ namespace OBS.Internal
 
         public StringValueAttribute(string value)
         {
-            this._value = value;
+            _value = value;
         }
         public string StringValue
         {
-            get { return this._value; }
+            get { return _value; }
         }
     }
 

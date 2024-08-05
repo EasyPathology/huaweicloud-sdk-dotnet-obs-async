@@ -35,8 +35,8 @@ namespace OBS.Model
         {
             get {
                 
-                return this.rules ?? (this.rules = new List<CorsRule>()); }
-            set { this.rules = value; }
+                return rules ?? (rules = new List<CorsRule>()); }
+            set { rules = value; }
         }
 
     }

@@ -28,7 +28,7 @@ namespace OBS.Internal
         public ThreadSafeTransferStreamByBytes(object sender, EventHandler<TransferStatus> handler, long totalBytes,
             long transferredBytes, double intervalByBytes) : base(sender, handler, totalBytes, transferredBytes)
         {
-            this.interval = intervalByBytes;
+            interval = intervalByBytes;
         }
 
         public override void TransferStart()
@@ -60,12 +60,12 @@ namespace OBS.Internal
             Interlocked.Add(ref transferredBytes, bytes);
             Interlocked.Add(ref newlyTransferredBytes, bytes);
             var now = DateTime.Now;
-            IList<BytesUnit> currentInstantaneousBytes = this.CreateCurrentInstantaneousBytes(bytes, now);
-            this.lastInstantaneousBytes = currentInstantaneousBytes;
+            IList<BytesUnit> currentInstantaneousBytes = CreateCurrentInstantaneousBytes(bytes, now);
+            lastInstantaneousBytes = currentInstantaneousBytes;
 
             var _newlyTransferredBytes = Interlocked.Read(ref newlyTransferredBytes);
             var _transferredBytes = Interlocked.Read(ref transferredBytes);
-            if (_newlyTransferredBytes >= this.interval && (_transferredBytes < totalBytes || totalBytes == -1))
+            if (_newlyTransferredBytes >= interval && (_transferredBytes < totalBytes || totalBytes == -1))
             {
                 if (Interlocked.CompareExchange(ref newlyTransferredBytes, 0, _newlyTransferredBytes) == _newlyTransferredBytes)
                 {
@@ -95,7 +95,7 @@ namespace OBS.Internal
         {
             var now = DateTime.Now;
             var _transferredBytes = Interlocked.Read(ref transferredBytes);
-            if (_transferredBytes < this.totalBytes)
+            if (_transferredBytes < totalBytes)
             {
                 var _newlyTransferredBytes = Interlocked.Read(ref newlyTransferredBytes);
                 var status = new TransferStatus(_newlyTransferredBytes,
@@ -116,7 +116,7 @@ namespace OBS.Internal
                     flag = true;
                     startCheckpoint = DateTime.Now;
                     lastCheckpoint = DateTime.Now;
-                    timer = new Timer(this.DoRecord, null, 0, Convert.ToInt32(this.interval * 1000));
+                    timer = new Timer(DoRecord, null, 0, Convert.ToInt32(interval * 1000));
                 }
             }
         }

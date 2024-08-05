@@ -50,11 +50,11 @@ namespace OBS
         {
             get
             {
-                return this.authTypeNegotiation;
+                return authTypeNegotiation;
             }
             set
             {
-                this.authTypeNegotiation = value;
+                authTypeNegotiation = value;
             }
         }
 
@@ -63,8 +63,8 @@ namespace OBS
         /// </summary>
         public AuthTypeEnum AuthType
         {
-            get { return this.authType; }
-            set { this.authType = value; }
+            get { return authType; }
+            set { authType = value; }
         }
 
         /// <summary>
@@ -72,8 +72,8 @@ namespace OBS
         /// </summary>
         public int MaxErrorRetry
         {
-            get { return this.maxErrorRetry; }
-            set { this.maxErrorRetry = value < 0 ? 0 : value; }
+            get { return maxErrorRetry; }
+            set { maxErrorRetry = value < 0 ? 0 : value; }
         }
 
         /// <summary>
@@ -81,8 +81,8 @@ namespace OBS
         /// </summary>
         public int ReceiveBufferSize
         {
-            get { return this.receiveBufferSize; }
-            set { this.receiveBufferSize = value <= 0 ? Constants.DefaultBufferSize : value; }
+            get { return receiveBufferSize; }
+            set { receiveBufferSize = value <= 0 ? Constants.DefaultBufferSize : value; }
         }
 
         /// <summary>
@@ -90,8 +90,8 @@ namespace OBS
         /// </summary>
         public int BufferSize
         {
-            get { return this.bufferSize; }
-            set { this.bufferSize = value <= 0 ? Constants.DefaultBufferSize : value; }
+            get { return bufferSize; }
+            set { bufferSize = value <= 0 ? Constants.DefaultBufferSize : value; }
         }
 
         /// <summary>
@@ -109,10 +109,10 @@ namespace OBS
         /// </summary>
         public int Timeout
         {
-            get { return this.connectTimeout; }
+            get { return connectTimeout; }
             set
             {
-                this.connectTimeout = value <= 0 ? Constants.DefaultConnectTimeout : value;
+                connectTimeout = value <= 0 ? Constants.DefaultConnectTimeout : value;
             }
         }
 
@@ -121,10 +121,10 @@ namespace OBS
         /// </summary>
         public int AsyncSocketTimeout
         {
-            get { return this.asyncSocketTimeout; }
+            get { return asyncSocketTimeout; }
             set
             {
-                this.asyncSocketTimeout = value <= 0 ? Constants.DefaultAsyncSocketTimeout : value;
+                asyncSocketTimeout = value <= 0 ? Constants.DefaultAsyncSocketTimeout : value;
             }
         }
 
@@ -135,11 +135,11 @@ namespace OBS
         {
             get
             {
-                return this.keepAlive;
+                return keepAlive;
             }
             set
             {
-                this.keepAlive = value;
+                keepAlive = value;
             }
         }
 
@@ -196,17 +196,17 @@ namespace OBS
         /// </summary>
         public int MaxIdleTime
         {
-            get { return this.maxIdleTime; }
+            get { return maxIdleTime; }
             set
             {
                 if (value <= 0)
                 {
-                    this.maxIdleTime = Constants.DefaultMaxIdleTime;
+                    maxIdleTime = Constants.DefaultMaxIdleTime;
                 }
                 else
                 {
 
-                    this.maxIdleTime = value;
+                    maxIdleTime = value;
                 }
             }
         }
@@ -217,10 +217,10 @@ namespace OBS
         /// </summary>
         public int ConnectionLimit
         {
-            get { return this.connectionLimit; }
+            get { return connectionLimit; }
             set
             {
-                this.connectionLimit = value <= 0 ? Constants.DefaultConnectionLimit : value;
+                connectionLimit = value <= 0 ? Constants.DefaultConnectionLimit : value;
             }
         }
 
@@ -231,10 +231,10 @@ namespace OBS
         /// </summary>
         public int ReadWriteTimeout
         {
-            get { return this.readWriteTimeout; }
+            get { return readWriteTimeout; }
             set
             {
-                this.readWriteTimeout = value <= 0 ? Constants.DefaultReadWriteTimeout : value;
+                readWriteTimeout = value <= 0 ? Constants.DefaultReadWriteTimeout : value;
             }
         }
 

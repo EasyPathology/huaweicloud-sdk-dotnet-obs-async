@@ -27,7 +27,7 @@ namespace OBS
         /// <returns>Response to the request for obtaining the bucket list</returns>
         public ListBucketsResponse ListBuckets(ListBucketsRequest request)
         {
-            return this.DoRequest<ListBucketsRequest, ListBucketsResponse>(request);
+            return DoRequest<ListBucketsRequest, ListBucketsResponse>(request);
         }
 
         /// <summary>
@@ -41,7 +41,7 @@ namespace OBS
         /// <returns>Response to the bucket creation request</returns>
         public CreateBucketResponse CreateBucket(CreateBucketRequest request)
         {
-            return this.DoRequest<CreateBucketRequest, CreateBucketResponse>(request);
+            return DoRequest<CreateBucketRequest, CreateBucketResponse>(request);
         }
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace OBS
         {
             try
             {
-                this.DoRequest<HeadBucketRequest, ObsWebServiceResponse>(request);
+                DoRequest<HeadBucketRequest, ObsWebServiceResponse>(request);
                 return true;
             }catch(ObsException e)
             {
@@ -132,7 +132,7 @@ namespace OBS
         /// <returns>Response to a request for listing versioning objects in a bucket</returns>
         public ListVersionsResponse ListVersions(ListVersionsRequest request)
         {
-            return this.DoRequest<ListVersionsRequest, ListVersionsResponse>(request);
+            return DoRequest<ListVersionsRequest, ListVersionsResponse>(request);
         }
 
         /// <summary>
@@ -174,7 +174,7 @@ namespace OBS
         /// <returns> Response to a request for listing multipart uploads</returns>
         public ListMultipartUploadsResponse ListMultipartUploads(ListMultipartUploadsRequest request)
         {
-            return this.DoRequest<ListMultipartUploadsRequest, ListMultipartUploadsResponse>(request);
+            return DoRequest<ListMultipartUploadsRequest, ListMultipartUploadsResponse>(request);
         }
 
         /// <summary>
@@ -184,7 +184,7 @@ namespace OBS
         /// <returns>Response to the bucket deletion request</returns>
         public DeleteBucketResponse DeleteBucket(DeleteBucketRequest request)
         {
-            return this.DoRequest<DeleteBucketRequest, DeleteBucketResponse>(request);
+            return DoRequest<DeleteBucketRequest, DeleteBucketResponse>(request);
         }
 
 
@@ -195,7 +195,7 @@ namespace OBS
         /// <returns>Response to a request for configuring bucket logging</returns>
         public SetBucketLoggingResponse SetBucketLogging(SetBucketLoggingRequest request)
         {
-            return this.DoRequest<SetBucketLoggingRequest, SetBucketLoggingResponse>(request);
+            return DoRequest<SetBucketLoggingRequest, SetBucketLoggingResponse>(request);
         }
 
         /// <summary>
@@ -205,7 +205,7 @@ namespace OBS
         /// <returns>Response to a request for obtaining bucket logging configuration</returns>
         public GetBucketLoggingResponse GetBucketLogging(GetBucketLoggingRequest request)
         {
-            return this.DoRequest<GetBucketLoggingRequest, GetBucketLoggingResponse>(request);
+            return DoRequest<GetBucketLoggingRequest, GetBucketLoggingResponse>(request);
         }
 
 
@@ -216,7 +216,7 @@ namespace OBS
         /// <returns>Response to a request for setting bucket policies</returns>
         public SetBucketPolicyResponse SetBucketPolicy(SetBucketPolicyRequest request)
         {
-            return this.DoRequest<SetBucketPolicyRequest, SetBucketPolicyResponse>(request);
+            return DoRequest<SetBucketPolicyRequest, SetBucketPolicyResponse>(request);
         }
 
         /// <summary>
@@ -226,7 +226,7 @@ namespace OBS
         /// <returns>Response to the request for obtaining bucket policies</returns>
         public GetBucketPolicyResponse GetBucketPolicy(GetBucketPolicyRequest request)
         {
-            return this.DoRequest<GetBucketPolicyRequest, GetBucketPolicyResponse>(request);
+            return DoRequest<GetBucketPolicyRequest, GetBucketPolicyResponse>(request);
         }
 
         /// <summary>
@@ -236,7 +236,7 @@ namespace OBS
         /// <returns>Response to a request for deleting bucket policies</returns>
         public DeleteBucketPolicyResponse DeleteBucketPolicy(DeleteBucketPolicyRequest request)
         {
-            return this.DoRequest<DeleteBucketPolicyRequest, DeleteBucketPolicyResponse>(request);
+            return DoRequest<DeleteBucketPolicyRequest, DeleteBucketPolicyResponse>(request);
         }
 
 
@@ -248,7 +248,7 @@ namespace OBS
         /// <returns>Response to a request for setting CORS rules for a bucket</returns>
         public SetBucketCorsResponse SetBucketCors(SetBucketCorsRequest request)
         {
-            return this.DoRequest<SetBucketCorsRequest, SetBucketCorsResponse>(request);
+            return DoRequest<SetBucketCorsRequest, SetBucketCorsResponse>(request);
         }
 
 
@@ -259,7 +259,7 @@ namespace OBS
         /// <returns>Response to a request for obtaining the CORS rules of a bucket</returns>
         public GetBucketCorsResponse GetBucketCors(GetBucketCorsRequest request)
         {
-            return this.DoRequest<GetBucketCorsRequest, GetBucketCorsResponse>(request);
+            return DoRequest<GetBucketCorsRequest, GetBucketCorsResponse>(request);
         }
 
 
@@ -271,7 +271,7 @@ namespace OBS
         /// <returns>Response to a request for deleting the CORS rules from a specified bucket</returns>
         public DeleteBucketCorsResponse DeleteBucketCors(DeleteBucketCorsRequest request)
         {
-            return this.DoRequest<DeleteBucketCorsRequest, DeleteBucketCorsResponse>(request);
+            return DoRequest<DeleteBucketCorsRequest, DeleteBucketCorsResponse>(request);
         }
 
 
@@ -283,7 +283,7 @@ namespace OBS
         /// <returns>Response to a request for obtaining bucket lifecycle rules</returns>
         public GetBucketLifecycleResponse GetBucketLifecycle(GetBucketLifecycleRequest request)
         {
-            return this.DoRequest<GetBucketLifecycleRequest, GetBucketLifecycleResponse>(request);
+            return DoRequest<GetBucketLifecycleRequest, GetBucketLifecycleResponse>(request);
         }
 
 
@@ -295,7 +295,7 @@ namespace OBS
         /// <returns>Response to a request for setting lifecycle rules for a bucket</returns>
         public SetBucketLifecycleResponse SetBucketLifecycle(SetBucketLifecycleRequest request)
         {
-            return this.DoRequest<SetBucketLifecycleRequest, SetBucketLifecycleResponse>(request);
+            return DoRequest<SetBucketLifecycleRequest, SetBucketLifecycleResponse>(request);
         }
 
 
@@ -307,7 +307,7 @@ namespace OBS
         /// <returns>Response to a request for deleting the bucket lifecycle rules from a bucket</returns>
         public DeleteBucketLifecycleResponse DeleteBucketLifecycle(DeleteBucketLifecycleRequest request)
         {
-            return this.DoRequest<DeleteBucketLifecycleRequest, DeleteBucketLifecycleResponse>(request);
+            return DoRequest<DeleteBucketLifecycleRequest, DeleteBucketLifecycleResponse>(request);
         }
 
 
@@ -318,7 +318,7 @@ namespace OBS
         /// <returns>Response to a request for obtaining the bucket website hosting configuration</returns>
         public GetBucketWebsiteResponse GetBucketWebsite(GetBucketWebsiteRequest request)
         {
-            return this.DoRequest<GetBucketWebsiteRequest, GetBucketWebsiteResponse>(request);
+            return DoRequest<GetBucketWebsiteRequest, GetBucketWebsiteResponse>(request);
         }
 
 
@@ -329,7 +329,7 @@ namespace OBS
         /// <returns>Response to a request for configuring website hosting for a bucket</returns>
         public SetBucketWebsiteResponse SetBucketWebsiteConfiguration(SetBucketWebsiteRequest request)
         {
-            return this.DoRequest<SetBucketWebsiteRequest, SetBucketWebsiteResponse>(request);
+            return DoRequest<SetBucketWebsiteRequest, SetBucketWebsiteResponse>(request);
         }
 
 
@@ -341,7 +341,7 @@ namespace OBS
         /// <returns>Response to a request for deleting the website hosting configuration from a bucket</returns>
         public DeleteBucketWebsiteResponse DeleteBucketWebsite(DeleteBucketWebsiteRequest request)
         {
-            return this.DoRequest<DeleteBucketWebsiteRequest, DeleteBucketWebsiteResponse>(request);
+            return DoRequest<DeleteBucketWebsiteRequest, DeleteBucketWebsiteResponse>(request);
         }
 
         /// <summary>
@@ -351,7 +351,7 @@ namespace OBS
         /// <returns>Response to a request for setting bucket versioning</returns>
         public SetBucketVersioningResponse SetBucketVersioning(SetBucketVersioningRequest request)
         {
-            return this.DoRequest<SetBucketVersioningRequest, SetBucketVersioningResponse>(request);
+            return DoRequest<SetBucketVersioningRequest, SetBucketVersioningResponse>(request);
         }
 
 
@@ -363,7 +363,7 @@ namespace OBS
         /// <returns>Response to a request for obtaining the versioning status of a bucket</returns>
         public GetBucketVersioningResponse GetBucketVersioning(GetBucketVersioningRequest request)
         {
-            return this.DoRequest<GetBucketVersioningRequest, GetBucketVersioningResponse>(request);
+            return DoRequest<GetBucketVersioningRequest, GetBucketVersioningResponse>(request);
         }
 
         /// <summary>
@@ -373,7 +373,7 @@ namespace OBS
         /// <returns>Response to a request for setting bucket tags</returns>
         public SetBucketTaggingResponse SetBucketTagging(SetBucketTaggingRequest request)
         {
-            return this.DoRequest<SetBucketTaggingRequest, SetBucketTaggingResponse>(request);
+            return DoRequest<SetBucketTaggingRequest, SetBucketTaggingResponse>(request);
         }
 
         /// <summary>
@@ -383,7 +383,7 @@ namespace OBS
         /// <returns> Response to a request for obtaining bucket tags</returns>
         public GetBucketTaggingResponse GetBucketTagging(GetBucketTaggingRequest request)
         {
-            return this.DoRequest<GetBucketTaggingRequest, GetBucketTaggingResponse>(request);
+            return DoRequest<GetBucketTaggingRequest, GetBucketTaggingResponse>(request);
         }
 
 
@@ -395,7 +395,7 @@ namespace OBS
         /// <returns>Response to a bucket tag deletion request</returns>
         public DeleteBucketTaggingResponse DeleteBucketTagging(DeleteBucketTaggingRequest request)
         {
-            return this.DoRequest<DeleteBucketTaggingRequest, DeleteBucketTaggingResponse>(request);
+            return DoRequest<DeleteBucketTaggingRequest, DeleteBucketTaggingResponse>(request);
         }
 
 
@@ -406,7 +406,7 @@ namespace OBS
         /// <returns>Response to a request for configuring cross-region replication of a bucket</returns>
         public SetBucketReplicationResponse SetBucketReplication(SetBucketReplicationRequest request)
         {
-            return this.DoRequest<SetBucketReplicationRequest, SetBucketReplicationResponse>(request);
+            return DoRequest<SetBucketReplicationRequest, SetBucketReplicationResponse>(request);
         }
 
         /// <summary>
@@ -416,7 +416,7 @@ namespace OBS
         /// <returns>Response to a request for obtaining the cross-region replication configuration of a bucket</returns>
         public GetBucketReplicationResponse GetBucketReplication(GetBucketReplicationRequest request)
         {
-            return this.DoRequest<GetBucketReplicationRequest, GetBucketReplicationResponse>(request);
+            return DoRequest<GetBucketReplicationRequest, GetBucketReplicationResponse>(request);
         }
 
 
@@ -428,7 +428,7 @@ namespace OBS
         /// <returns>Response to a request for deleting the cross-region replication configuration from a bucket</returns>
         public DeleteBucketReplicationResponse DeleteBucketReplication(DeleteBucketReplicationRequest request)
         {
-            return this.DoRequest<DeleteBucketReplicationRequest, DeleteBucketReplicationResponse>(request);
+            return DoRequest<DeleteBucketReplicationRequest, DeleteBucketReplicationResponse>(request);
         }
 
 
@@ -439,7 +439,7 @@ namespace OBS
         /// <returns>Response to a request for configuring bucket notification</returns>
         public SetBucketNotificationResponse SetBucketNotification(SetBucketNotificationRequest request)
         {
-            return this.DoRequest<SetBucketNotificationRequest, SetBucketNotificationResponse>(request);
+            return DoRequest<SetBucketNotificationRequest, SetBucketNotificationResponse>(request);
         }
 
         /// <summary>
@@ -449,7 +449,7 @@ namespace OBS
         /// <returns>Response to a request for obtaining the bucket notification configuration</returns>
         public GetBucketNotificationReponse GetBucketNotification(GetBucketNotificationRequest request)
         {
-            return this.DoRequest<GetBucketNotificationRequest, GetBucketNotificationReponse>(request);
+            return DoRequest<GetBucketNotificationRequest, GetBucketNotificationReponse>(request);
         }
 
         /// <summary>

@@ -58,11 +58,11 @@ namespace OBS.Model
         {
             get
             {
-                return this._metric <= 0 ? (ProgressType == ProgressTypeEnum.ByBytes ? Constants.DefaultProgressUpdateInterval : 1) : this._metric;
+                return _metric <= 0 ? (ProgressType == ProgressTypeEnum.ByBytes ? Constants.DefaultProgressUpdateInterval : 1) : _metric;
             }
             set
             {
-                this._metric = value;
+                _metric = value;
             }
         }
 
@@ -71,11 +71,11 @@ namespace OBS.Model
         {
             get
             {
-                return this.ProgressInterval;
+                return ProgressInterval;
             }
             set
             {
-                this.ProgressInterval = value;
+                ProgressInterval = value;
             }
         }
 
@@ -105,11 +105,11 @@ namespace OBS.Model
         {
             set
             {
-                this._autoClose = value;
+                _autoClose = value;
             }
             get
             {
-                return this._autoClose;
+                return _autoClose;
             }
         }
 
@@ -121,7 +121,7 @@ namespace OBS.Model
         /// Optional parameter, which cannot be used with "FilePath".
         /// </para>
         /// </remarks>
-        public Stream InputStream
+        public Stream? InputStream
         {
             get;
             set;

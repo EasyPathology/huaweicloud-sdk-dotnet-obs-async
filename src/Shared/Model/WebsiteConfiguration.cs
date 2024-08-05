@@ -77,8 +77,8 @@ namespace OBS.Model
         {
             get {
                 
-                return this.routingRules ?? (this.routingRules = new List<RoutingRule>()); }
-            set { this.routingRules = value; }
+                return routingRules ?? (routingRules = new List<RoutingRule>()); }
+            set { routingRules = value; }
         }
 
     }

@@ -44,8 +44,8 @@ namespace OBS.Model
         /// <param name="objectKey">Object name</param>
         public DownloadFileRequest(string bucketName, string objectKey)
         {
-            this.BucketName = bucketName;
-            this.ObjectKey = objectKey;
+            BucketName = bucketName;
+            ObjectKey = objectKey;
         }
 
         /// <summary>
@@ -57,7 +57,7 @@ namespace OBS.Model
         public DownloadFileRequest(string bucketName, string objectKey, string downloadFile)
             : this(bucketName, objectKey)
         {
-            this.DownloadFile = downloadFile;
+            DownloadFile = downloadFile;
         }
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace OBS.Model
         public DownloadFileRequest(string bucketName, string objectKey, string downloadFile, long partSize)
             :this(bucketName, objectKey)
         {
-            this.DownloadFile = downloadFile;
+            DownloadFile = downloadFile;
             this.partSize = partSize;
         }
 
@@ -103,9 +103,9 @@ namespace OBS.Model
             : this(bucketName, objectKey)
         {
             this.partSize = partSize;
-            this.DownloadFile = downloadFile;
-            this.EnableCheckpoint = enableCheckpoint;
-            this.CheckpointFile = checkpointFile;
+            DownloadFile = downloadFile;
+            EnableCheckpoint = enableCheckpoint;
+            CheckpointFile = checkpointFile;
             this.taskNum = taskNum;
         }
 
@@ -124,10 +124,10 @@ namespace OBS.Model
             : this(bucketName, objectKey)
         {
             this.partSize = partSize;
-            this.DownloadFile = downloadFile;
-            this.EnableCheckpoint = enableCheckpoint;
-            this.CheckpointFile = checkpointFile;
-            this.VersionId = versionId;
+            DownloadFile = downloadFile;
+            EnableCheckpoint = enableCheckpoint;
+            CheckpointFile = checkpointFile;
+            VersionId = versionId;
         }
 
 
@@ -156,13 +156,13 @@ namespace OBS.Model
         /// </remarks>
         public int TaskNum
         {
-            get { return this.taskNum; }
+            get { return taskNum; }
             set
             {
                 if (value < 1)
-                    this.taskNum = 1;
+                    taskNum = 1;
                 else
-                    this.taskNum = value;
+                    taskNum = value;
             }
         }
 
@@ -176,15 +176,15 @@ namespace OBS.Model
         /// </remarks>
         public long DownloadPartSize
         {
-            get { return this.partSize; }
+            get { return partSize; }
             set
             {
                 if (value < 100 * 1024L)
-                    this.partSize = 100 * 1024L;
+                    partSize = 100 * 1024L;
                 else if (value > 5 * 1024 * 1024 * 1024L)
-                    this.partSize = 5 * 1024 * 1024 * 1024L;
+                    partSize = 5 * 1024 * 1024 * 1024L;
                 else
-                    this.partSize = value;
+                    partSize = value;
             }
         }
 
@@ -201,11 +201,11 @@ namespace OBS.Model
         {
             get
             {
-                return this.DownloadPartSize;
+                return DownloadPartSize;
             }
             set
             {
-                this.DownloadPartSize = value;
+                DownloadPartSize = value;
             }
         }
 

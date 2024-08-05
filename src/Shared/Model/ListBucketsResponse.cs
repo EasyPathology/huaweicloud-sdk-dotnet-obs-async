@@ -29,8 +29,8 @@ namespace OBS.Model
         {
             get {
                 
-                return this.buckets ?? (this.buckets = new List<ObsBucket>()); }
-            internal set { this.buckets = value; }
+                return buckets ?? (buckets = new List<ObsBucket>()); }
+            internal set { buckets = value; }
         }
 
         /// <summary>

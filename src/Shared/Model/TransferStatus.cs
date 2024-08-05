@@ -33,16 +33,16 @@ namespace OBS.Model
         internal TransferStatus(long newlyTransferredBytes, long transferredBytes, long totalBytes,
             double intervalSeconds, double totalSeconds)
         {
-            this._newlyTransferredBytes = newlyTransferredBytes;
-            this._transferredBytes = transferredBytes;
-            this._totalBytes = totalBytes;
-            this._intervalSeconds = intervalSeconds;
-            this._totalSeconds = totalSeconds;
+            _newlyTransferredBytes = newlyTransferredBytes;
+            _transferredBytes = transferredBytes;
+            _totalBytes = totalBytes;
+            _intervalSeconds = intervalSeconds;
+            _totalSeconds = totalSeconds;
         }
 
         internal void SetInstantaneousBytes(IList<BytesUnit> instantaneousBytes)
         {
-            this._instantaneousBytes = instantaneousBytes;
+            _instantaneousBytes = instantaneousBytes;
         }
 
         /// <summary>
@@ -51,16 +51,16 @@ namespace OBS.Model
         public double InstantaneousSpeed
         {
             get {
-                if(this._instantaneousBytes != null)
+                if(_instantaneousBytes != null)
                 {
                     long instantaneousSpeed = 0;
-                    foreach (var item in this._instantaneousBytes)
+                    foreach (var item in _instantaneousBytes)
                     {
                         instantaneousSpeed += item.Bytes;
                     }
                     return instantaneousSpeed;
                 }
-                return this._newlyTransferredBytes / this._intervalSeconds;
+                return _newlyTransferredBytes / _intervalSeconds;
             }
         }
 
@@ -69,7 +69,7 @@ namespace OBS.Model
         /// </summary>
         public double AverageSpeed
         {
-           get { return this._transferredBytes / this._totalSeconds; }
+           get { return _transferredBytes / _totalSeconds; }
         }
 
         /// <summary>
@@ -78,14 +78,15 @@ namespace OBS.Model
         public int TransferPercentage
         {
             get {
-                if(this._totalBytes < 0)
+                if(_totalBytes < 0)
                 {
                     return -1;
-                }else if(this._totalBytes == 0)
+                }
+                if(_totalBytes == 0)
                 {
                     return 100;
                 }
-                return (int)((this._transferredBytes * 100) / this._totalBytes);
+                return (int)((_transferredBytes * 100) / _totalBytes);
             }
         }
 
@@ -94,7 +95,7 @@ namespace OBS.Model
         /// </summary>
         public long NewlyTransferredBytes
         {
-            get { return this._newlyTransferredBytes; }
+            get { return _newlyTransferredBytes; }
         }
 
         /// <summary>
@@ -102,7 +103,7 @@ namespace OBS.Model
         /// </summary>
         public long TransferredBytes
         {
-            get { return this._transferredBytes; }
+            get { return _transferredBytes; }
         }
 
         /// <summary>
@@ -110,7 +111,7 @@ namespace OBS.Model
         /// </summary>
         public long TotalBytes
         {
-            get { return this._totalBytes; }
+            get { return _totalBytes; }
         }
 
     }

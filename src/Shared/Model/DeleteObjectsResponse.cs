@@ -30,9 +30,9 @@ namespace OBS.Model
         {
             get {
                
-                return this.deleted ?? (this.deleted = new List<DeletedObject>());
+                return deleted ?? (deleted = new List<DeletedObject>());
             }
-            internal set { this.deleted = value; }
+            internal set { deleted = value; }
         }
 
         /// <summary>
@@ -42,9 +42,9 @@ namespace OBS.Model
         {
             get {
                
-                return this.errors ?? (this.errors = new List<DeleteError>());
+                return errors ?? (errors = new List<DeleteError>());
             }
-            internal set { this.errors = value; }
+            internal set { errors = value; }
         }
 
     }

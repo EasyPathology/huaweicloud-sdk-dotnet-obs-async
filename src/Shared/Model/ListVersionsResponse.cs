@@ -82,8 +82,8 @@ namespace OBS.Model
         {
             get {
                
-                return this.versions ?? (this.versions = new List<ObsObjectVersion>()); }
-            internal set { this.versions = value; }
+                return versions ?? (versions = new List<ObsObjectVersion>()); }
+            internal set { versions = value; }
         }
 
 
@@ -121,8 +121,8 @@ namespace OBS.Model
         {
             get {
                 
-                return this.commonPrefixes ?? (this.commonPrefixes = new List<string>()); }
-            internal set { this.commonPrefixes = value; }
+                return commonPrefixes ?? (commonPrefixes = new List<string>()); }
+            internal set { commonPrefixes = value; }
         }
 
         /// <summary>

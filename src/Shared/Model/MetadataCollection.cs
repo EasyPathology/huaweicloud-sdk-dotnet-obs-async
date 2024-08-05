@@ -63,7 +63,7 @@ namespace OBS.Model
         /// </summary>
         public int Count
         {
-            get { return this.values.Count; }
+            get { return values.Count; }
         }
 
         /// <summary>
@@ -87,7 +87,7 @@ namespace OBS.Model
         /// </summary>
         public IList<KeyValuePair<string, string>> KeyValuePairs
         {
-            get { return new List<KeyValuePair<string, string>>(this.values); }
+            get { return new List<KeyValuePair<string, string>>(values); }
         }
     }
 }

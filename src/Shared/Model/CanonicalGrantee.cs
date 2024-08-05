@@ -32,7 +32,7 @@ namespace OBS.Model
         /// <param name="id">ID of the domain to which the grantee belongs</param></param>
         public CanonicalGrantee(string id)
         {
-            this.Id = id;
+            Id = id;
         }
 
         /// <summary>
@@ -63,13 +63,13 @@ namespace OBS.Model
                 return false;
             }
 
-            if(this.GetType() != obj.GetType())
+            if(GetType() != obj.GetType())
             {
                 return false;
             }
 
             var _obj = obj as CanonicalGrantee;
-            if (string.IsNullOrEmpty(this.Id))
+            if (string.IsNullOrEmpty(Id))
             {
                 if (string.IsNullOrEmpty(_obj.Id))
                 {
@@ -77,12 +77,12 @@ namespace OBS.Model
                 }
                 return false;
             }
-            return this.Id.Equals(_obj.Id);        
+            return Id.Equals(_obj.Id);        
         }
 
         public override int GetHashCode()
         {
-            return string.IsNullOrEmpty(this.Id) ? 0 : this.Id.GetHashCode();
+            return string.IsNullOrEmpty(Id) ? 0 : Id.GetHashCode();
         }
     }
 }

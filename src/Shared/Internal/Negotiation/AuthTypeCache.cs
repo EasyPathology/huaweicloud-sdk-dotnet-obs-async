@@ -50,9 +50,9 @@ namespace OBS.Internal.Negotiation
             {
                 throw new ArgumentNullException("key");
             }
-            if (this.dict.ContainsKey(key))
+            if (dict.ContainsKey(key))
             {
-                var item = this.dict[key];
+                var item = dict[key];
                 if(item.ExpireDateTime.CompareTo(DateTime.Now) > 0)
                 {
                     return item.AuthTypeEnum;
@@ -67,13 +67,13 @@ namespace OBS.Internal.Negotiation
             {
                 throw new ArgumentNullException("key");
             }
-            this.dict.Remove(key);
+            dict.Remove(key);
             var item = new AuthTypeCacheItem
             {
                 AuthTypeEnum   = authType,
                 ExpireDateTime = DateTime.Now.AddMinutes(basicExipreMinutes + rd.Next(-5, 5))
             };
-            this.dict.Add(key, item);
+            dict.Add(key, item);
         }
 
     }

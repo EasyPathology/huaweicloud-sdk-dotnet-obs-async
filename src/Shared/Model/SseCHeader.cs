@@ -53,7 +53,7 @@ namespace OBS.Model
         /// Optional parameter, which cannot be used with "KeyBase64".
         /// </para>
         /// </remarks>
-        public byte[] Key
+        public byte[]? Key
         {
             get;
             set;

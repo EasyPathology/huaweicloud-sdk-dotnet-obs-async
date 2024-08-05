@@ -30,8 +30,8 @@ namespace OBS.Model
         {
             get {
                 
-                return this.tags ?? (this.tags = new List<Tag>()); }
-            internal set { this.tags = value; }
+                return tags ?? (tags = new List<Tag>()); }
+            internal set { tags = value; }
         }
 
     }

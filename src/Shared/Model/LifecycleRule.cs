@@ -92,8 +92,8 @@ namespace OBS.Model
         public IList<Transition> Transitions
         {
             get {
-                return this.transitions ?? (this.transitions = new List<Transition>()); }
-            set { this.transitions = value; }
+                return transitions ?? (transitions = new List<Transition>()); }
+            set { transitions = value; }
         }
 
         /// <summary>
@@ -121,8 +121,8 @@ namespace OBS.Model
         public IList<NoncurrentVersionTransition> NoncurrentVersionTransitions
         {
             get {
-                return this.noncurrentVersionTransitions ?? (this.noncurrentVersionTransitions = new List<NoncurrentVersionTransition>()); }
-            set { this.noncurrentVersionTransitions = value; }
+                return noncurrentVersionTransitions ?? (noncurrentVersionTransitions = new List<NoncurrentVersionTransition>()); }
+            set { noncurrentVersionTransitions = value; }
         }
 
     }

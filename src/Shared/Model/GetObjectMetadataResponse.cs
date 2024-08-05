@@ -51,9 +51,9 @@ namespace OBS.Model
         {
             get
             {
-                return this.metadataCollection ?? (this.metadataCollection = new MetadataCollection());
+                return metadataCollection ?? (metadataCollection = new MetadataCollection());
             }
-            set { this.metadataCollection = value; }
+            set { metadataCollection = value; }
         }
 
         /// <summary>
@@ -171,7 +171,7 @@ namespace OBS.Model
             }
             internal set
             {
-                this._nextPosition = value;
+                _nextPosition = value;
             }
         }
 

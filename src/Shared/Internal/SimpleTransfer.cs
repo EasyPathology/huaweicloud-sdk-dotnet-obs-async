@@ -42,7 +42,7 @@ namespace OBS.Internal
         {
             get
             {
-                return this.OriginStream.CanRead;
+                return OriginStream.CanRead;
             }
         }
 
@@ -50,7 +50,7 @@ namespace OBS.Internal
         {
             get
             {
-                return this.OriginStream.CanSeek;
+                return OriginStream.CanSeek;
             }
         }
 
@@ -58,7 +58,7 @@ namespace OBS.Internal
         {
             get
             {
-                return this.OriginStream.CanWrite;
+                return OriginStream.CanWrite;
             }
         }
 
@@ -66,7 +66,7 @@ namespace OBS.Internal
         {
             get
             {
-                return this.OriginStream.Length;
+                return OriginStream.Length;
             }
         }
 
@@ -74,52 +74,52 @@ namespace OBS.Internal
         {
             get
             {
-                return this.OriginStream.Position;
+                return OriginStream.Position;
             }
             set
             {
-                this.writeFlag = false;
-                this.readFlag = false;
-                this.OriginStream.Position = value;
+                writeFlag = false;
+                readFlag = false;
+                OriginStream.Position = value;
             }
         }
 
         public TransferStream(Stream originStream)
         {
-            this.OriginStream = originStream;
+            OriginStream = originStream;
         }
 
         public override void Flush()
         {
-            this.OriginStream.Flush();
+            OriginStream.Flush();
         }
 
         public override long Seek(long offset, SeekOrigin origin)
         {
-            this.writeFlag = false;
-            this.readFlag = false;
-            return this.OriginStream.Seek(offset, origin);
+            writeFlag = false;
+            readFlag = false;
+            return OriginStream.Seek(offset, origin);
         }
 
         public override void SetLength(long value)
         {
-            this.OriginStream.SetLength(value);
+            OriginStream.SetLength(value);
         }
 
         public void ResetReadProgress()
         {
-            BytesReset?.Invoke(this.readedBytes);
+            BytesReset?.Invoke(readedBytes);
             readedBytes = 0;
         }
 
         public override int Read(byte[] buffer, int offset, int count)
         {
-            if (!this.readFlag)
+            if (!readFlag)
             {
-                this.readFlag = true;
+                readFlag = true;
                 StartRead?.Invoke();
             }
-            var bytes = this.OriginStream.Read(buffer, offset, count);
+            var bytes = OriginStream.Read(buffer, offset, count);
             readedBytes += bytes;
             BytesReaded?.Invoke(bytes);
             return bytes;
@@ -127,12 +127,12 @@ namespace OBS.Internal
 
         public override void Write(byte[] buffer, int offset, int count)
         {
-            if (!this.writeFlag)
+            if (!writeFlag)
             {
-                this.writeFlag = true;
+                writeFlag = true;
                 StartWrite?.Invoke();
             }
-            this.OriginStream.Write(buffer, offset, count);
+            OriginStream.Write(buffer, offset, count);
             BytesWrited?.Invoke(count);
         }
 
@@ -140,11 +140,11 @@ namespace OBS.Internal
         {
             try
             {
-                this.OriginStream.Close();
+                OriginStream.Close();
             }
             finally
             {
-                this.CloseStream?.Invoke();
+                CloseStream?.Invoke();
             }
         }
 
@@ -190,24 +190,24 @@ namespace OBS.Internal
 
         public virtual void TransferStart()
         {
-            this.startCheckpoint = DateTime.Now;
-            this.lastCheckpoint = DateTime.Now;
-            this.lastInstantaneousBytes = new List<BytesUnit>();
+            startCheckpoint = DateTime.Now;
+            lastCheckpoint = DateTime.Now;
+            lastInstantaneousBytes = new List<BytesUnit>();
         }
 
         public virtual void TransferReset(long resetBytes)
         {
-            this.startCheckpoint = DateTime.Now;
-            this.lastCheckpoint = DateTime.Now;
-            this.lastInstantaneousBytes = new List<BytesUnit>();
-            this.newlyTransferredBytes = 0;
-            this.transferredBytes -= resetBytes;
+            startCheckpoint = DateTime.Now;
+            lastCheckpoint = DateTime.Now;
+            lastInstantaneousBytes = new List<BytesUnit>();
+            newlyTransferredBytes = 0;
+            transferredBytes -= resetBytes;
         }
 
         protected IList<BytesUnit> CreateCurrentInstantaneousBytes(long bytes, DateTime now)
         {
             IList<BytesUnit> currentInstantaneousBytes = new List<BytesUnit>();
-            IList<BytesUnit> _lastInstantaneousBytes = this.lastInstantaneousBytes;
+            IList<BytesUnit> _lastInstantaneousBytes = lastInstantaneousBytes;
             if (_lastInstantaneousBytes != null)
             {
                 foreach (var item in _lastInstantaneousBytes)
@@ -236,7 +236,7 @@ namespace OBS.Internal
             var now = DateTime.Now;
             var status = new TransferStatus(newlyTransferredBytes,
                           transferredBytes, totalBytes, (now - lastCheckpoint).TotalSeconds, (now - startCheckpoint).TotalSeconds);
-            status.SetInstantaneousBytes(this.CreateCurrentInstantaneousBytes(newlyTransferredBytes, now));
+            status.SetInstantaneousBytes(CreateCurrentInstantaneousBytes(newlyTransferredBytes, now));
             handler(sender, status);
         }
 
@@ -249,7 +249,7 @@ namespace OBS.Internal
 
             if (bytes > 0)
             {
-                this.DoBytesTransfered(bytes);
+                DoBytesTransfered(bytes);
             }
         }
 
@@ -262,7 +262,7 @@ namespace OBS.Internal
         public TransferStreamByBytes(object sender, EventHandler<TransferStatus> handler, long totalBytes,
             long transferredBytes, double intervalByBytes) : base(sender, handler, totalBytes, transferredBytes)
         {
-            this.interval = intervalByBytes;
+            interval = intervalByBytes;
         }
 
         protected override void DoBytesTransfered(int bytes)
@@ -270,9 +270,9 @@ namespace OBS.Internal
             transferredBytes += bytes;
             newlyTransferredBytes += bytes;
             var now = DateTime.Now;
-            IList<BytesUnit> currentInstantaneousBytes = this.CreateCurrentInstantaneousBytes(bytes, now);
-            this.lastInstantaneousBytes = currentInstantaneousBytes;
-            if (newlyTransferredBytes >= this.interval || transferredBytes == totalBytes)
+            IList<BytesUnit> currentInstantaneousBytes = CreateCurrentInstantaneousBytes(bytes, now);
+            lastInstantaneousBytes = currentInstantaneousBytes;
+            if (newlyTransferredBytes >= interval || transferredBytes == totalBytes)
             {
                 var status = new TransferStatus(newlyTransferredBytes,
                    transferredBytes, totalBytes, (now - lastCheckpoint).TotalSeconds, (now - startCheckpoint).TotalSeconds);

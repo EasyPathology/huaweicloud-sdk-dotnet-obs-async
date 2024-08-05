@@ -106,7 +106,7 @@ namespace OBS.Internal
             xmlWriter.WriteStartElement(startElementName);
             foreach (var grant in grants)
             {
-                if (grant.Grantee != null && grant.Permission.HasValue)
+                if (grant is { Grantee: not null, Permission: not null })
                 {
                     xmlWriter.WriteStartElement("Grant");
 
@@ -140,7 +140,7 @@ namespace OBS.Internal
 
         protected override void TransAccessControlList(HttpRequest httpRequest, AccessControlList acl, bool isBucket)
         {
-            this.TransContent(httpRequest, delegate (XmlWriter xmlWriter)
+            TransContent(httpRequest, delegate (XmlWriter xmlWriter)
             {
                 xmlWriter.WriteStartElement("AccessControlPolicy");
                 if (acl.Owner != null && !string.IsNullOrEmpty(acl.Owner.Id))
@@ -155,7 +155,7 @@ namespace OBS.Internal
                 }
                 if (acl.Grants.Count > 0)
                 {
-                    this.TransGrants(xmlWriter, acl.Grants, isBucket, "AccessControlList");
+                    TransGrants(xmlWriter, acl.Grants, isBucket, "AccessControlList");
                 }
                 xmlWriter.WriteEndElement();
             });
@@ -163,7 +163,7 @@ namespace OBS.Internal
 
         protected override void TransLoggingConfiguration(HttpRequest httpRequest, LoggingConfiguration configuration)
         {
-            this.TransContent(httpRequest, delegate (XmlWriter xmlWriter)
+            TransContent(httpRequest, delegate (XmlWriter xmlWriter)
             {
                 xmlWriter.WriteStartElement("BucketLoggingStatus");
 
@@ -187,7 +187,7 @@ namespace OBS.Internal
 
                     if (configuration.Grants.Count > 0)
                     {
-                        this.TransGrants(xmlWriter, configuration.Grants, false, "TargetGrants");
+                        TransGrants(xmlWriter, configuration.Grants, false, "TargetGrants");
                     }
 
                     xmlWriter.WriteEndElement();

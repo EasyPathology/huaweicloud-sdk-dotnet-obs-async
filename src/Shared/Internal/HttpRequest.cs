@@ -21,17 +21,17 @@ namespace OBS.Internal
     internal class HttpRequest : IDisposable
     {
 
-        private bool _disposed;
+        private bool disposed;
 
-        private IDictionary<String, String> _headers;
+        private IDictionary<string, string>? headers;
 
-        private IDictionary<String, String> _parameters;
+        private IDictionary<string, string?>? parameters;
 
-        private string _url;
+        private string url;
 
-        private bool _autoClose = true;
+        private bool autoClose = true;
 
-        internal string GetUrlWithoutQuerys()
+        internal string GetUrlWithoutQueries()
         {
 
             var url = Endpoint;
@@ -46,9 +46,9 @@ namespace OBS.Internal
                 }
                 else
                 {
-                    var index = url.IndexOf("//");
+                    var index  = url.IndexOf("//");
                     var prefix = url.Substring(0, index + 2);
-                    var suffix = url.Substring(index + 2);
+                    var suffix = url.Substring(index    + 2);
 
                     url = prefix + BucketName + "." + suffix;
                 }
@@ -65,9 +65,9 @@ namespace OBS.Internal
         public string GetUrl()
         {
 
-            if (!string.IsNullOrEmpty(this._url))
+            if (!string.IsNullOrEmpty(this.url))
             {
-                return this._url;
+                return this.url;
             }
 
             var url = Endpoint;
@@ -82,9 +82,9 @@ namespace OBS.Internal
                 }
                 else
                 {
-                    var index = url.IndexOf("//");
+                    var index  = url.IndexOf("//");
                     var prefix = url.Substring(0, index + 2);
-                    var suffix = url.Substring(index + 2);
+                    var suffix = url.Substring(index    + 2);
 
                     url = prefix + BucketName + "." + suffix;
                 }
@@ -94,89 +94,65 @@ namespace OBS.Internal
             {
                 url += "/" + CommonUtil.UrlEncode(ObjectKey, Constants.DefaultEncoding, "/");
             }
-            
+
             var paramString = CommonUtil.ConvertParamsToString(Params);
             if (!string.IsNullOrEmpty(paramString))
             {
                 url += "?" + paramString;
             }
 
-            this._url = url;
+            this.url = url;
 
-            return this._url;
+            return this.url;
         }
 
-        public string Endpoint
-        {
-            get;
-            set;
-        }
+        public string Endpoint { get; set; }
 
 
-        public bool PathStyle
-        {
-            get;
-            set;
-        }
+        public bool PathStyle { get; set; }
 
 
-        public string BucketName
-        {
-            get;
-            set;
-        }
+        public string BucketName { get; set; }
 
-        public string ObjectKey
-        {
-            get;
-            set;
-        }
+        public string ObjectKey { get; set; }
 
         public bool AutoClose
         {
-            get
-            {
-                return this._autoClose;
-            }
-            set
-            {
-                this._autoClose = value;
-            }
+            get { return autoClose; }
+            set { autoClose = value; }
         }
 
         public string GetHost(string endpoint)
         {
-            var ub = new UriBuilder(endpoint);
+            var ub   = new UriBuilder(endpoint);
             var host = ub.Host;
-            if(ub.Port != 443 && ub.Port != 80)
+            if (ub.Port != 443 && ub.Port != 80)
             {
                 host += ":" + ub.Port;
             }
-            if (!string.IsNullOrEmpty(this.BucketName) && !this.PathStyle)
+
+            if (!string.IsNullOrEmpty(BucketName) && !PathStyle)
             {
-                host = this.BucketName + "." + host;
+                host = BucketName + "." + host;
             }
+
             return host;
         }
 
-        public HttpVerb Method
+        public HttpVerb Method { get; set; }
+
+        public virtual Stream? Content { get; set; }
+
+        public IDictionary<string, string> Headers
         {
-            get;
-            set;
+            get { return headers ?? (headers = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)); }
+            internal set { headers = value; }
         }
 
-        public virtual Stream Content { get; set; }
-
-        public IDictionary<String, String> Headers
+        public IDictionary<string, string?> Params
         {
-            get { return _headers ?? (_headers = new Dictionary<String, String>(StringComparer.OrdinalIgnoreCase)); }
-            internal set { this._headers = value; }
-        }
-
-        public IDictionary<String, String> Params
-        {
-            get { return _parameters ?? (_parameters = new Dictionary<String, String>(StringComparer.OrdinalIgnoreCase)); }
-            internal set { this._parameters = value; }
+            get => parameters ??= new Dictionary<string, string?>(StringComparer.OrdinalIgnoreCase);
+            internal set => parameters = value;
         }
 
 
@@ -194,7 +170,7 @@ namespace OBS.Internal
 
         protected virtual void Dispose(bool disposing)
         {
-            if (_disposed)
+            if (disposed)
             {
                 return;
             }
@@ -207,9 +183,11 @@ namespace OBS.Internal
                     {
                         Content.Close();
                     }
+
                     Content = null;
                 }
-                _disposed = true;
+
+                disposed = true;
             }
         }
 

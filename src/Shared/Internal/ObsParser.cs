@@ -106,13 +106,13 @@ namespace OBS.Internal
                 {
                     var grantee = new GroupGrantee
                     {
-                        GroupGranteeType = this.ParseGroupGrantee(xmlReader.ReadString())
+                        GroupGranteeType = ParseGroupGrantee(xmlReader.ReadString())
                     };
                     currentGrant.Grantee     = grantee;
                 }
                 else if ("Permission".Equals(xmlReader.Name))
                 {
-                    currentGrant.Permission = this.ParsePermission(xmlReader.ReadString());
+                    currentGrant.Permission = ParsePermission(xmlReader.ReadString());
                 }
                 else if ("Delivered".Equals(xmlReader.Name))
                 {
@@ -132,14 +132,14 @@ namespace OBS.Internal
         public override GetBucketAclResponse ParseGetBucketAclResponse(HttpResponse httpResponse)
         {
             var response = new GetBucketAclResponse();
-            response.AccessControlList = this.ParseAccessControlList(httpResponse, true);
+            response.AccessControlList = ParseAccessControlList(httpResponse, true);
             return response;
         }
 
         public override GetObjectAclResponse ParseGetObjectAclResponse(HttpResponse httpResponse)
         {
             var response = new GetObjectAclResponse();
-            response.AccessControlList = this.ParseAccessControlList(httpResponse, false);
+            response.AccessControlList = ParseAccessControlList(httpResponse, false);
             return response;
         }
 
@@ -190,13 +190,13 @@ namespace OBS.Internal
                 {
                     var grantee = new GroupGrantee
                     {
-                        GroupGranteeType = this.ParseGroupGrantee(xmlReader.ReadString())
+                        GroupGranteeType = ParseGroupGrantee(xmlReader.ReadString())
                     };
                     currentGrant.Grantee     = grantee;
                 }
                 else if ("Permission".Equals(xmlReader.Name))
                 {
-                    currentGrant.Permission = this.ParsePermission(xmlReader.ReadString());
+                    currentGrant.Permission = ParsePermission(xmlReader.ReadString());
                 }
             }
 

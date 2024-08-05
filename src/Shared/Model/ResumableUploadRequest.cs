@@ -41,8 +41,8 @@ namespace OBS.Model
         /// <param name="objectKey">Object name</param>
         public ResumableUploadRequest(string bucketName, string objectKey)
         {
-            this.BucketName = bucketName;
-            this.ObjectKey = objectKey;
+            BucketName = bucketName;
+            ObjectKey = objectKey;
         }
 
 
@@ -72,11 +72,11 @@ namespace OBS.Model
         {
             get
             {
-                return this._metric <= 0 ? (ProgressType == ProgressTypeEnum.ByBytes ? Constants.DefaultProgressUpdateInterval : 1) : this._metric;
+                return _metric <= 0 ? (ProgressType == ProgressTypeEnum.ByBytes ? Constants.DefaultProgressUpdateInterval : 1) : _metric;
             }
             set
             {
-                this._metric = value;
+                _metric = value;
             }
         }
 
@@ -119,15 +119,15 @@ namespace OBS.Model
         /// </remarks>
         public long UploadPartSize
         {
-            get { return this.partSize; }
+            get { return partSize; }
             set
             {
                 if (value < 100 * 1024L)
-                    this.partSize = 100 * 1024L;
+                    partSize = 100 * 1024L;
                 else if (value > 5 * 1024 * 1024 * 1024L)
-                    this.partSize = 5 * 1024 * 1024 * 1024L;
+                    partSize = 5 * 1024 * 1024 * 1024L;
                 else
-                    this.partSize = value;
+                    partSize = value;
             }
         }
 

@@ -31,30 +31,30 @@ namespace OBS.Internal
 
         public HttpResponse(HttpWebResponse httpWebResponse)
         {
-            this._response = httpWebResponse;
+            _response = httpWebResponse;
         }
 
         public HttpResponse(WebException failure, HttpWebRequest httpWebRequest)
         {
             var httpWebResponse = failure.Response as HttpWebResponse;
-            this.Failure = failure;
-            this._response = httpWebResponse;
-            this._request = httpWebRequest;
+            Failure = failure;
+            _response = httpWebResponse;
+            _request = httpWebRequest;
         }
 
         public HttpWebResponse HttpWebResponse
         {
             get
             {
-                return this._response;
+                return _response;
             }
         }
 
         public void Abort()
         {
-            if (this._request != null)
+            if (_request != null)
             {
-                this._request.Abort();
+                _request.Abort();
             }
         }
 
@@ -63,7 +63,7 @@ namespace OBS.Internal
             get { return _headers ?? (_headers = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)); }
             internal set
             {
-                this._headers = value;
+                _headers = value;
             }
         }
 
@@ -75,7 +75,7 @@ namespace OBS.Internal
                 {
                     throw new ObjectDisposedException(GetType().Name);
                 }
-                return (this._response != null) ? this._response.GetResponseStream() : null;
+                return (_response != null) ? _response.GetResponseStream() : null;
             }
         }
 
@@ -83,7 +83,7 @@ namespace OBS.Internal
         {
             get
             {
-                return this._response.StatusCode;
+                return _response.StatusCode;
             }
         }
 

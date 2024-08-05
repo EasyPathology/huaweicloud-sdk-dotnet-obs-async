@@ -38,9 +38,9 @@ namespace OBS.Model
             get
             {
                 
-                return this.topicConfigurations ?? (this.topicConfigurations = new List<TopicConfiguration>());
+                return topicConfigurations ?? (topicConfigurations = new List<TopicConfiguration>());
             }
-            set { this.topicConfigurations = value; }
+            set { topicConfigurations = value; }
         }
 
 
@@ -49,9 +49,9 @@ namespace OBS.Model
             get
             {
 
-                return this.functionGraphConfigurations ?? (this.functionGraphConfigurations = new List<FunctionGraphConfiguration>());
+                return functionGraphConfigurations ?? (functionGraphConfigurations = new List<FunctionGraphConfiguration>());
             }
-            set { this.functionGraphConfigurations = value; }
+            set { functionGraphConfigurations = value; }
         }
     }
 }

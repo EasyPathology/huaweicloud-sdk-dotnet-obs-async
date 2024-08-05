@@ -35,12 +35,12 @@ namespace OBS.Model
         /// <summary>
         /// Headers used for authentication
         /// </summary>
-        public IDictionary<String,String> ActualSignedRequestHeaders
+        public IDictionary<string,string> ActualSignedRequestHeaders
         {
             get {
                 
-                return this.actualSignedRequestHeaders ?? (this.actualSignedRequestHeaders = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)); }
-            internal set { this.actualSignedRequestHeaders = value; }
+                return actualSignedRequestHeaders ?? (actualSignedRequestHeaders = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)); }
+            internal set { actualSignedRequestHeaders = value; }
         }
 
     }

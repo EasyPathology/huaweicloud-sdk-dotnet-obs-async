@@ -55,7 +55,7 @@ namespace OBS.Model
         public UploadStreamRequest(Stream uploadStream, string bucketName, string objectKey) 
             : this(bucketName, objectKey)
         {
-            this.UploadStream = uploadStream;
+            UploadStream = uploadStream;
         }
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace OBS.Model
         public UploadStreamRequest(string bucketName, string objectKey, Stream uploadStream, long partSize)
             :this(uploadStream, bucketName, objectKey)
         {
-            this.UploadPartSize = partSize;
+            UploadPartSize = partSize;
         }
 
         /// <summary>
@@ -96,10 +96,10 @@ namespace OBS.Model
         public UploadStreamRequest(string bucketName, string objectKey, Stream uploadStream, long partSize, bool enableCheckpoint, string checkpointFile)
             : this(bucketName, objectKey)
         { 
-            this.UploadPartSize = partSize;
-            this.UploadStream = uploadStream;
-            this.EnableCheckpoint = enableCheckpoint;
-            this.CheckpointFile = checkpointFile;
+            UploadPartSize = partSize;
+            UploadStream = uploadStream;
+            EnableCheckpoint = enableCheckpoint;
+            CheckpointFile = checkpointFile;
         }
 
         /// <summary>
@@ -127,8 +127,8 @@ namespace OBS.Model
         /// </remarks>
         public Stream UploadStream
         {
-            get { return this.uploadStream; }
-            set { this.uploadStream = value; }
+            get { return uploadStream; }
+            set { uploadStream = value; }
         }
 
 

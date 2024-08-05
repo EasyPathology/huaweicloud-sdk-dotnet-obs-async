@@ -35,7 +35,7 @@ namespace OBS.Model
 
         private void AddKey(KeyVersion keyVersion)
         {
-            this.Objects.Add(keyVersion);
+            Objects.Add(keyVersion);
         }
     }
 }

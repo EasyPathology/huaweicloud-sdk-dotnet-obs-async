@@ -35,7 +35,7 @@ namespace OBS.Internal
 
         public void Handle(HttpResponse response)
         {
-            if(response != null && response.HttpWebResponse != null)
+            if(response is { HttpWebResponse: not null })
             {
                 var headers = response.HttpWebResponse.Headers;
                 IDictionary<string, string> result = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
@@ -49,7 +49,7 @@ namespace OBS.Internal
                         continue;
                     }
 
-                    if (key.StartsWith(this.iheaders.HeaderMetaPrefix(), StringComparison.OrdinalIgnoreCase))
+                    if (key.StartsWith(iheaders.HeaderMetaPrefix(), StringComparison.OrdinalIgnoreCase))
                     {
                         key = CommonUtil.UrlDecode(key);
                     }

@@ -40,9 +40,9 @@ namespace OBS.Model
         {
             get 
             {
-                return this.objects ?? (this.objects = new List<KeyVersion>()); 
+                return objects ?? (objects = new List<KeyVersion>()); 
             }
-            set { this.objects = value; }
+            set { objects = value; }
         }
 
         /// <summary>

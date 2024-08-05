@@ -36,8 +36,8 @@ namespace OBS.Model
         /// <param name="etag">Part ETag</param>
         public PartETag(int partNumber, string etag)
         {
-            this.PartNumber = partNumber;
-            this.ETag = etag;
+            PartNumber = partNumber;
+            ETag = etag;
         }
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace OBS.Model
             {
                 return 1;
             }
-            return this.PartNumber.CompareTo(other.PartNumber);
+            return PartNumber.CompareTo(other.PartNumber);
         }
 
         /// <summary>

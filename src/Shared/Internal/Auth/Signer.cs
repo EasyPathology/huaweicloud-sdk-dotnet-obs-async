@@ -52,7 +52,7 @@ namespace OBS.Internal.Auth
             {
                 request.Headers.Add(iheaders.SecurityTokenHeader(), context.SecurityProvider.Token.Trim());
             }
-            this._DoAuth(request, context, iheaders);
+            _DoAuth(request, context, iheaders);
         }
 
         internal abstract IDictionary<string,string> GetSignature(HttpRequest request, HttpContext context, IHeaders iheaders);

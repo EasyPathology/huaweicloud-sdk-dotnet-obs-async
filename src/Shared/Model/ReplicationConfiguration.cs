@@ -51,9 +51,9 @@ namespace OBS.Model
             get
             {
 
-                return this.rules ?? (this.rules = new List<ReplicationRule>());
+                return rules ?? (rules = new List<ReplicationRule>());
             }
-            set { this.rules = value; }
+            set { rules = value; }
         }
     }
 }

@@ -31,7 +31,7 @@ namespace OBS.Model
         /// <param name="groupGranteeType">Type of the authorized user group</param>
         public GroupGrantee(GroupGranteeEnum groupGranteeType)
         {
-            this.GroupGranteeType = groupGranteeType;
+            GroupGranteeType = groupGranteeType;
         }
 
         /// <summary>
@@ -55,18 +55,18 @@ namespace OBS.Model
                 return false;
             }
 
-            if(obj.GetType() != this.GetType())
+            if(obj.GetType() != GetType())
             {
                 return false;
             }
 
             var _obj = obj as GroupGrantee;
-            return this.GroupGranteeType == _obj.GroupGranteeType;
+            return GroupGranteeType == _obj.GroupGranteeType;
         }
 
         public override int GetHashCode()
         {
-            return this.GroupGranteeType.GetHashCode();
+            return GroupGranteeType.GetHashCode();
         }
 
     }

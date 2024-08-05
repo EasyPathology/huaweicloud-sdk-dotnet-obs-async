@@ -32,7 +32,7 @@ namespace OBS
         /// <returns>Response to the asynchronous request</returns>
         public IAsyncResult BeginListBuckets(ListBucketsRequest request, AsyncCallback callback, object state)
         {
-            return this.BeginDoRequest<ListBucketsRequest>(request, callback, state);
+            return BeginDoRequest<ListBucketsRequest>(request, callback, state);
         }
 
         /// <summary>
@@ -42,7 +42,7 @@ namespace OBS
         /// <returns>Response to the request for obtaining the bucket list</returns>
         public ListBucketsResponse EndListBuckets(IAsyncResult ar)
         {
-            return this.EndDoRequest<ListBucketsRequest, ListBucketsResponse>(ar);
+            return EndDoRequest<ListBucketsRequest, ListBucketsResponse>(ar);
         }
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace OBS
         /// <returns>Response to the asynchronous request</returns>
         public IAsyncResult BeginCreateBucket(CreateBucketRequest request, AsyncCallback callback, object state)
         {
-            return this.BeginDoRequest<CreateBucketRequest>(request, callback, state);
+            return BeginDoRequest<CreateBucketRequest>(request, callback, state);
         }
 
         /// <summary>
@@ -68,27 +68,25 @@ namespace OBS
             var result = ar as HttpObsAsyncResult;
             try
             {
-                return this.EndDoRequest<CreateBucketRequest, CreateBucketResponse>(ar, false);
+                return EndDoRequest<CreateBucketRequest, CreateBucketResponse>(ar, false);
             }
             catch (ObsException ex)
             {
-                if (result != null && result.HttpContext != null 
-                    && result.HttpRequest != null && 
-                    ex.StatusCode == HttpStatusCode.BadRequest
-                    && "Unsupported Authorization Type".Equals(ex.ErrorMessage)
-                    && this.ObsConfig.AuthTypeNegotiation
+                if (result is { HttpContext: not null, HttpRequest                  : not null } && 
+                    ex is { StatusCode     : HttpStatusCode.BadRequest, ErrorMessage: "Unsupported Authorization Type" }
+                    && ObsConfig.AuthTypeNegotiation
                     && result.HttpContext.AuthType == AuthTypeEnum.OBS)
                 {
-                    if (result.HttpRequest.Content != null && result.HttpRequest.Content.CanSeek)
+                    if (result.HttpRequest.Content is { CanSeek: true })
                     {
                         result.HttpRequest.Content.Seek(0, SeekOrigin.Begin);
                     }
                     result.HttpContext.AuthType = AuthTypeEnum.V2;
-                    var retryResult = this.httpClient.BeginPerformRequest(result.HttpRequest, result.HttpContext,
+                    var retryResult = httpClient.BeginPerformRequest(result.HttpRequest, result.HttpContext,
                         result.AsyncCallback, result.AsyncState);
 
                     retryResult.AdditionalState = result.AdditionalState;
-                    return this.EndDoRequest<CreateBucketRequest, CreateBucketResponse>(retryResult);
+                    return EndDoRequest<CreateBucketRequest, CreateBucketResponse>(retryResult);
                 }
                 throw ex;
             }
@@ -107,7 +105,7 @@ namespace OBS
         /// <returns>Response to the asynchronous request</returns>
         public IAsyncResult BeginHeadBucket(HeadBucketRequest request, AsyncCallback callback, object state)
         {
-            return this.BeginDoRequest<HeadBucketRequest>(request, callback, state);
+            return BeginDoRequest<HeadBucketRequest>(request, callback, state);
         }
 
         /// <summary>
@@ -119,7 +117,7 @@ namespace OBS
         {
             try
             {
-                this.EndDoRequest<HeadBucketRequest, ObsWebServiceResponse>(ar);
+                EndDoRequest<HeadBucketRequest, ObsWebServiceResponse>(ar);
                 return true;
             }
             catch (ObsException e)
@@ -251,7 +249,7 @@ namespace OBS
         /// <returns>Response to the asynchronous request</returns>
         public IAsyncResult BeginListVersions(ListVersionsRequest request, AsyncCallback callback, object state)
         {
-            return this.BeginDoRequest<ListVersionsRequest>(request, callback, state);
+            return BeginDoRequest<ListVersionsRequest>(request, callback, state);
         }
 
         /// <summary>
@@ -261,7 +259,7 @@ namespace OBS
         /// <returns>Response to a request for listing versioning objects in a bucket</returns>
         public ListVersionsResponse EndListVersions(IAsyncResult ar)
         {
-            return this.EndDoRequest<ListVersionsRequest, ListVersionsResponse>(ar);
+            return EndDoRequest<ListVersionsRequest, ListVersionsResponse>(ar);
         }
 
         /// <summary>
@@ -339,7 +337,7 @@ namespace OBS
         /// <returns>Response to the asynchronous request</returns>
         public IAsyncResult BeginListMultipartUploads(ListMultipartUploadsRequest request, AsyncCallback callback, object state)
         {
-            return this.BeginDoRequest<ListMultipartUploadsRequest>(request, callback, state);
+            return BeginDoRequest<ListMultipartUploadsRequest>(request, callback, state);
         }
 
         /// <summary>
@@ -349,7 +347,7 @@ namespace OBS
         /// <returns> Response to a request for listing multipart uploads</returns>
         public ListMultipartUploadsResponse EndListMultipartUploads(IAsyncResult ar)
         {
-            return this.EndDoRequest<ListMultipartUploadsRequest, ListMultipartUploadsResponse>(ar);
+            return EndDoRequest<ListMultipartUploadsRequest, ListMultipartUploadsResponse>(ar);
         }
 
         /// <summary>
@@ -361,7 +359,7 @@ namespace OBS
         /// <returns>Response to the asynchronous request</returns>
         public IAsyncResult BeginDeleteBucket(DeleteBucketRequest request, AsyncCallback callback, object state)
         {
-            return this.BeginDoRequest<DeleteBucketRequest>(request, callback, state);
+            return BeginDoRequest<DeleteBucketRequest>(request, callback, state);
         }
 
         /// <summary>
@@ -371,7 +369,7 @@ namespace OBS
         /// <returns>Response to the bucket deletion request</returns>
         public DeleteBucketResponse EndDeleteBucket(IAsyncResult ar)
         {
-            return this.EndDoRequest<DeleteBucketRequest, DeleteBucketResponse>(ar);
+            return EndDoRequest<DeleteBucketRequest, DeleteBucketResponse>(ar);
         }
 
 
@@ -384,7 +382,7 @@ namespace OBS
         /// <returns>Response to the asynchronous request</returns>
         public IAsyncResult BeginSetBucketLogging(SetBucketLoggingRequest request, AsyncCallback callback, object state)
         {
-            return this.BeginDoRequest<SetBucketLoggingRequest>(request, callback, state);
+            return BeginDoRequest<SetBucketLoggingRequest>(request, callback, state);
         }
 
         /// <summary>
@@ -394,7 +392,7 @@ namespace OBS
         /// <returns>Response to a request for configuring bucket logging</returns>
         public SetBucketLoggingResponse EndSetBucketLogging(IAsyncResult ar)
         {
-            return this.EndDoRequest<SetBucketLoggingRequest, SetBucketLoggingResponse>(ar);
+            return EndDoRequest<SetBucketLoggingRequest, SetBucketLoggingResponse>(ar);
         }
 
         /// <summary>
@@ -406,7 +404,7 @@ namespace OBS
         /// <returns>Response to the asynchronous request</returns>
         public IAsyncResult BeginGetBucketLogging(GetBucketLoggingRequest request, AsyncCallback callback, object state)
         {
-            return this.BeginDoRequest<GetBucketLoggingRequest>(request, callback, state);
+            return BeginDoRequest<GetBucketLoggingRequest>(request, callback, state);
         }
 
         /// <summary>
@@ -416,7 +414,7 @@ namespace OBS
         /// <returns>Response to a request for obtaining bucket logging configuration</returns>
         public GetBucketLoggingResponse EndGetBucketLogging(IAsyncResult ar)
         {
-            return this.EndDoRequest<GetBucketLoggingRequest, GetBucketLoggingResponse>(ar);
+            return EndDoRequest<GetBucketLoggingRequest, GetBucketLoggingResponse>(ar);
         }
 
         /// <summary>
@@ -428,7 +426,7 @@ namespace OBS
         /// <returns>Response to the asynchronous request</returns>
         public IAsyncResult BeginSetBucketPolicy(SetBucketPolicyRequest request, AsyncCallback callback, object state)
         {
-            return this.BeginDoRequest<SetBucketPolicyRequest>(request, callback, state);
+            return BeginDoRequest<SetBucketPolicyRequest>(request, callback, state);
         }
 
         /// <summary>
@@ -438,7 +436,7 @@ namespace OBS
         /// <returns>Response to a request for setting bucket policies</returns>
         public SetBucketPolicyResponse EndSetBucketPolicy(IAsyncResult ar)
         {
-            return this.EndDoRequest<SetBucketPolicyRequest, SetBucketPolicyResponse>(ar);
+            return EndDoRequest<SetBucketPolicyRequest, SetBucketPolicyResponse>(ar);
         }
 
         /// <summary>
@@ -450,7 +448,7 @@ namespace OBS
         /// <returns>Response to the asynchronous request</returns>
         public IAsyncResult BeginGetBucketPolicy(GetBucketPolicyRequest request, AsyncCallback callback, object state)
         {
-            return this.BeginDoRequest<GetBucketPolicyRequest>(request, callback, state);
+            return BeginDoRequest<GetBucketPolicyRequest>(request, callback, state);
         }
 
         /// <summary>
@@ -460,7 +458,7 @@ namespace OBS
         /// <returns>Response to the request for obtaining bucket policies</returns>
         public GetBucketPolicyResponse EndGetBucketPolicy(IAsyncResult ar)
         {
-            return this.EndDoRequest<GetBucketPolicyRequest, GetBucketPolicyResponse>(ar);
+            return EndDoRequest<GetBucketPolicyRequest, GetBucketPolicyResponse>(ar);
         }
 
         /// <summary>
@@ -472,7 +470,7 @@ namespace OBS
         /// <returns>Response to the asynchronous request</returns>
         public IAsyncResult BeginDeleteBucketPolicy(DeleteBucketPolicyRequest request, AsyncCallback callback, object state)
         {
-            return this.BeginDoRequest<DeleteBucketPolicyRequest>(request, callback, state);
+            return BeginDoRequest<DeleteBucketPolicyRequest>(request, callback, state);
         }
 
         /// <summary>
@@ -482,7 +480,7 @@ namespace OBS
         /// <returns>Response to a request for deleting bucket policies</returns>
         public DeleteBucketPolicyResponse EndDeleteBucketPolicy(IAsyncResult ar)
         {
-            return this.EndDoRequest<DeleteBucketPolicyRequest, DeleteBucketPolicyResponse>(ar);
+            return EndDoRequest<DeleteBucketPolicyRequest, DeleteBucketPolicyResponse>(ar);
         }
 
         /// <summary>
@@ -494,7 +492,7 @@ namespace OBS
         /// <returns>Response to the asynchronous request</returns>
         public IAsyncResult BeginSetBucketCors(SetBucketCorsRequest request, AsyncCallback callback, object state)
         {
-            return this.BeginDoRequest<SetBucketCorsRequest>(request, callback, state);
+            return BeginDoRequest<SetBucketCorsRequest>(request, callback, state);
         }
 
         /// <summary>
@@ -504,7 +502,7 @@ namespace OBS
         /// <returns>Response to a request for configuring bucket CORS</returns>
         public SetBucketCorsResponse EndSetBucketCors(IAsyncResult ar)
         {
-            return this.EndDoRequest<SetBucketCorsRequest, SetBucketCorsResponse>(ar);
+            return EndDoRequest<SetBucketCorsRequest, SetBucketCorsResponse>(ar);
         }
 
         /// <summary>
@@ -516,7 +514,7 @@ namespace OBS
         /// <returns>Response to the asynchronous request</returns>
         public IAsyncResult BeginGetBucketCors(GetBucketCorsRequest request, AsyncCallback callback, object state)
         {
-            return this.BeginDoRequest<GetBucketCorsRequest>(request, callback, state);
+            return BeginDoRequest<GetBucketCorsRequest>(request, callback, state);
         }
 
         /// <summary>
@@ -526,7 +524,7 @@ namespace OBS
         /// <returns>Response to a request for obtaining bucket CORS configuration</returns>
         public GetBucketCorsResponse EndGetBucketCors(IAsyncResult ar)
         {
-            return this.EndDoRequest<GetBucketCorsRequest, GetBucketCorsResponse>(ar);
+            return EndDoRequest<GetBucketCorsRequest, GetBucketCorsResponse>(ar);
         }
 
         /// <summary>
@@ -538,7 +536,7 @@ namespace OBS
         /// <returns>Response to the asynchronous request</returns>
         public IAsyncResult BeginDeleteBucketCors(DeleteBucketCorsRequest request, AsyncCallback callback, object state)
         {
-            return this.BeginDoRequest<DeleteBucketCorsRequest>(request, callback, state);
+            return BeginDoRequest<DeleteBucketCorsRequest>(request, callback, state);
         }
 
         /// <summary>
@@ -548,7 +546,7 @@ namespace OBS
         /// <returns>Response to a request for deleting the CORS configuration from a specified bucket</returns>
         public DeleteBucketCorsResponse EndDeleteBucketCors(IAsyncResult ar)
         {
-            return this.EndDoRequest<DeleteBucketCorsRequest, DeleteBucketCorsResponse>(ar);
+            return EndDoRequest<DeleteBucketCorsRequest, DeleteBucketCorsResponse>(ar);
         }
 
         /// <summary>
@@ -560,7 +558,7 @@ namespace OBS
         /// <returns>Response to the asynchronous request</returns>
         public IAsyncResult BeginGetBucketLifecycle(GetBucketLifecycleRequest request, AsyncCallback callback, object state)
         {
-            return this.BeginDoRequest<GetBucketLifecycleRequest>(request, callback, state);
+            return BeginDoRequest<GetBucketLifecycleRequest>(request, callback, state);
         }
 
         /// <summary>
@@ -570,7 +568,7 @@ namespace OBS
         /// <returns>Response to a request for obtaining bucket lifecycle rules</returns>
         public GetBucketLifecycleResponse EndGetBucketLifecycle(IAsyncResult ar)
         {
-            return this.EndDoRequest<GetBucketLifecycleRequest, GetBucketLifecycleResponse>(ar);
+            return EndDoRequest<GetBucketLifecycleRequest, GetBucketLifecycleResponse>(ar);
         }
 
         /// <summary>
@@ -582,7 +580,7 @@ namespace OBS
         /// <returns>Response to the asynchronous request</returns>
         public IAsyncResult BeginSetBucketLifecycle(SetBucketLifecycleRequest request, AsyncCallback callback, object state)
         {
-            return this.BeginDoRequest<SetBucketLifecycleRequest>(request, callback, state);
+            return BeginDoRequest<SetBucketLifecycleRequest>(request, callback, state);
         }
 
         /// <summary>
@@ -592,7 +590,7 @@ namespace OBS
         /// <returns>Response to a request for setting the bucket lifecycle rules</returns>
         public SetBucketLifecycleResponse EndSetBucketLifecycle(IAsyncResult ar)
         {
-            return this.EndDoRequest<SetBucketLifecycleRequest, SetBucketLifecycleResponse>(ar);
+            return EndDoRequest<SetBucketLifecycleRequest, SetBucketLifecycleResponse>(ar);
         }
 
         /// <summary>
@@ -604,7 +602,7 @@ namespace OBS
         /// <returns>Response to the asynchronous request</returns>
         public IAsyncResult BeginDeleteBucketLifecycle(DeleteBucketLifecycleRequest request, AsyncCallback callback, object state)
         {
-            return this.BeginDoRequest<DeleteBucketLifecycleRequest>(request, callback, state);
+            return BeginDoRequest<DeleteBucketLifecycleRequest>(request, callback, state);
         }
 
         /// <summary>
@@ -614,7 +612,7 @@ namespace OBS
         /// <returns>Response to a request for deleting the bucket lifecycle rules</returns>
         public DeleteBucketLifecycleResponse EndDeleteBucketLifecycle(IAsyncResult ar)
         {
-            return this.EndDoRequest<DeleteBucketLifecycleRequest, DeleteBucketLifecycleResponse>(ar);
+            return EndDoRequest<DeleteBucketLifecycleRequest, DeleteBucketLifecycleResponse>(ar);
         }
 
         /// <summary>
@@ -626,7 +624,7 @@ namespace OBS
         /// <returns>Response to the asynchronous request</returns>
         public IAsyncResult BeginGetBucketWebsite(GetBucketWebsiteRequest request, AsyncCallback callback, object state)
         {
-            return this.BeginDoRequest<GetBucketWebsiteRequest>(request, callback, state);
+            return BeginDoRequest<GetBucketWebsiteRequest>(request, callback, state);
         }
 
         /// <summary>
@@ -636,7 +634,7 @@ namespace OBS
         /// <returns>Response to a request for obtaining the bucket website hosting configuration</returns>
         public GetBucketWebsiteResponse EndGetBucketWebsite(IAsyncResult ar)
         {
-            return this.EndDoRequest<GetBucketWebsiteRequest, GetBucketWebsiteResponse>(ar);
+            return EndDoRequest<GetBucketWebsiteRequest, GetBucketWebsiteResponse>(ar);
         }
 
         /// <summary>
@@ -648,7 +646,7 @@ namespace OBS
         /// <returns>Response to the asynchronous request</returns>
         public IAsyncResult BeginSetBucketWebsiteConfiguration(SetBucketWebsiteRequest request, AsyncCallback callback, object state)
         {
-            return this.BeginDoRequest<SetBucketWebsiteRequest>(request, callback, state);
+            return BeginDoRequest<SetBucketWebsiteRequest>(request, callback, state);
         }
 
         /// <summary>
@@ -658,7 +656,7 @@ namespace OBS
         /// <returns>Response to a request for configuring bucket website hosting</returns>
         public SetBucketWebsiteResponse EndSetBucketWebsiteConfiguration(IAsyncResult ar)
         {
-            return this.EndDoRequest<SetBucketWebsiteRequest, SetBucketWebsiteResponse>(ar);
+            return EndDoRequest<SetBucketWebsiteRequest, SetBucketWebsiteResponse>(ar);
         }
 
         /// <summary>
@@ -670,7 +668,7 @@ namespace OBS
         /// <returns>Response to the asynchronous request</returns>
         public IAsyncResult BeginDeleteBucketWebsite(DeleteBucketWebsiteRequest request, AsyncCallback callback, object state)
         {
-            return this.BeginDoRequest<DeleteBucketWebsiteRequest>(request, callback, state);
+            return BeginDoRequest<DeleteBucketWebsiteRequest>(request, callback, state);
         }
 
         /// <summary>
@@ -680,7 +678,7 @@ namespace OBS
         /// <returns>Response to a request for deleting the bucket website hosting configuration</returns>
         public DeleteBucketWebsiteResponse EndDeleteBucketWebsite(IAsyncResult ar)
         {
-            return this.EndDoRequest<DeleteBucketWebsiteRequest, DeleteBucketWebsiteResponse>(ar);
+            return EndDoRequest<DeleteBucketWebsiteRequest, DeleteBucketWebsiteResponse>(ar);
         }
 
         /// <summary>
@@ -692,7 +690,7 @@ namespace OBS
         /// <returns>Response to the asynchronous request</returns>
         public IAsyncResult BeginSetBucketVersioning(SetBucketVersioningRequest request, AsyncCallback callback, object state)
         {
-            return this.BeginDoRequest<SetBucketVersioningRequest>(request, callback, state);
+            return BeginDoRequest<SetBucketVersioningRequest>(request, callback, state);
         }
 
         /// <summary>
@@ -702,7 +700,7 @@ namespace OBS
         /// <returns>Response to a request for setting bucket versioning</returns>
         public SetBucketVersioningResponse EndSetBucketVersioning(IAsyncResult ar)
         {
-            return this.EndDoRequest<SetBucketVersioningRequest, SetBucketVersioningResponse>(ar);
+            return EndDoRequest<SetBucketVersioningRequest, SetBucketVersioningResponse>(ar);
         }
 
         /// <summary>
@@ -714,7 +712,7 @@ namespace OBS
         /// <returns>Response to the asynchronous request</returns>
         public IAsyncResult BeginGetBucketVersioning(GetBucketVersioningRequest request, AsyncCallback callback, object state)
         {
-            return this.BeginDoRequest<GetBucketVersioningRequest>(request, callback, state);
+            return BeginDoRequest<GetBucketVersioningRequest>(request, callback, state);
         }
 
         /// <summary>
@@ -724,7 +722,7 @@ namespace OBS
         /// <returns>Response to a request for obtaining the bucket versioning configuration</returns>
         public GetBucketVersioningResponse EndGetBucketVersioning(IAsyncResult ar)
         {
-            return this.EndDoRequest<GetBucketVersioningRequest, GetBucketVersioningResponse>(ar);
+            return EndDoRequest<GetBucketVersioningRequest, GetBucketVersioningResponse>(ar);
         }
 
         /// <summary>
@@ -736,7 +734,7 @@ namespace OBS
         /// <returns>Response to the asynchronous request</returns>
         public IAsyncResult BeginSetBucketTagging(SetBucketTaggingRequest request, AsyncCallback callback, object state)
         {
-            return this.BeginDoRequest<SetBucketTaggingRequest>(request, callback, state);
+            return BeginDoRequest<SetBucketTaggingRequest>(request, callback, state);
         }
 
         /// <summary>
@@ -746,7 +744,7 @@ namespace OBS
         /// <returns>Response to a request for setting bucket tags</returns>
         public SetBucketTaggingResponse EndSetBucketTagging(IAsyncResult ar)
         {
-            return this.EndDoRequest<SetBucketTaggingRequest, SetBucketTaggingResponse>(ar);
+            return EndDoRequest<SetBucketTaggingRequest, SetBucketTaggingResponse>(ar);
         }
 
         /// <summary>
@@ -758,7 +756,7 @@ namespace OBS
         /// <returns>Response to the asynchronous request</returns>
         public IAsyncResult BeginGetBucketTagging(GetBucketTaggingRequest request, AsyncCallback callback, object state)
         {
-            return this.BeginDoRequest<GetBucketTaggingRequest>(request, callback, state);
+            return BeginDoRequest<GetBucketTaggingRequest>(request, callback, state);
         }
 
         /// <summary>
@@ -768,7 +766,7 @@ namespace OBS
         /// <returns> Response to a request for obtaining bucket tags</returns>
         public GetBucketTaggingResponse EndGetBucketTagging(IAsyncResult ar)
         {
-            return this.EndDoRequest<GetBucketTaggingRequest, GetBucketTaggingResponse>(ar);
+            return EndDoRequest<GetBucketTaggingRequest, GetBucketTaggingResponse>(ar);
         }
 
         /// <summary>
@@ -780,7 +778,7 @@ namespace OBS
         /// <returns>Response to the asynchronous request</returns>
         public IAsyncResult BeginDeleteBucketTagging(DeleteBucketTaggingRequest request, AsyncCallback callback, object state)
         {
-            return this.BeginDoRequest<DeleteBucketTaggingRequest>(request, callback, state);
+            return BeginDoRequest<DeleteBucketTaggingRequest>(request, callback, state);
         }
 
         /// <summary>
@@ -790,7 +788,7 @@ namespace OBS
         /// <returns>Response to a bucket tag deletion request</returns>
         public DeleteBucketTaggingResponse EndDeleteBucketTagging(IAsyncResult ar)
         {
-            return this.EndDoRequest<DeleteBucketTaggingRequest, DeleteBucketTaggingResponse>(ar);
+            return EndDoRequest<DeleteBucketTaggingRequest, DeleteBucketTaggingResponse>(ar);
         }
 
         /// <summary>
@@ -802,7 +800,7 @@ namespace OBS
         /// <returns>Response to the asynchronous request</returns>
         public IAsyncResult BeginSetBucketReplication(SetBucketReplicationRequest request, AsyncCallback callback, object state)
         {
-            return this.BeginDoRequest<SetBucketReplicationRequest>(request, callback, state);
+            return BeginDoRequest<SetBucketReplicationRequest>(request, callback, state);
         }
 
         /// <summary>
@@ -812,7 +810,7 @@ namespace OBS
         /// <returns>Response to a request for configuring cross-region replication of a bucket</returns>
         public SetBucketReplicationResponse EndSetBucketReplication(IAsyncResult ar)
         {
-            return this.EndDoRequest<SetBucketReplicationRequest, SetBucketReplicationResponse>(ar);
+            return EndDoRequest<SetBucketReplicationRequest, SetBucketReplicationResponse>(ar);
         }
 
         /// <summary>
@@ -824,7 +822,7 @@ namespace OBS
         /// <returns>Response to the asynchronous request</returns>
         public IAsyncResult BeginGetBucketReplication(GetBucketReplicationRequest request, AsyncCallback callback, object state)
         {
-            return this.BeginDoRequest<GetBucketReplicationRequest>(request, callback, state);
+            return BeginDoRequest<GetBucketReplicationRequest>(request, callback, state);
         }
 
         /// <summary>
@@ -834,7 +832,7 @@ namespace OBS
         /// <returns>Response to a request for obtaining the cross-region copy configuration of a bucket</returns>
         public GetBucketReplicationResponse EndGetBucketReplication(IAsyncResult ar)
         {
-            return this.EndDoRequest<GetBucketReplicationRequest, GetBucketReplicationResponse>(ar);
+            return EndDoRequest<GetBucketReplicationRequest, GetBucketReplicationResponse>(ar);
         }
 
         /// <summary>
@@ -846,7 +844,7 @@ namespace OBS
         /// <returns>Response to the asynchronous request</returns>
         public IAsyncResult BeginDeleteBucketReplication(DeleteBucketReplicationRequest request, AsyncCallback callback, object state)
         {
-            return this.BeginDoRequest<DeleteBucketReplicationRequest>(request, callback, state);
+            return BeginDoRequest<DeleteBucketReplicationRequest>(request, callback, state);
         }
 
         /// <summary>
@@ -856,7 +854,7 @@ namespace OBS
         /// <returns>Response to a request for deleting the cross-region replication configuration from a bucket</returns>
         public DeleteBucketReplicationResponse EndDeleteBucketReplication(IAsyncResult ar)
         {
-            return this.EndDoRequest<DeleteBucketReplicationRequest, DeleteBucketReplicationResponse>(ar);
+            return EndDoRequest<DeleteBucketReplicationRequest, DeleteBucketReplicationResponse>(ar);
         }
 
         /// <summary>
@@ -868,7 +866,7 @@ namespace OBS
         /// <returns>Response to the asynchronous request</returns>
         public IAsyncResult BeginSetBucketNotification(SetBucketNotificationRequest request, AsyncCallback callback, object state)
         {
-            return this.BeginDoRequest<SetBucketNotificationRequest>(request, callback, state);
+            return BeginDoRequest<SetBucketNotificationRequest>(request, callback, state);
         }
 
         /// <summary>
@@ -878,7 +876,7 @@ namespace OBS
         /// <returns>Response to a request for configuring bucket notification</returns>
         public SetBucketNotificationResponse EndSetBucketNotification(IAsyncResult ar)
         {
-            return this.EndDoRequest<SetBucketNotificationRequest, SetBucketNotificationResponse>(ar);
+            return EndDoRequest<SetBucketNotificationRequest, SetBucketNotificationResponse>(ar);
         }
 
         /// <summary>
@@ -890,7 +888,7 @@ namespace OBS
         /// <returns>Response to the asynchronous request</returns>
         public IAsyncResult BeginGetBucketNotification(GetBucketNotificationRequest request, AsyncCallback callback, object state)
         {
-            return this.BeginDoRequest<GetBucketNotificationRequest>(request, callback, state);
+            return BeginDoRequest<GetBucketNotificationRequest>(request, callback, state);
         }
 
         /// <summary>
@@ -900,7 +898,7 @@ namespace OBS
         /// <returns>Response to a request for obtaining the bucket notification configuration</returns>
         public GetBucketNotificationReponse EndGetBucketNotification(IAsyncResult ar)
         {
-            return this.EndDoRequest<GetBucketNotificationRequest, GetBucketNotificationReponse>(ar);
+            return EndDoRequest<GetBucketNotificationRequest, GetBucketNotificationReponse>(ar);
         }
 
         /// <summary>

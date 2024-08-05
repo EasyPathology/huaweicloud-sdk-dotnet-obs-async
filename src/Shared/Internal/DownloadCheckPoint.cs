@@ -93,7 +93,7 @@ namespace OBS.Internal
             try
             {
                 DownloadCheckPoint temp = null;
-                var serializer = new XmlSerializer(this.GetType());
+                var serializer = new XmlSerializer(GetType());
 
                 using (var fs = new XmlTextReader(checkPointFile))
                 {
@@ -113,14 +113,14 @@ namespace OBS.Internal
         /// <param name="temp"></param>
         public void Assign(DownloadCheckPoint temp)
         {
-            this.BucketName = temp.BucketName;
-            this.ObjectKey = temp.ObjectKey;
-            this.DownloadFile = temp.DownloadFile;
-            this.VersionId = temp.VersionId;
-            this.Md5 = temp.Md5;
-            this.ObjectStatus = temp.ObjectStatus;
-            this.TmpFileStatus = temp.TmpFileStatus;
-            this.DownloadParts = temp.DownloadParts;
+            BucketName = temp.BucketName;
+            ObjectKey = temp.ObjectKey;
+            DownloadFile = temp.DownloadFile;
+            VersionId = temp.VersionId;
+            Md5 = temp.Md5;
+            ObjectStatus = temp.ObjectStatus;
+            TmpFileStatus = temp.TmpFileStatus;
+            DownloadParts = temp.DownloadParts;
         }
 
         /// <summary>
@@ -132,15 +132,15 @@ namespace OBS.Internal
         /// <returns></returns>
         public bool IsValid(string tmpFilePath, ObsClient obsClient)
         {
-            if (this.Md5 != ComputeHash.HashCode<DownloadCheckPoint>(this))
+            if (Md5 != ComputeHash.HashCode<DownloadCheckPoint>(this))
                 return false;
 
             var fileInfo = new FileInfo(tmpFilePath);
-            if (!this.TmpFileStatus.TmpFilePath.Equals(tmpFilePath) || this.TmpFileStatus.Size != fileInfo.Length)
+            if (!TmpFileStatus.TmpFilePath.Equals(tmpFilePath) || TmpFileStatus.Size != fileInfo.Length)
                 return false;
 
             var response = obsClient.GetObjectMetadata(BucketName, ObjectKey, VersionId);
-            if (!this.ObjectStatus.Etag.Equals(response.ETag) || this.ObjectStatus.Size != response.ContentLength || this.ObjectStatus.LastModified != response.LastModified)
+            if (!ObjectStatus.Etag.Equals(response.ETag) || ObjectStatus.Size != response.ContentLength || ObjectStatus.LastModified != response.LastModified)
                 return false;
 
             return true;
@@ -153,7 +153,7 @@ namespace OBS.Internal
         /// <param name="tmpFilePath"></param>
         public void UpdateTmpFile(string tmpFilePath)
         {
-            this.TmpFileStatus.LastModified = File.GetLastWriteTime(tmpFilePath);
+            TmpFileStatus.LastModified = File.GetLastWriteTime(tmpFilePath);
         }
 
         /// <summary>
@@ -163,11 +163,11 @@ namespace OBS.Internal
         /// <param name="checkPointFile"></param>
         public void Record(string checkPointFile)
         {
-            this.Md5 = ComputeHash.HashCode<DownloadCheckPoint>(this);
+            Md5 = ComputeHash.HashCode<DownloadCheckPoint>(this);
 
             try
             {
-                var serializer = new XmlSerializer(this.GetType());
+                var serializer = new XmlSerializer(GetType());
 
                 using var fs = new XmlTextWriter(checkPointFile, Encoding.UTF8);
                 serializer.Serialize(fs, this);

@@ -42,8 +42,8 @@ namespace OBS.Internal.Negotiation
             {
                 throw new ArgumentNullException("key");
             }
-            var index = Math.Abs("".GetHashCode()) % this.lockNum;
-            return this.locks[index];
+            var index = Math.Abs("".GetHashCode()) % lockNum;
+            return locks[index];
         }
     }
 }

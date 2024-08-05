@@ -60,7 +60,7 @@ namespace OBS
         public ServiceException(string message, Exception innerException, HttpStatusCode statusCode)
             : base(message, innerException)
         {
-            this.StatusCode = statusCode;
+            StatusCode = statusCode;
         }
 
         /// <summary>
@@ -81,8 +81,8 @@ namespace OBS
         public ServiceException(string message, ErrorType errorType, string errorCode)
             : base(message)
         {
-            this.ErrorCode = errorCode;
-            this.ErrorType = errorType;
+            ErrorCode = errorCode;
+            ErrorType = errorType;
         }
 
         /// <summary>
@@ -95,9 +95,9 @@ namespace OBS
         public ServiceException(string message, ErrorType errorType, string errorCode, string requestId)
             : base(message)
         {
-            this.ErrorCode = errorCode;
-            this.ErrorType = errorType;
-            this.RequestId = requestId;
+            ErrorCode = errorCode;
+            ErrorType = errorType;
+            RequestId = requestId;
         }
 
         /// <summary>
@@ -111,10 +111,10 @@ namespace OBS
         public ServiceException(string message, ErrorType errorType, string errorCode, string requestId, HttpStatusCode statusCode)
             : base(message)
         {
-            this.ErrorCode = errorCode;
-            this.ErrorType = errorType;
-            this.RequestId = requestId;
-            this.StatusCode = statusCode;
+            ErrorCode = errorCode;
+            ErrorType = errorType;
+            RequestId = requestId;
+            StatusCode = statusCode;
         }
 
         /// <summary>
@@ -129,10 +129,10 @@ namespace OBS
         public ServiceException(string message, Exception innerException, ErrorType errorType, string errorCode, string requestId, HttpStatusCode statusCode)
             : base(message, innerException)
         {
-            this.ErrorCode = errorCode;
-            this.ErrorType = errorType;
-            this.RequestId = requestId;
-            this.StatusCode = statusCode;
+            ErrorCode = errorCode;
+            ErrorType = errorType;
+            RequestId = requestId;
+            StatusCode = statusCode;
         }
 
 

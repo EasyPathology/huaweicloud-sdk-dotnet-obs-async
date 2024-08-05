@@ -29,7 +29,7 @@ namespace OBS
         /// <returns>Response to the asynchronous request</returns>
         public IAsyncResult BeginPutObject(PutObjectRequest request, AsyncCallback callback, object state)
         {
-            return this.BeginDoRequest<PutObjectRequest>(request, delegate ()
+            return BeginDoRequest<PutObjectRequest>(request, delegate ()
             {
                 if (request.ObjectKey == null)
                 {
@@ -45,7 +45,7 @@ namespace OBS
         /// <returns> Response to an object upload request</returns>
         public PutObjectResponse EndPutObject(IAsyncResult ar)
         {
-            return this.EndDoRequest<PutObjectRequest, PutObjectResponse>(ar);
+            return EndDoRequest<PutObjectRequest, PutObjectResponse>(ar);
         }
 
         /// <summary>
@@ -57,7 +57,7 @@ namespace OBS
         /// <returns>Response to the asynchronous request</returns>
         public IAsyncResult BeginAppendObject(AppendObjectRequest request, AsyncCallback callback, object state)
         {
-            return this.BeginDoRequest<AppendObjectRequest>(request, delegate ()
+            return BeginDoRequest<AppendObjectRequest>(request, delegate ()
             {
                 if (request.ObjectKey == null)
                 {
@@ -73,7 +73,7 @@ namespace OBS
         /// <returns>Response to an appendable upload request</returns>
         public AppendObjectResponse EndAppendObject(IAsyncResult ar)
         {
-            return this.EndDoRequest<AppendObjectRequest, AppendObjectResponse>(ar);
+            return EndDoRequest<AppendObjectRequest, AppendObjectResponse>(ar);
         }
 
         /// <summary>
@@ -85,7 +85,7 @@ namespace OBS
         /// <returns>Response to the asynchronous request</returns>
         public IAsyncResult BeginCopyObject(CopyObjectRequest request, AsyncCallback callback, object state)
         {
-            return this.BeginDoRequest<CopyObjectRequest>(request, delegate ()
+            return BeginDoRequest<CopyObjectRequest>(request, delegate ()
             {
                 if (request.ObjectKey == null)
                 {
@@ -109,7 +109,7 @@ namespace OBS
         /// <returns> Response to an object copy request</returns>
         public CopyObjectResponse EndCopyObject(IAsyncResult ar)
         {
-            return this.EndDoRequest<CopyObjectRequest, CopyObjectResponse>(ar);
+            return EndDoRequest<CopyObjectRequest, CopyObjectResponse>(ar);
         }
 
         /// <summary>
@@ -121,7 +121,7 @@ namespace OBS
         /// <returns>Response to the asynchronous request</returns>
         public IAsyncResult BeginUploadPart(UploadPartRequest request, AsyncCallback callback, object state)
         {
-            return this.BeginDoRequest<UploadPartRequest>(request, delegate ()
+            return BeginDoRequest<UploadPartRequest>(request, delegate ()
             {
                 if (request.ObjectKey == null)
                 {
@@ -146,7 +146,7 @@ namespace OBS
         /// <returns>Response to a part upload request</returns>
         public UploadPartResponse EndUploadPart(IAsyncResult ar)
         {
-            var response = this.EndDoRequest<UploadPartRequest, UploadPartResponse>(ar);
+            var response = EndDoRequest<UploadPartRequest, UploadPartResponse>(ar);
             var result = ar as HttpObsAsyncResult;
             object[] additionalState = result.AdditionalState as object[];
             var request = additionalState[0] as UploadPartRequest;
@@ -163,7 +163,7 @@ namespace OBS
         /// <returns>Response to the asynchronous request</returns>
         public IAsyncResult BeginCopyPart(CopyPartRequest request, AsyncCallback callback, object state)
         {
-            return this.BeginDoRequest<CopyPartRequest>(request, delegate ()
+            return BeginDoRequest<CopyPartRequest>(request, delegate ()
             {
                 if (request.ObjectKey == null)
                 {
@@ -198,7 +198,7 @@ namespace OBS
         /// <returns> Response to a part copy request</returns>
         public CopyPartResponse EndCopyPart(IAsyncResult ar)
         {
-            var response = this.EndDoRequest<CopyPartRequest, CopyPartResponse>(ar);
+            var response = EndDoRequest<CopyPartRequest, CopyPartResponse>(ar);
             var result = ar as HttpObsAsyncResult;
             object[] additionalState = result.AdditionalState as object[];
             var request = additionalState[0] as CopyPartRequest;
@@ -215,7 +215,7 @@ namespace OBS
         /// <returns>Response to the asynchronous request</returns>
         public IAsyncResult BeginGetObject(GetObjectRequest request, AsyncCallback callback, object state)
         {
-            return this.BeginDoRequest<GetObjectRequest>(request, delegate ()
+            return BeginDoRequest<GetObjectRequest>(request, delegate ()
             {
                 if (request.ObjectKey == null)
                 {
@@ -232,7 +232,7 @@ namespace OBS
         /// <returns>Response to an object download request</returns>
         public GetObjectResponse EndGetObject(IAsyncResult ar)
         {
-            var response = this.EndDoRequest<GetObjectRequest, GetObjectResponse>(ar);
+            var response = EndDoRequest<GetObjectRequest, GetObjectResponse>(ar);
             var result = ar as HttpObsAsyncResult;
             object[] additionalState = result.AdditionalState as object[];
             var request = additionalState[0] as GetObjectRequest;
@@ -250,7 +250,7 @@ namespace OBS
         /// <returns>Response to the asynchronous request</returns>
         public IAsyncResult BeginGetObjectMetadata(GetObjectMetadataRequest request, AsyncCallback callback, object state)
         {
-            return this.BeginDoRequest<GetObjectMetadataRequest>(request, delegate ()
+            return BeginDoRequest<GetObjectMetadataRequest>(request, delegate ()
             {
                 if (request.ObjectKey == null)
                 {
@@ -267,7 +267,7 @@ namespace OBS
         /// <returns>Response to a request for obtaining object properties</returns>
         public GetObjectMetadataResponse EndGetObjectMetadata(IAsyncResult ar)
         {
-            var response = this.EndDoRequest<GetObjectMetadataRequest, GetObjectMetadataResponse>(ar);
+            var response = EndDoRequest<GetObjectMetadataRequest, GetObjectMetadataResponse>(ar);
             var result = ar as HttpObsAsyncResult;
             object[] additionalState = result.AdditionalState as object[];
             var request = additionalState[0] as GetObjectMetadataRequest;
@@ -285,7 +285,7 @@ namespace OBS
         /// <returns>Response to the asynchronous request</returns>
         public IAsyncResult BeginInitiateMultipartUpload(InitiateMultipartUploadRequest request, AsyncCallback callback, object state)
         {
-            return this.BeginDoRequest<InitiateMultipartUploadRequest>(request, delegate ()
+            return BeginDoRequest<InitiateMultipartUploadRequest>(request, delegate ()
             {
                 if (request.ObjectKey == null)
                 {
@@ -301,7 +301,7 @@ namespace OBS
         /// <returns>Response to a request for initializing a multipart upload</returns>
         public InitiateMultipartUploadResponse EndInitiateMultipartUpload(IAsyncResult ar)
         {
-            return this.EndDoRequest<InitiateMultipartUploadRequest, InitiateMultipartUploadResponse>(ar);
+            return EndDoRequest<InitiateMultipartUploadRequest, InitiateMultipartUploadResponse>(ar);
         }
 
         /// <summary>
@@ -313,7 +313,7 @@ namespace OBS
         /// <returns>Response to the asynchronous request</returns>
         public IAsyncResult BeginCompleteMultipartUpload(CompleteMultipartUploadRequest request, AsyncCallback callback, object state)
         {
-            return this.BeginDoRequest<CompleteMultipartUploadRequest>(request, delegate ()
+            return BeginDoRequest<CompleteMultipartUploadRequest>(request, delegate ()
             {
                 if (request.ObjectKey == null)
                 {
@@ -333,7 +333,7 @@ namespace OBS
         /// <returns>Response to the request for combining parts</returns>
         public CompleteMultipartUploadResponse EndCompleteMultipartUpload(IAsyncResult ar)
         {
-            return this.EndDoRequest<CompleteMultipartUploadRequest, CompleteMultipartUploadResponse>(ar);
+            return EndDoRequest<CompleteMultipartUploadRequest, CompleteMultipartUploadResponse>(ar);
         }
 
 
@@ -346,7 +346,7 @@ namespace OBS
         /// <returns>Response to the asynchronous request</returns>
         public IAsyncResult BeginAbortMultipartUpload(AbortMultipartUploadRequest request, AsyncCallback callback, object state)
         {
-            return this.BeginDoRequest<AbortMultipartUploadRequest>(request, delegate ()
+            return BeginDoRequest<AbortMultipartUploadRequest>(request, delegate ()
             {
                 if (request.ObjectKey == null)
                 {
@@ -366,7 +366,7 @@ namespace OBS
         /// <returns>Response to the request for aborting a multipart upload</returns>
         public AbortMultipartUploadResponse EndAbortMultipartUpload(IAsyncResult ar)
         {
-            return this.EndDoRequest<AbortMultipartUploadRequest, AbortMultipartUploadResponse>(ar);
+            return EndDoRequest<AbortMultipartUploadRequest, AbortMultipartUploadResponse>(ar);
         }
 
 
@@ -379,7 +379,7 @@ namespace OBS
         /// <returns>Response to the asynchronous request</returns>
         public IAsyncResult BeginListParts(ListPartsRequest request, AsyncCallback callback, object state)
         {
-            return this.BeginDoRequest<ListPartsRequest>(request, delegate ()
+            return BeginDoRequest<ListPartsRequest>(request, delegate ()
             {
                 if (request.ObjectKey == null)
                 {
@@ -399,7 +399,7 @@ namespace OBS
         /// <returns>Response to a request for listing uploaded parts</returns>
         public ListPartsResponse EndListParts(IAsyncResult ar)
         {
-            return this.EndDoRequest<ListPartsRequest, ListPartsResponse>(ar);
+            return EndDoRequest<ListPartsRequest, ListPartsResponse>(ar);
         }
 
         /// <summary>
@@ -411,7 +411,7 @@ namespace OBS
         /// <returns>Response to the asynchronous request</returns>
         public IAsyncResult BeginDeleteObject(DeleteObjectRequest request, AsyncCallback callback, object state)
         {
-            return this.BeginDoRequest<DeleteObjectRequest>(request, delegate ()
+            return BeginDoRequest<DeleteObjectRequest>(request, delegate ()
             {
                 if (request.ObjectKey == null)
                 {
@@ -427,7 +427,7 @@ namespace OBS
         /// <returns>Response to the object deletion request</returns>
         public DeleteObjectResponse EndDeleteObject(IAsyncResult ar)
         {
-            return this.EndDoRequest<DeleteObjectRequest, DeleteObjectResponse>(ar);
+            return EndDoRequest<DeleteObjectRequest, DeleteObjectResponse>(ar);
         }
 
 
@@ -440,7 +440,7 @@ namespace OBS
         /// <returns>Response to the asynchronous request</returns>
         public IAsyncResult BeginDeleteObjects(DeleteObjectsRequest request, AsyncCallback callback, object state)
         {
-            return this.BeginDoRequest<DeleteObjectsRequest>(request, callback, state);
+            return BeginDoRequest<DeleteObjectsRequest>(request, callback, state);
         }
 
         /// <summary>
@@ -450,7 +450,7 @@ namespace OBS
         /// <returns>Response to an object batch deletion request</returns>
         public DeleteObjectsResponse EndDeleteObjects(IAsyncResult ar)
         {
-            return this.EndDoRequest<DeleteObjectsRequest, DeleteObjectsResponse>(ar);
+            return EndDoRequest<DeleteObjectsRequest, DeleteObjectsResponse>(ar);
         }
 
 
@@ -463,7 +463,7 @@ namespace OBS
         /// <returns>Response to the asynchronous request</returns>
         public IAsyncResult BeginRestoreObject(RestoreObjectRequest request, AsyncCallback callback, object state)
         {
-            return this.BeginDoRequest<RestoreObjectRequest>(request, delegate ()
+            return BeginDoRequest<RestoreObjectRequest>(request, delegate ()
             {
                 if (request.ObjectKey == null)
                 {
@@ -479,7 +479,7 @@ namespace OBS
         /// <returns>Response to a request for restoring an Archive object</returns>
         public RestoreObjectResponse EndRestoreObject(IAsyncResult ar)
         {
-            return this.EndDoRequest<RestoreObjectRequest, RestoreObjectResponse>(ar);
+            return EndDoRequest<RestoreObjectRequest, RestoreObjectResponse>(ar);
         }
 
         /// <summary>
@@ -491,7 +491,7 @@ namespace OBS
         /// <returns>Response to the asynchronous request</returns>
         public IAsyncResult BeginGetObjectAcl(GetObjectAclRequest request, AsyncCallback callback, object state)
         {
-            return this.BeginDoRequest<GetObjectAclRequest>(request, delegate ()
+            return BeginDoRequest<GetObjectAclRequest>(request, delegate ()
             {
                 if (request.ObjectKey == null)
                 {
@@ -507,7 +507,7 @@ namespace OBS
         /// <returns>Response to a request for obtaining an object ACL</returns>
         public GetObjectAclResponse EndGetObjectAcl(IAsyncResult ar)
         {
-            return this.EndDoRequest<GetObjectAclRequest, GetObjectAclResponse>(ar);
+            return EndDoRequest<GetObjectAclRequest, GetObjectAclResponse>(ar);
         }
 
 
@@ -520,7 +520,7 @@ namespace OBS
         /// <returns>Response to the asynchronous request</returns>
         public IAsyncResult BeginSetObjectAcl(SetObjectAclRequest request, AsyncCallback callback, object state)
         {
-            return this.BeginDoRequest<SetObjectAclRequest>(request, delegate ()
+            return BeginDoRequest<SetObjectAclRequest>(request, delegate ()
             {
                 if (request.ObjectKey == null)
                 {
@@ -536,7 +536,7 @@ namespace OBS
         /// <returns>Response to a request for configuring an object ACL</returns>
         public SetObjectAclResponse EndSetObjectAcl(IAsyncResult ar)
         {
-            return this.EndDoRequest<SetObjectAclRequest, SetObjectAclResponse>(ar);
+            return EndDoRequest<SetObjectAclRequest, SetObjectAclResponse>(ar);
         }
 
         /// <summary>
@@ -548,7 +548,7 @@ namespace OBS
         /// <returns>Response to the asynchronous request</returns>
         public IAsyncResult BeginHeadObject(HeadObjectRequest request, AsyncCallback callback, object state)
         {
-            return this.BeginDoRequest<HeadObjectRequest>(request, callback, state);
+            return BeginDoRequest<HeadObjectRequest>(request, callback, state);
         }
 
 
@@ -561,7 +561,7 @@ namespace OBS
         {
             try
             {
-                this.EndDoRequest<HeadObjectRequest, ObsWebServiceResponse>(ar);
+                EndDoRequest<HeadObjectRequest, ObsWebServiceResponse>(ar);
                 return true;
             }
             catch (ObsException e)

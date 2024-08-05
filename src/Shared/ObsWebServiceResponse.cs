@@ -48,11 +48,11 @@ namespace OBS
         {
             get
             {
-                return this._headers ?? (this._headers = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase));
+                return _headers ?? (_headers = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase));
             }
             internal set
             {
-                this._headers = value;
+                _headers = value;
             }
         }
 

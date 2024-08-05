@@ -40,9 +40,9 @@ namespace OBS.Model
         {
             get {
                 
-                return this.tags ?? (this.tags = new List<Tag>());
+                return tags ?? (tags = new List<Tag>());
             }
-            set { this.tags = value; }
+            set { tags = value; }
         }
 
     }

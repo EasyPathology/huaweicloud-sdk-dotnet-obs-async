@@ -37,8 +37,8 @@ namespace OBS.Model
         {
             get {
                 
-                return this.allowedMethods ?? (this.allowedMethods = new List<HttpVerb>()); }
-            set { this.allowedMethods = value; }
+                return allowedMethods ?? (allowedMethods = new List<HttpVerb>()); }
+            set { allowedMethods = value; }
         }
 
         /// <summary>
@@ -53,8 +53,8 @@ namespace OBS.Model
         {
             get {
                 
-                return this.allowedOrigins ?? (this.allowedOrigins = new List<string>()); }
-            set { this.allowedOrigins = value; }
+                return allowedOrigins ?? (allowedOrigins = new List<string>()); }
+            set { allowedOrigins = value; }
         }
 
         /// <summary>
@@ -84,8 +84,8 @@ namespace OBS.Model
         {
             get {
                 
-                return this.exposeHeaders ?? (this.exposeHeaders = new List<string>()); }
-            set { this.exposeHeaders = value; }
+                return exposeHeaders ?? (exposeHeaders = new List<string>()); }
+            set { exposeHeaders = value; }
         }
 
         /// <summary>
@@ -115,8 +115,8 @@ namespace OBS.Model
         {
             get {
                
-                return this.allowedHeaders ?? (this.allowedHeaders = new List<string>()); }
-            set { this.allowedHeaders = value; }
+                return allowedHeaders ?? (allowedHeaders = new List<string>()); }
+            set { allowedHeaders = value; }
         }
 
     }

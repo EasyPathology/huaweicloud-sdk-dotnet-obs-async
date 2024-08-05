@@ -99,9 +99,9 @@ namespace OBS.Model
             {
                 
 
-                return this.multipartUploads ?? (this.multipartUploads = new List<MultipartUpload>()); 
+                return multipartUploads ?? (multipartUploads = new List<MultipartUpload>()); 
             }
-            internal set { this.multipartUploads = value; }
+            internal set { multipartUploads = value; }
         }
 
         /// <summary>
@@ -130,9 +130,9 @@ namespace OBS.Model
             get
             {
                
-                return this.commonPrefixes ?? (this.commonPrefixes = new List<string>());
+                return commonPrefixes ?? (commonPrefixes = new List<string>());
             }
-            internal set { this.commonPrefixes = value; }
+            internal set { commonPrefixes = value; }
         }
     }
 }

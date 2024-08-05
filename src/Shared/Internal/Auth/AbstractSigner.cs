@@ -23,9 +23,9 @@ namespace OBS.Internal.Auth
     {
         protected override void _DoAuth(HttpRequest request, HttpContext context, IHeaders iheaders)
         {
-            var signature = this.GetSignature(request, context, iheaders)["Signature"];
+            var signature = GetSignature(request, context, iheaders)["Signature"];
 
-            var auth = new StringBuilder(this.GetAuthPrefix()).Append(" ")
+            var auth = new StringBuilder(GetAuthPrefix()).Append(" ")
                 .Append(context.SecurityProvider.Ak).Append(":").Append(signature).ToString();
             request.Headers.Add(Constants.CommonHeaders.Authorization, auth);
         }

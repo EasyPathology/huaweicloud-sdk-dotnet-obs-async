@@ -114,7 +114,7 @@ namespace OBS
         public ObsException(string message, Exception innerException, ErrorType errorType, string errorCode, string requestId, HttpStatusCode statusCode, string obsId2)
             : base(message, innerException, errorType, errorCode, requestId, statusCode)
         {
-            this.ObsId2 = obsId2;
+            ObsId2 = obsId2;
         }
 
         /// <summary>
@@ -129,7 +129,7 @@ namespace OBS
         public ObsException(string message, ErrorType errorType, string errorCode, string errorMessage, string requestId, HttpStatusCode statusCode)
             : base(message, errorType, errorCode, requestId, statusCode)
         {
-            this.ErrorMessage = errorMessage;
+            ErrorMessage = errorMessage;
         }
 
         /// <summary>
@@ -145,7 +145,7 @@ namespace OBS
         public ObsException(string message, Exception innerException, ErrorType errorType, string errorCode, string errorMessage, string requestId, HttpStatusCode statusCode)
             : base(message, innerException, errorType, errorCode, requestId, statusCode)
         {
-            this.ErrorMessage = errorMessage;
+            ErrorMessage = errorMessage;
         }
 
         /// <summary>
@@ -166,12 +166,12 @@ namespace OBS
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append(this.Message)
-            .Append(", StatusCode:").Append(Convert.ToInt32(this.StatusCode))
-                .Append(", ErrorCode:").Append(this.ErrorCode)
-                .Append(", ErrorMessage:").Append(this.ErrorMessage)
-                .Append(", RequestId:").Append(this.RequestId)
-                .Append(", HostId:").Append(this.HostId);
+            sb.Append(Message)
+            .Append(", StatusCode:").Append(Convert.ToInt32(StatusCode))
+                .Append(", ErrorCode:").Append(ErrorCode)
+                .Append(", ErrorMessage:").Append(ErrorMessage)
+                .Append(", RequestId:").Append(RequestId)
+                .Append(", HostId:").Append(HostId);
             return sb.ToString();
         }
     }

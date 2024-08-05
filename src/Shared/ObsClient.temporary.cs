@@ -30,16 +30,16 @@ namespace OBS
         public CreateTemporarySignatureResponse CreateTemporarySignature(CreateTemporarySignatureRequest request)
         {
             var httpRequest = new HttpRequest();
-            httpRequest.PathStyle = this.ObsConfig.PathStyle;
+            httpRequest.PathStyle = ObsConfig.PathStyle;
             httpRequest.BucketName = request.BucketName;
             httpRequest.ObjectKey = request.ObjectKey;
             httpRequest.Method = request.Method;
 
-            var iheaders = this.httpClient.GetIHeaders(new HttpContext(this.sp, this.ObsConfig));
+            var iheaders = httpClient.GetIHeaders(new HttpContext(sp, ObsConfig));
 
-            if (!string.IsNullOrEmpty(this.sp.Token) && !request.Parameters.ContainsKey(iheaders.SecurityTokenHeader()))
+            if (!string.IsNullOrEmpty(sp.Token) && !request.Parameters.ContainsKey(iheaders.SecurityTokenHeader()))
             {
-                request.Parameters.Add(iheaders.SecurityTokenHeader(), this.sp.Token.Trim());
+                request.Parameters.Add(iheaders.SecurityTokenHeader(), sp.Token.Trim());
             }
 
             foreach (KeyValuePair<string, string> entry in request.Headers)
@@ -55,10 +55,10 @@ namespace OBS
             if (request.SubResource.HasValue)
             {
                 var value = request.SubResource.Value;
-                if(value == SubResourceEnum.StoragePolicy && this.ObsConfig.AuthType == AuthTypeEnum.OBS)
+                if(value == SubResourceEnum.StoragePolicy && ObsConfig.AuthType == AuthTypeEnum.OBS)
                 {
                     value = SubResourceEnum.StorageClass;
-                }else if(value == SubResourceEnum.StorageClass && this.ObsConfig.AuthType != AuthTypeEnum.OBS)
+                }else if(value == SubResourceEnum.StorageClass && ObsConfig.AuthType != AuthTypeEnum.OBS)
                 {
                     value = SubResourceEnum.StoragePolicy;
                 }
@@ -81,18 +81,18 @@ namespace OBS
             }
 
             long expires = 300;
-            if (request.Expires.HasValue && request.Expires.Value > 0)
+            if (request.Expires is > 0)
             {
                 expires = request.Expires.Value;
             }
 
-            return this.ObsConfig.AuthType == AuthTypeEnum.V4 ? this.CreateV4TemporarySignature(httpRequest, expires, iheaders) : this.CreateTemporarySignature(httpRequest, expires, iheaders);
+            return ObsConfig.AuthType == AuthTypeEnum.V4 ? CreateV4TemporarySignature(httpRequest, expires, iheaders) : CreateTemporarySignature(httpRequest, expires, iheaders);
         }
 
         private CreateTemporarySignatureResponse CreateV4TemporarySignature(HttpRequest httpRequest, long expires, IHeaders iheaders)
         {
             IDictionary<string, string> dateDict = V4Signer.GetLongDateAndShortDate(httpRequest, iheaders);
-            var host = httpRequest.GetHost(this.ObsConfig.Endpoint);
+            var host = httpRequest.GetHost(ObsConfig.Endpoint);
             CommonUtil.AddHeader(httpRequest, Constants.CommonHeaders.Host, host);
 
             IDictionary<string,string> tempDict = new Dictionary<string, string>();
@@ -110,23 +110,23 @@ namespace OBS
             var signedHeaders = V4Signer.GetSignedHeaders(signedHeadersList);
 
             CommonUtil.AddParam(httpRequest, "X-Amz-Algorithm", V4Signer.Algorithm);
-            CommonUtil.AddParam(httpRequest, "X-Amz-Credential", this.sp.Ak + "/" + dateDict["ShortDate"] + V4Signer.ScopeSuffix);
+            CommonUtil.AddParam(httpRequest, "X-Amz-Credential", sp.Ak + "/" + dateDict["ShortDate"] + V4Signer.ScopeSuffix);
             CommonUtil.AddParam(httpRequest, "X-Amz-Date", dateDict["LongDate"]);
             CommonUtil.AddParam(httpRequest, "X-Amz-Expires", expires.ToString());
             CommonUtil.AddParam(httpRequest, "X-Amz-SignedHeaders", signedHeaders);
 
-            var context = new HttpContext(this.sp, this.ObsConfig);
+            var context = new HttpContext(sp, ObsConfig);
             var signature = CommonUtil.UrlEncode(V4Signer.GetTemporarySignature(httpRequest, context, iheaders, dateDict, signedHeaders, tempDict, signedHeadersList, null));
 
             var response = new CreateTemporarySignatureResponse
             {
-                SignUrl = this.ObsConfig.Endpoint.StartsWith("https", StringComparison.OrdinalIgnoreCase) ?
+                SignUrl = ObsConfig.Endpoint.StartsWith("https", StringComparison.OrdinalIgnoreCase) ?
                     "https://" : "http://"
             };
 
             response.SignUrl += host;
 
-            if (this.ObsConfig.PathStyle && !string.IsNullOrEmpty(httpRequest.BucketName))
+            if (ObsConfig.PathStyle && !string.IsNullOrEmpty(httpRequest.BucketName))
             {
                 response.SignUrl += "/" + CommonUtil.UrlEncode(httpRequest.BucketName);
             }
@@ -154,9 +154,9 @@ namespace OBS
                 
             }
 
-            if (!string.IsNullOrEmpty(this.sp.Token))
+            if (!string.IsNullOrEmpty(sp.Token))
             {
-                response.SignUrl += "&" + iheaders.SecurityTokenHeader() + "=" + this.sp.Token;
+                response.SignUrl += "&" + iheaders.SecurityTokenHeader() + "=" + sp.Token;
             }
             response.SignUrl += "&X-Amz-Signature=" + signature;
 
@@ -177,21 +177,21 @@ namespace OBS
             var expiresValue = ((DateTime.UtcNow.Ticks - dt1970.Ticks) / 10000000 + expires).ToString();
             httpRequest.Headers[Constants.CommonHeaders.Date] = expiresValue;
 
-            var context = new HttpContext(this.sp, this.ObsConfig);
+            var context = new HttpContext(sp, ObsConfig);
 
-            IDictionary<string, string> SinerReturn = this.httpClient.GetSigner(new HttpContext(this.sp, this.ObsConfig)).GetSignature(httpRequest, context, iheaders);
+            IDictionary<string, string> SinerReturn = httpClient.GetSigner(new HttpContext(sp, ObsConfig)).GetSignature(httpRequest, context, iheaders);
 
             var signature = CommonUtil.UrlEncode(SinerReturn["Signature"]);
 
             var response = new CreateTemporarySignatureResponse
             {
-                SignUrl = this.ObsConfig.Endpoint.StartsWith("https", StringComparison.OrdinalIgnoreCase) ?
+                SignUrl = ObsConfig.Endpoint.StartsWith("https", StringComparison.OrdinalIgnoreCase) ?
                     "https://" : "http://"
             };
 
-            response.SignUrl += httpRequest.GetHost(this.ObsConfig.Endpoint);
+            response.SignUrl += httpRequest.GetHost(ObsConfig.Endpoint);
 
-            if (this.ObsConfig.PathStyle && !string.IsNullOrEmpty(httpRequest.BucketName))
+            if (ObsConfig.PathStyle && !string.IsNullOrEmpty(httpRequest.BucketName))
             {
                 response.SignUrl += "/" + CommonUtil.UrlEncode(httpRequest.BucketName);
             }
@@ -201,8 +201,8 @@ namespace OBS
                 response.SignUrl += "/" + CommonUtil.UrlEncode(httpRequest.ObjectKey, null, "/");
             }
 
-            var accessKeyIdPrefix = this.ObsConfig.AuthType == AuthTypeEnum.OBS ? "AccessKeyId=" : "AWSAccessKeyId=";
-            response.SignUrl += "?" + accessKeyIdPrefix + this.sp.Ak + "&Expires=" + expiresValue;
+            var accessKeyIdPrefix = ObsConfig.AuthType == AuthTypeEnum.OBS ? "AccessKeyId=" : "AWSAccessKeyId=";
+            response.SignUrl += "?" + accessKeyIdPrefix + sp.Ak + "&Expires=" + expiresValue;
 
             foreach (KeyValuePair<string, string> entry in httpRequest.Params)
             {
