@@ -25,6 +25,7 @@ public class AsyncExtensionGenerator : IIncrementalGenerator
         yield return ("HeadObject", "bool");
         yield return ("InitiateMultipartUpload", null);
         yield return ("ListParts", null);
+        yield return ("ListObjects", null);
         yield return ("PutObject", null);
         yield return ("RestoreObject", null);
         yield return ("SetObjectAcl", null);
