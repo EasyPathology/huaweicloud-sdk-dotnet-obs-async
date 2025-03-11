@@ -16,6 +16,7 @@
         <Product>OBS SDK for C#</Product>
         <AssemblyName>HuaweiCloud.OBS</AssemblyName>
         <FileAlignment>512</FileAlignment>
+        <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
     </PropertyGroup>
 
     <ItemGroup>
