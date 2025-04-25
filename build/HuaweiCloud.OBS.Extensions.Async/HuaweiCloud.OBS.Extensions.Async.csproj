@@ -12,7 +12,7 @@
         <RootNamespace>HuaweiCloud.OBS.Extensions.Async</RootNamespace>
         <PackageId>HuaweiCloud.OBS.Extensions.Async</PackageId>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <Version>3.22.3.1</Version>
+        <Version>3.22.3.2</Version>
         <Title>HuaweiCloud.OBS.Extensions.Async</Title>
         <Authors>Feast</Authors>
         <Description>Auto generate async/await code extension for ObsClient</Description>
@@ -21,9 +21,12 @@
         <RepositoryUrl>https://github.com/feast107/huaweicloud-sdk-dotnet-obs-async.git</RepositoryUrl>
         <AssemblyVersion>3.22.3.1</AssemblyVersion>
         <FileVersion>1.0.0</FileVersion>
-        <PackageReleaseNotes>Remove lib reference to avoid extra assembly</PackageReleaseNotes>
+        <PackageReleaseNotes>using reference detection</PackageReleaseNotes>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <NeutralLanguage>zh</NeutralLanguage>
+        <RepositoryType>git</RepositoryType>
+        <PackageTags>async;extension;huaweicloud;obs</PackageTags>
+        <PackageIcon>logo.png</PackageIcon>
     </PropertyGroup>
 
     <ItemGroup>
@@ -31,6 +34,11 @@
     </ItemGroup>
     
     <ItemGroup Label="Package">
+        <None Include="..\..\logo.png">
+          <Pack>True</Pack>
+          <PackagePath></PackagePath>
+          <Link>logo.png</Link>
+        </None>
         <None Include="..\..\README.md">
           <Pack>True</Pack>
           <PackagePath>\</PackagePath>

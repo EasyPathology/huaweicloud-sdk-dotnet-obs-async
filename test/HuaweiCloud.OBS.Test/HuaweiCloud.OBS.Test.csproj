@@ -13,7 +13,7 @@
 
     <ItemGroup>
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
-        <PackageReference Include="HuaweiCloud.OBS.Extensions.Async" Version="3.22.3" />
+        <PackageReference Include="HuaweiCloud.OBS.SDK" Version="3.20.7"/>
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.7.1"/>
         <PackageReference Include="NUnit" Version="3.13.3"/>
         <PackageReference Include="NUnit3TestAdapter" Version="4.4.2"/>
@@ -22,7 +22,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\build\HuaweiCloud.OBS\HuaweiCloud.OBS.csproj" />
+      <ProjectReference ReferenceOutputAssembly="false" OutputItemType="Analyzer" Include="..\..\build\HuaweiCloud.OBS.Extensions.Async.SourceGenerators\HuaweiCloud.OBS.Extensions.Async.SourceGenerators.csproj" />
     </ItemGroup>
 
 </Project>

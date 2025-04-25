@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Text;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Text;
 
 namespace HuaweiCloud.OBS.Extensions.Async.SourceGenerators;
@@ -10,26 +10,32 @@ namespace HuaweiCloud.OBS.Extensions.Async.SourceGenerators;
 [Generator]
 public class AsyncExtensionGenerator : IIncrementalGenerator
 {
-    private static IEnumerable<(string, string?)> ExportedAsyncMethods()
+    private static IEnumerable<(string name, string request, string response)> ExportedAsyncMethods(
+        INamedTypeSymbol obsClient)
     {
-        yield return ("AppendObject", null);
-        yield return ("AbortMultipartUpload", null);
-        yield return ("CopyObject", null);
-        yield return ("CopyPart", null);
-        yield return ("CompleteMultipartUpload", null);
-        yield return ("DeleteObject", null);
-        yield return ("DeleteObjects", null);
-        yield return ("GetObject", null);
-        yield return ("GetObjectAcl", null);
-        yield return ("GetObjectMetadata", null);
-        yield return ("HeadObject", "bool");
-        yield return ("InitiateMultipartUpload", null);
-        yield return ("ListParts", null);
-        yield return ("ListObjects", null);
-        yield return ("PutObject", null);
-        yield return ("RestoreObject", null);
-        yield return ("SetObjectAcl", null);
-        yield return ("UploadPart", null);
+        var dic = new Dictionary<string, (string request, string response)>();
+        foreach (var methodSymbol in obsClient.GetMembers()
+            .OfType<IMethodSymbol>()
+            .Where(x => !x.IsStatic))
+        {
+            if (methodSymbol.Name.StartsWith("Begin"))
+            {
+                var name = methodSymbol.Name.Substring(5);
+                dic[name] = (methodSymbol.Parameters[0].Type.ToDisplayString(), "");
+            }
+
+            if (methodSymbol.Name.StartsWith("End"))
+            {
+                var name = methodSymbol.Name.Substring(3);
+                if (dic.TryGetValue(name, out var tuple))
+                {
+                    dic[name] = (tuple.request, methodSymbol.ReturnType.ToDisplayString());
+                }
+            }
+        }
+        return dic.Select(x=>(x.Key, x.Value.request, x.Value.response))
+            .Where(x => !string.IsNullOrEmpty(x.response))
+            .ToList();
     }
 
     private static string ClassField(string inner)
@@ -42,7 +48,7 @@ public class AsyncExtensionGenerator : IIncrementalGenerator
                
                namespace OBS.Extensions;
                
-               public static partial class AsyncExtension
+               public static partial class AsyncExtensions
                {
                {{inner}}
                }
@@ -54,53 +60,75 @@ public class AsyncExtensionGenerator : IIncrementalGenerator
     private const string TaskCompletionSource = "global::System.Threading.Tasks.TaskCompletionSource";
     private const string CancellationToken    = "global::System.Threading.CancellationToken";
     private const string ObsClient            = $"{OBS}.ObsClient";
-    private const string Model                = $"{OBS}.Model";
-    
-    private static string GenerateMethod(string name, string? response)
-    {
-        var arg = $"{Model}.{name}Request";
-        var ret = response ?? $"{name}Response";
-        return $$"""
-                     public static {{Task}}<{{ret}}> {{name}}Async(this {{ObsClient}} client,
-                        {{arg}} request,
-                        object state = default,
-                        {{CancellationToken}}? token = null)
-                    {       
-                        var source = new {{TaskCompletionSource}}<{{ret}}>(state);
-                        var ar     = client.Begin{{name}}(request, ar => { source.SetResult(client.End{{name}}(ar)); }, state);
-                        token?.Register(() =>
-                        {
-                            client.End{{name}}(ar);
-                            source.SetCanceled();
-                        });
-                                  
-                        return source.Task;
-                    }
-                 
-                 
-                 """;
-    }
-    
+
+    private static string GenerateMethod(string name, string request, string response) =>
+        $$"""
+              public static {{Task}}<{{response}}> {{name}}Async(this {{ObsClient}} client,
+                 {{request}} request,
+                 object state = default,
+                 {{CancellationToken}}? token = null)
+             {       
+                 var source = new {{TaskCompletionSource}}<{{response}}>(state);
+                 var ar     = client.Begin{{name}}(request, ar => { source.SetResult(client.End{{name}}(ar)); }, state);
+                 token?.Register(() =>
+                 {
+                     client.End{{name}}(ar);
+                     source.SetCanceled();
+                 });
+                           
+                 return source.Task;
+             }
+
+
+          """;
+
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        
-        var provider = context.SyntaxProvider
-            .CreateSyntaxProvider(
-                (s, _) => s is IdentifierNameSyntax { Identifier.Text: "ObsClient" },
-                (ctx, _) => ctx.Node);
 
-        context.RegisterSourceOutput(provider.Collect(), (ctx, t) =>
+        context.RegisterSourceOutput(context.CompilationProvider, (s, c) =>
         {
-            ctx.AddSource(
-                "OBS.Extensions.AsyncExtension.g.cs",
-                SourceText.From(
-                    ClassField(
-                        ExportedAsyncMethods()
-                            .Select(tuple => GenerateMethod(tuple.Item1, tuple.Item2))
-                            .Aggregate(new StringBuilder(), (s, c) => s.Append(c))
-                            .ToString()
-                    ), Encoding.UTF8));
-        });
+            if (c is not CSharpCompilation compilation) return;
+            var assembly = compilation.References
+                .Select(x => compilation.GetAssemblyOrModuleSymbol(x))
+                .OfType<IAssemblySymbol>()
+                .Select(x =>
+                {
+                    var collector = new ObsClientVisitor();
+                    x.GlobalNamespace.Accept(collector);
+                    return collector;
+                })
+                .FirstOrDefault(x => x.ObsClient != null);
+            if (assembly?.ObsClient is not null)
+            {
+                var source = ClassField(
+                    ExportedAsyncMethods(assembly.ObsClient)
+                        .Select(tuple => GenerateMethod(tuple.name, tuple.request,tuple.response))
+                        .Aggregate(new StringBuilder(), (sb, ss) => sb.Append(ss))
+                        .ToString()
+                );
+                s.AddSource("OBS.Extensions.AsyncExtensions.g.cs", SourceText.From(source, Encoding.UTF8));
+            }
 
+        });
+    }
+    
+    private class ObsClientVisitor : SymbolVisitor
+    {
+        public INamedTypeSymbol? ObsClient { get; private set; }
+
+        public override void VisitNamespace(INamespaceSymbol symbol)
+        {
+            foreach (var member in symbol.GetMembers()
+                .Where(x => x.IsNamespace || x.DeclaredAccessibility == Accessibility.Public))
+            {
+                member.Accept(this);
+            }
+        }
+
+        public override void VisitNamedType(INamedTypeSymbol symbol)
+        {
+            if (symbol.Name != "ObsClient" || symbol.ContainingNamespace.Name is not "OBS") return;
+            ObsClient = symbol;
+        }
     }
 }
