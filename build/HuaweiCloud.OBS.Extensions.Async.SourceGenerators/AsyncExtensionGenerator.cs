@@ -16,7 +16,7 @@ public class AsyncExtensionGenerator : IIncrementalGenerator
         var dic = new Dictionary<string, (string request, string response)>();
         foreach (var methodSymbol in obsClient.GetMembers()
             .OfType<IMethodSymbol>()
-            .Where(x => !x.IsStatic))
+            .Where(x => !x.IsStatic && x.DeclaredAccessibility == Accessibility.Public))
         {
             if (methodSymbol.Name.StartsWith("Begin"))
             {

@@ -12,7 +12,7 @@
         <RootNamespace>HuaweiCloud.OBS.Extensions.Async</RootNamespace>
         <PackageId>HuaweiCloud.OBS.Extensions.Async</PackageId>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <Version>3.22.3.2</Version>
+        <Version>3.22.3.3</Version>
         <Title>HuaweiCloud.OBS.Extensions.Async</Title>
         <Authors>Feast</Authors>
         <Description>Auto generate async/await code extension for ObsClient</Description>
@@ -21,7 +21,7 @@
         <RepositoryUrl>https://github.com/feast107/huaweicloud-sdk-dotnet-obs-async.git</RepositoryUrl>
         <AssemblyVersion>3.22.3.1</AssemblyVersion>
         <FileVersion>1.0.0</FileVersion>
-        <PackageReleaseNotes>using reference detection</PackageReleaseNotes>
+        <PackageReleaseNotes>ignore non public methods</PackageReleaseNotes>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <NeutralLanguage>zh</NeutralLanguage>
         <RepositoryType>git</RepositoryType>
